@@ -9,6 +9,7 @@ import {
   Users,
 } from "lucide-react";
 import Card from "@/components/ui/card";
+
 export default function HeroSection() {
   return (
     <section className="relative min-h-[calc(100svh-5rem)] overflow-hidden sm:min-h-screen">
