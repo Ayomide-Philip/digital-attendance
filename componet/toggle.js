@@ -4,7 +4,7 @@ import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 export default function Toggle() {
-  const { theme, setTheme, resolvedTheme } = useTheme();
+  const { setTheme, resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   // When mounted on client, now we can show the UI
 
@@ -20,10 +20,10 @@ export default function Toggle() {
       as="button"
       variant="ghost"
       onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
-      className="h-10 w-10 px-0"
+      className="cursor-pointer rounded-full p-2 text-slate-700 hover:bg-slate-100 hover:text-slate-950 dark:text-slate-300 dark:hover:bg-slate-900 dark:hover:text-white"
       aria-label="Toggle theme"
     >
-      {theme === "dark" ? (
+      {resolvedTheme === "dark" ? (
         <Sun className="h-5 w-5" />
       ) : (
         <Moon className="h-5 w-5" />
