@@ -23,6 +23,9 @@ import {
 } from "lucide-react";
 import { useTheme } from "next-themes";
 import Toggle from "@/components/toggle";
+import Footer from "@/components/ui/footer";
+import CallToAction from "@/components/ui/cta";
+import Card from "@/components/ui/card";
 
 const navigationLinks = [
   { label: "Home", href: "#home" },
@@ -114,16 +117,6 @@ function Button({
     >
       {children}
     </Component>
-  );
-}
-
-function Card({ className = "", children }) {
-  return (
-    <div
-      className={`rounded-2xl border border-slate-200/80 bg-white/80 p-5 shadow-[0_1px_0_rgba(255,255,255,0.6)] backdrop-blur-xl sm:rounded-3xl sm:p-6 dark:border-slate-800 dark:bg-slate-950/70 ${className}`}
-    >
-      {children}
-    </div>
   );
 }
 
@@ -529,110 +522,9 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="border-t border-slate-200/70 py-16 sm:py-20 lg:py-24 dark:border-slate-800">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <Card className="relative overflow-hidden border-slate-200 bg-linear-to-br from-slate-950 via-slate-900 to-slate-800 px-5 py-10 text-center text-white shadow-[0_35px_100px_rgba(2,6,23,0.35)] sm:px-8 sm:py-14 dark:border-slate-800">
-              <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(56,189,248,0.18),transparent_30%),radial-gradient(circle_at_bottom_right,rgba(99,102,241,0.22),transparent_30%)]" />
-              <div className="relative mx-auto max-w-3xl">
-                <p className="text-sm font-medium uppercase tracking-[0.28em] text-sky-300">
-                  Start now
-                </p>
-                <h2 className="mt-4 text-2xl font-semibold tracking-tight sm:text-4xl">
-                  Start Managing Attendance the Smart Way
-                </h2>
-                <p className="mt-4 text-base leading-7 text-slate-300">
-                  Launch a cleaner, more reliable attendance workflow that
-                  validates presence through location data instead of trust
-                  alone.
-                </p>
-                <div className="mt-8 flex justify-center">
-                  <Button
-                    as="a"
-                    href="#contact"
-                    variant="secondary"
-                    className="h-12 w-full bg-white px-6 text-base text-slate-950 hover:bg-slate-100 sm:w-auto dark:bg-white dark:text-slate-950"
-                  >
-                    Create Your First Session
-                    <ArrowRight className="h-4 w-4" />
-                  </Button>
-                </div>
-              </div>
-            </Card>
-          </div>
-        </section>
+        <CallToAction />
 
-        <footer
-          id="contact"
-          className="border-t border-slate-200/70 py-10 sm:py-12 dark:border-slate-800"
-        >
-          <div className="mx-auto grid max-w-7xl gap-8 px-4 sm:gap-10 sm:px-6 lg:grid-cols-2 lg:px-8">
-            <div>
-              <div className="flex items-center gap-3 text-lg font-semibold text-slate-950 dark:text-white">
-                <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-linear-to-br from-sky-500 via-indigo-500 to-violet-500 text-white">
-                  <ShieldCheck className="h-5 w-5" />
-                </div>
-                Attendify
-              </div>
-              <p className="mt-4 max-w-md text-sm leading-6 text-slate-600 dark:text-slate-400">
-                A modern digital attendance system that combines geolocation
-                validation, distance control, and clean administration.
-              </p>
-            </div>
-
-            <div className="grid gap-8 sm:gap-6 sm:grid-cols-2">
-              <div>
-                <h3 className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-950 dark:text-white">
-                  Links
-                </h3>
-                <div className="mt-4 grid gap-3 text-sm text-slate-600 dark:text-slate-400">
-                  <a
-                    href="#home"
-                    className="transition hover:text-slate-950 dark:hover:text-white"
-                  >
-                    Home
-                  </a>
-                  <a
-                    href="#features"
-                    className="transition hover:text-slate-950 dark:hover:text-white"
-                  >
-                    Features
-                  </a>
-                  <a
-                    href="#contact"
-                    className="transition hover:text-slate-950 dark:hover:text-white"
-                  >
-                    Contact
-                  </a>
-                </div>
-              </div>
-              <div>
-                <h3 className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-950 dark:text-white">
-                  Get Started
-                </h3>
-                <div className="mt-4 flex flex-col gap-3 text-sm text-slate-600 dark:text-slate-400">
-                  <a
-                    href="#contact"
-                    className="transition hover:text-slate-950 dark:hover:text-white"
-                  >
-                    Create Your First Session
-                  </a>
-                  <a
-                    href="#contact"
-                    className="transition hover:text-slate-950 dark:hover:text-white"
-                  >
-                    Request a Demo
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="mx-auto mt-10 max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div className="border-t border-slate-200 pt-6 text-sm text-slate-500 dark:border-slate-800 dark:text-slate-500">
-              © {new Date().getFullYear()} Attendify. All rights reserved.
-            </div>
-          </div>
-        </footer>
+        <Footer />
       </main>
     </div>
   );
