@@ -3,7 +3,12 @@ import { ThemeProvider } from "next-themes";
 
 export default function ThemeProviders({ children }) {
   return (
-    <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+    <ThemeProvider
+      attribute="class"
+      defaultTheme="system"
+      enableSystem
+      scriptProps={{ "data-cfasync": "false" }}
+    >
       {children}
     </ThemeProvider>
   );
