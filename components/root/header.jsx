@@ -1,15 +1,6 @@
+"use client";
 import { useState, useEffect } from "react";
-import {
-  ArrowRight,
-  ChevronRight,
-  LogIn,
-  Menu,
-  Moon,
-  ShieldCheck,
-  Sun,
-  UserPlus,
-  X,
-} from "lucide-react";
+import { ChevronRight, Menu, ShieldCheck, UserPlus, X } from "lucide-react";
 import { useTheme } from "next-themes";
 import Toggle from "@/components/toggle";
 import Link from "next/link";
@@ -76,15 +67,11 @@ export default function Header() {
           <div className="hidden items-center gap-3 lg:flex">
             <Toggle />
             <Link href="/sign-in">
-              <Button variant="secondary" className="cursor-pointer">
+              <Button variant="primary" className="cursor-pointer">
                 <UserPlus className="h-4 w-4" />
-                Sign In
+                Get Started
               </Button>
             </Link>
-            <Button as="a" href="#contact" variant="primary">
-              Get Started
-              <ArrowRight className="h-4 w-4" />
-            </Button>
           </div>
 
           <div className="flex items-center gap-0.5 lg:hidden">
@@ -143,24 +130,18 @@ export default function Header() {
             </div>
 
             <div className="mt-7 grid gap-3 sm:mt-8">
-              <Button
-                as="a"
-                href="#contact"
-                variant="secondary"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                <UserPlus className="h-4 w-4" />
-                Sign In
-              </Button>
-              <Button
-                as="a"
-                href="#contact"
-                variant="primary"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Get Started
-                <ArrowRight className="h-4 w-4" />
-              </Button>
+              <Link href="/sign-in">
+                <Button
+                  as="a"
+                  href="#contact"
+                  variant="primary"
+                  className="cursor-pointer w-full"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <UserPlus className="h-4 w-4" />
+                  Get Started
+                </Button>
+              </Link>
             </div>
           </div>
         </div>
