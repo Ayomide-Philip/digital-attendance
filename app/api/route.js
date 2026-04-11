@@ -1,6 +1,3 @@
-import getUserCurrentGeoLocation from "@/libs/utility/getUserCurrentLocation";
-
 export async function GET(request) {
-    const userLocation = get
-  return new Response(());
+  return new Response("Hello, Next.js API!");
 }
