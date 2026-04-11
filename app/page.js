@@ -22,6 +22,7 @@ import {
   X,
 } from "lucide-react";
 import { useTheme } from "next-themes";
+import Toggle from "@/componet/toggle";
 
 const navigationLinks = [
   { label: "Home", href: "#home" },
@@ -108,7 +109,7 @@ function Button({
 
   return (
     <Component
-      className={`inline-flex items-center justify-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-slate-950 ${variants[variant]} ${className}`}
+      className={`inline-flex min-h-11 items-center justify-center gap-2 rounded-full px-4 py-2.5 text-sm font-medium transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-slate-950 ${variants[variant]} ${className}`}
       {...props}
     >
       {children}
@@ -119,7 +120,7 @@ function Button({
 function Card({ className = "", children }) {
   return (
     <div
-      className={`rounded-3xl border border-slate-200/80 bg-white/80 p-6 shadow-[0_1px_0_rgba(255,255,255,0.6)] backdrop-blur-xl dark:border-slate-800 dark:bg-slate-950/70 ${className}`}
+      className={`rounded-2xl border border-slate-200/80 bg-white/80 p-5 shadow-[0_1px_0_rgba(255,255,255,0.6)] backdrop-blur-xl sm:rounded-3xl sm:p-6 dark:border-slate-800 dark:bg-slate-950/70 ${className}`}
     >
       {children}
     </div>
@@ -131,14 +132,14 @@ function SectionHeader({ eyebrow, title, description, align = "center" }) {
     <div
       className={`mx-auto max-w-3xl ${align === "left" ? "text-left" : "text-center"}`}
     >
-      <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-sky-500/20 bg-sky-500/10 px-4 py-2 text-sm font-medium text-sky-700 dark:text-sky-300">
+      <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-sky-500/20 bg-sky-500/10 px-3 py-1.5 text-xs font-medium text-sky-700 sm:px-4 sm:py-2 sm:text-sm dark:text-sky-300">
         <Sparkles className="h-4 w-4" />
         {eyebrow}
       </div>
-      <h2 className="text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl dark:text-white">
+      <h2 className="text-2xl font-semibold tracking-tight text-slate-950 sm:text-4xl dark:text-white">
         {title}
       </h2>
-      <p className="mt-4 text-base leading-7 text-slate-600 dark:text-slate-300">
+      <p className="mt-4 text-sm leading-7 text-slate-600 sm:text-base dark:text-slate-300">
         {description}
       </p>
     </div>
@@ -156,6 +157,18 @@ export default function Home() {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  useEffect(() => {
+    if (!mobileMenuOpen) {
+      document.body.style.overflow = "";
+      return;
+    }
+
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [mobileMenuOpen]);
 
   const currentTheme = resolvedTheme ?? theme ?? "light";
   const isDark = currentTheme === "dark";
@@ -176,10 +189,10 @@ export default function Home() {
             : "border-transparent bg-transparent"
         }`}
       >
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3.5 sm:px-6 sm:py-4 lg:px-8">
           <a
             href="#home"
-            className="flex items-center gap-3 text-lg font-semibold tracking-tight text-slate-950 dark:text-white"
+            className="flex items-center gap-2.5 text-base font-semibold tracking-tight text-slate-950 sm:gap-3 sm:text-lg dark:text-white"
           >
             <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-linear-to-br from-sky-500 via-indigo-500 to-violet-500 text-white shadow-lg shadow-sky-500/20">
               <ShieldCheck className="h-5 w-5" />
@@ -200,19 +213,7 @@ export default function Home() {
           </nav>
 
           <div className="hidden items-center gap-3 lg:flex">
-            <Button
-              as="button"
-              variant="ghost"
-              onClick={() => setTheme(isDark ? "light" : "dark")}
-              className="h-10 w-10 px-0"
-              aria-label="Toggle theme"
-            >
-              {isDark ? (
-                <Sun className="h-4 w-4" />
-              ) : (
-                <Moon className="h-4 w-4" />
-              )}
-            </Button>
+            <Toggle />
             <Button as="a" href="#contact" variant="ghost">
               <LogIn className="h-4 w-4" />
               Sign In
@@ -227,7 +228,7 @@ export default function Home() {
             </Button>
           </div>
 
-          <div className="flex items-center gap-2 lg:hidden">
+          <div className="flex items-center gap-1.5 lg:hidden">
             <Button
               as="button"
               variant="ghost"
@@ -261,7 +262,7 @@ export default function Home() {
             onClick={() => setMobileMenuOpen(false)}
             aria-label="Close menu"
           />
-          <div className="absolute right-0 top-0 h-full w-full max-w-sm border-l border-slate-200 bg-white p-6 shadow-2xl dark:border-slate-800 dark:bg-slate-950">
+          <div className="absolute right-0 top-0 h-full w-full max-w-sm border-l border-slate-200 bg-white p-5 sm:p-6 shadow-2xl dark:border-slate-800 dark:bg-slate-950">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3 text-lg font-semibold">
                 <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-linear-to-br from-sky-500 via-indigo-500 to-violet-500 text-white">
@@ -280,7 +281,7 @@ export default function Home() {
               </Button>
             </div>
 
-            <div className="mt-10 space-y-2">
+            <div className="mt-8 space-y-2 sm:mt-10">
               {navigationLinks.map((link) => (
                 <a
                   key={link.label}
@@ -294,7 +295,7 @@ export default function Home() {
               ))}
             </div>
 
-            <div className="mt-8 grid gap-3">
+            <div className="mt-7 grid gap-3 sm:mt-8">
               <Button
                 as="a"
                 href="#contact"
@@ -327,29 +328,29 @@ export default function Home() {
         </div>
       ) : null}
 
-      <main className="pt-24 sm:pt-28">
-        <section className="relative min-h-screen overflow-hidden">
-          <div className="mx-auto flex min-h-screen max-w-7xl items-center px-4 py-16 sm:px-6 lg:px-8">
-            <div className="grid w-full items-center gap-14 lg:grid-cols-2 lg:gap-12">
+      <main className="pt-20 sm:pt-24 lg:pt-28">
+        <section className="relative min-h-[calc(100svh-5rem)] overflow-hidden sm:min-h-screen">
+          <div className="mx-auto flex min-h-[calc(100svh-5rem)] max-w-7xl items-center px-4 py-10 sm:min-h-screen sm:px-6 sm:py-14 lg:px-8 lg:py-16">
+            <div className="grid w-full items-center gap-10 sm:gap-12 lg:grid-cols-2 lg:gap-12">
               <div className="max-w-2xl animate-fade-up">
-                <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-sky-500/20 bg-sky-500/10 px-4 py-2 text-sm font-medium text-sky-700 dark:text-sky-300">
+                <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-sky-500/20 bg-sky-500/10 px-3 py-1.5 text-xs leading-relaxed font-medium text-sky-700 sm:mb-6 sm:px-4 sm:py-2 sm:text-sm dark:text-sky-300">
                   <Compass className="h-4 w-4" />
                   Geolocation and distance validation for modern attendance
                   workflows
                 </div>
-                <h1 className="text-4xl font-semibold tracking-tight text-slate-950 sm:text-5xl lg:text-7xl dark:text-white">
+                <h1 className="text-3xl font-semibold tracking-tight text-slate-950 sm:text-5xl lg:text-7xl dark:text-white">
                   Smart Attendance, Powered by Location
                 </h1>
-                <p className="mt-6 max-w-xl text-lg leading-8 text-slate-600 sm:text-xl dark:text-slate-300">
+                <p className="mt-5 max-w-xl text-base leading-7 text-slate-600 sm:mt-6 sm:text-xl sm:leading-8 dark:text-slate-300">
                   Eliminate proxy attendance with real-time geolocation and
                   distance verification.
                 </p>
-                <div className="mt-10 flex flex-col gap-4 sm:flex-row">
+                <div className="mt-8 flex flex-col gap-3 sm:mt-10 sm:flex-row sm:gap-4">
                   <Button
                     as="a"
                     href="#contact"
                     variant="primary"
-                    className="h-12 px-6 text-base"
+                    className="h-12 w-full px-6 text-base sm:w-auto"
                   >
                     Get Started
                     <ArrowRight className="h-4 w-4" />
@@ -358,12 +359,12 @@ export default function Home() {
                     as="a"
                     href="#features"
                     variant="secondary"
-                    className="h-12 px-6 text-base"
+                    className="h-12 w-full px-6 text-base sm:w-auto"
                   >
                     Learn More
                   </Button>
                 </div>
-                <div className="mt-10 flex flex-wrap items-center gap-4 text-sm text-slate-600 dark:text-slate-400">
+                <div className="mt-8 flex flex-col items-stretch gap-3 text-sm text-slate-600 sm:mt-10 sm:flex-row sm:flex-wrap sm:items-center sm:gap-4 dark:text-slate-400">
                   <div className="flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 dark:border-slate-800 dark:bg-slate-950">
                     <CheckCircle2 className="h-4 w-4 text-emerald-500" />
                     Geofencing ready
@@ -379,20 +380,20 @@ export default function Home() {
                 <div className="absolute -left-8 top-6 h-28 w-28 rounded-full bg-sky-400/20 blur-3xl dark:bg-sky-500/20" />
                 <div className="absolute -right-8 bottom-0 h-40 w-40 rounded-full bg-indigo-500/20 blur-3xl dark:bg-indigo-500/20" />
                 <Card className="relative overflow-hidden p-0 shadow-[0_30px_90px_rgba(15,23,42,0.18)] dark:shadow-[0_30px_90px_rgba(2,6,23,0.45)]">
-                  <div className="border-b border-slate-200/80 bg-white/90 px-6 py-4 dark:border-slate-800 dark:bg-slate-950/90">
+                  <div className="border-b border-slate-200/80 bg-white/90 px-4 py-3.5 sm:px-6 sm:py-4 dark:border-slate-800 dark:bg-slate-950/90">
                     <div className="flex items-center gap-2 text-sm font-medium text-slate-700 dark:text-slate-300">
                       <div className="h-2.5 w-2.5 rounded-full bg-emerald-500" />
                       Live session monitor
                     </div>
                   </div>
-                  <div className="grid gap-4 p-6">
-                    <div className="rounded-3xl border border-slate-200 bg-linear-to-br from-slate-50 via-white to-sky-50 p-5 dark:border-slate-800 dark:from-slate-900 dark:via-slate-950 dark:to-slate-900">
+                  <div className="grid gap-4 p-4 sm:p-6">
+                    <div className="rounded-2xl border border-slate-200 bg-linear-to-br from-slate-50 via-white to-sky-50 p-4 sm:rounded-3xl sm:p-5 dark:border-slate-800 dark:from-slate-900 dark:via-slate-950 dark:to-slate-900">
                       <div className="flex items-start justify-between gap-4">
                         <div>
                           <p className="text-sm text-slate-500 dark:text-slate-400">
                             Session status
                           </p>
-                          <h3 className="mt-2 text-2xl font-semibold text-slate-950 dark:text-white">
+                          <h3 className="mt-2 text-lg font-semibold text-slate-950 sm:text-2xl dark:text-white">
                             Engineering Campus Morning Shift
                           </h3>
                         </div>
@@ -422,8 +423,8 @@ export default function Home() {
                       </div>
                     </div>
 
-                    <div className="grid gap-4 sm:grid-cols-2">
-                      <div className="rounded-3xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-950">
+                    <div className="grid gap-3 sm:gap-4 sm:grid-cols-2">
+                      <div className="rounded-2xl border border-slate-200 bg-white p-4 sm:rounded-3xl dark:border-slate-800 dark:bg-slate-950">
                         <div className="flex items-center gap-3">
                           <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-sky-500/10 text-sky-600 dark:text-sky-400">
                             <Target className="h-5 w-5" />
@@ -438,7 +439,7 @@ export default function Home() {
                           </div>
                         </div>
                       </div>
-                      <div className="rounded-3xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-950">
+                      <div className="rounded-2xl border border-slate-200 bg-white p-4 sm:rounded-3xl dark:border-slate-800 dark:bg-slate-950">
                         <div className="flex items-center gap-3">
                           <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400">
                             <CheckCircle2 className="h-5 w-5" />
@@ -463,7 +464,7 @@ export default function Home() {
 
         <section
           id="features"
-          className="border-t border-slate-200/70 py-24 dark:border-slate-800"
+          className="border-t border-slate-200/70 py-16 sm:py-20 lg:py-24 dark:border-slate-800"
         >
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <SectionHeader
@@ -471,7 +472,7 @@ export default function Home() {
               title="Everything you need to prevent proxy attendance"
               description="A focused product experience built for campuses, offices, and events that need reliable presence verification."
             />
-            <div className="mt-14 grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
+            <div className="mt-10 grid gap-4 sm:mt-14 sm:gap-6 sm:grid-cols-2 xl:grid-cols-3">
               {features.map((feature, index) => {
                 const Icon = feature.icon;
                 return (
@@ -482,7 +483,7 @@ export default function Home() {
                     <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-linear-to-br from-sky-500/15 to-indigo-500/15 text-sky-600 transition group-hover:scale-105 dark:text-sky-400">
                       <Icon className="h-5 w-5" />
                     </div>
-                    <h3 className="mt-5 text-xl font-semibold text-slate-950 dark:text-white">
+                    <h3 className="mt-4 text-lg font-semibold text-slate-950 sm:mt-5 sm:text-xl dark:text-white">
                       {feature.title}
                     </h3>
                     <p className="mt-3 text-sm leading-6 text-slate-600 dark:text-slate-300">
@@ -497,7 +498,7 @@ export default function Home() {
 
         <section
           id="how-it-works"
-          className="border-t border-slate-200/70 py-24 dark:border-slate-800"
+          className="border-t border-slate-200/70 py-16 sm:py-20 lg:py-24 dark:border-slate-800"
         >
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <SectionHeader
@@ -505,17 +506,17 @@ export default function Home() {
               title="Attendance verification in three simple steps"
               description="The flow is intentionally simple so administrators can set it up quickly and users can check in without friction."
             />
-            <div className="mt-14 grid gap-6 lg:grid-cols-3">
+            <div className="mt-10 grid gap-4 sm:mt-14 sm:gap-6 lg:grid-cols-3">
               {steps.map((step) => (
                 <Card key={step.number} className="relative overflow-hidden">
-                  <div className="absolute right-4 top-4 text-5xl font-semibold text-slate-100 dark:text-slate-900">
+                  <div className="absolute right-4 top-4 text-4xl font-semibold text-slate-100 sm:text-5xl dark:text-slate-900">
                     {step.number}
                   </div>
                   <div className="relative">
                     <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-linear-to-br from-sky-500 to-indigo-500 text-base font-semibold text-white shadow-lg shadow-sky-500/20">
                       {step.number}
                     </div>
-                    <h3 className="mt-6 text-xl font-semibold text-slate-950 dark:text-white">
+                    <h3 className="mt-5 text-lg font-semibold text-slate-950 sm:mt-6 sm:text-xl dark:text-white">
                       {step.title}
                     </h3>
                     <p className="mt-3 text-sm leading-6 text-slate-600 dark:text-slate-300">
@@ -528,15 +529,15 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="border-t border-slate-200/70 py-24 dark:border-slate-800">
+        <section className="border-t border-slate-200/70 py-16 sm:py-20 lg:py-24 dark:border-slate-800">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <Card className="relative overflow-hidden border-slate-200 bg-linear-to-br from-slate-950 via-slate-900 to-slate-800 px-8 py-14 text-center text-white shadow-[0_35px_100px_rgba(2,6,23,0.35)] dark:border-slate-800">
+            <Card className="relative overflow-hidden border-slate-200 bg-linear-to-br from-slate-950 via-slate-900 to-slate-800 px-5 py-10 text-center text-white shadow-[0_35px_100px_rgba(2,6,23,0.35)] sm:px-8 sm:py-14 dark:border-slate-800">
               <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(56,189,248,0.18),transparent_30%),radial-gradient(circle_at_bottom_right,rgba(99,102,241,0.22),transparent_30%)]" />
               <div className="relative mx-auto max-w-3xl">
                 <p className="text-sm font-medium uppercase tracking-[0.28em] text-sky-300">
                   Start now
                 </p>
-                <h2 className="mt-4 text-3xl font-semibold tracking-tight sm:text-4xl">
+                <h2 className="mt-4 text-2xl font-semibold tracking-tight sm:text-4xl">
                   Start Managing Attendance the Smart Way
                 </h2>
                 <p className="mt-4 text-base leading-7 text-slate-300">
@@ -549,7 +550,7 @@ export default function Home() {
                     as="a"
                     href="#contact"
                     variant="secondary"
-                    className="h-12 bg-white px-6 text-base text-slate-950 hover:bg-slate-100 dark:bg-white dark:text-slate-950"
+                    className="h-12 w-full bg-white px-6 text-base text-slate-950 hover:bg-slate-100 sm:w-auto dark:bg-white dark:text-slate-950"
                   >
                     Create Your First Session
                     <ArrowRight className="h-4 w-4" />
@@ -562,9 +563,9 @@ export default function Home() {
 
         <footer
           id="contact"
-          className="border-t border-slate-200/70 py-12 dark:border-slate-800"
+          className="border-t border-slate-200/70 py-10 sm:py-12 dark:border-slate-800"
         >
-          <div className="mx-auto grid max-w-7xl gap-10 px-4 sm:px-6 lg:grid-cols-2 lg:px-8">
+          <div className="mx-auto grid max-w-7xl gap-8 px-4 sm:gap-10 sm:px-6 lg:grid-cols-2 lg:px-8">
             <div>
               <div className="flex items-center gap-3 text-lg font-semibold text-slate-950 dark:text-white">
                 <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-linear-to-br from-sky-500 via-indigo-500 to-violet-500 text-white">
@@ -578,7 +579,7 @@ export default function Home() {
               </p>
             </div>
 
-            <div className="grid gap-6 sm:grid-cols-2">
+            <div className="grid gap-8 sm:gap-6 sm:grid-cols-2">
               <div>
                 <h3 className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-950 dark:text-white">
                   Links
