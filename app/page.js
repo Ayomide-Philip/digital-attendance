@@ -22,7 +22,7 @@ import {
   X,
 } from "lucide-react";
 import { useTheme } from "next-themes";
-import Toggle from "@/componet/toggle";
+import Toggle from "@/components/toggle";
 
 const navigationLinks = [
   { label: "Home", href: "#home" },
@@ -629,7 +629,7 @@ export default function Home() {
 
           <div className="mx-auto mt-10 max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="border-t border-slate-200 pt-6 text-sm text-slate-500 dark:border-slate-800 dark:text-slate-500">
-              © 2026 Attendify. All rights reserved.
+              © {new Date().getFullYear()} Attendify. All rights reserved.
             </div>
           </div>
         </footer>
