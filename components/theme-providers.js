@@ -7,7 +7,7 @@ export default function ThemeProviders({ children }) {
       attribute="class"
       defaultTheme="system"
       enableSystem
-      scriptProps={{ "data-cfasync": "false" }}
+      disableTransitionOnChange
     >
       {children}
     </ThemeProvider>
