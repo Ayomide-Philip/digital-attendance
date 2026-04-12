@@ -1,6 +1,5 @@
 "use client";
-import getUserCurrentGeoLocation from "@/lib/utility/getUserCurrentLocation";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { FcGoogle } from "react-icons/fc";
 
 export default function Page() {
@@ -13,15 +12,6 @@ export default function Page() {
 
     console.log("Google Sign In");
   };
-
-  useEffect(() => {
-    async function getLocation() {
-      const ui = await getUserCurrentGeoLocation();
-      console.log(ui);
-    }
-
-    getLocation();
-  }, []);
 
   return (
     <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-slate-100 px-4 py-10 text-slate-900 sm:px-6 dark:bg-slate-950 dark:text-white">

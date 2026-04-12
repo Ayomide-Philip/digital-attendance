@@ -42,15 +42,15 @@ export default function Header() {
         }`}
       >
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3.5 sm:px-6 sm:py-4 lg:px-8">
-          <a
-            href="#home"
+          <Link
+            href="/"
             className="flex items-center gap-2.5 text-base font-semibold tracking-tight text-slate-950 sm:gap-3 sm:text-lg dark:text-white"
           >
             <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-linear-to-br from-sky-500 via-indigo-500 to-violet-500 text-white shadow-lg shadow-sky-500/20">
               <ShieldCheck className="h-5 w-5" />
             </div>
             <span>Attendify</span>
-          </a>
+          </Link>
 
           <nav className="hidden items-center gap-8 lg:flex">
             {navigationLinks.map((link) => (
