@@ -1,19 +1,9 @@
 "use client";
-
-import getUserCurrentGeoLocation from "@/lib/utility/getUserCurrentLocation";
 import { useState, useEffect } from "react";
 import { FcGoogle } from "react-icons/fc";
 
 export default function Page() {
   const [agreed, setAgreed] = useState(false);
-
-  useEffect(() => {
-    async function getLocation() {
-      const ui = await getUserCurrentGeoLocation();
-      console.log(ui);
-    }
-    getLocation();
-  }, []);
 
   const onGoogleSignIn = () => {
     if (!agreed) {
