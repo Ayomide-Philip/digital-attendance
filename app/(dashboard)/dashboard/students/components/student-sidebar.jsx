@@ -3,42 +3,24 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  BarChart3,
-  CalendarCheck2,
+  BookOpen,
   ClipboardCheck,
-  FileText,
   LayoutDashboard,
   UserCircle2,
-  Settings,
 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
-const teacherNavItems = [
-  { label: "Dashboard", slug: "", icon: LayoutDashboard },
-  { label: "Attendance", slug: "/attendance", icon: ClipboardCheck },
-  { label: "Students", slug: "/students", icon: CalendarCheck2 },
-  { label: "Reports", slug: "/reports", icon: BarChart3 },
-  { label: "Settings", slug: "/settings", icon: Settings },
-];
-
-const studentNavItems = [
+const navItems = [
   { label: "Dashboard", slug: "", icon: LayoutDashboard },
   { label: "My Attendance", slug: "/attendance", icon: ClipboardCheck },
-  { label: "Courses / Classes", slug: "/courses", icon: FileText },
+  { label: "Courses / Classes", slug: "/courses", icon: BookOpen },
   { label: "Profile", slug: "/profile", icon: UserCircle2 },
 ];
 
-export default function Sidebar({ collapsed = false, onNavigate }) {
+export default function StudentSidebar({ collapsed = false, onNavigate }) {
   const pathname = usePathname();
-  const isStudentRoute = pathname.startsWith("/dashboard/students");
-  const isTeacherRoute = pathname.startsWith("/dashboard/teachers");
-  const basePath = isStudentRoute
-    ? "/dashboard/students"
-    : isTeacherRoute
-      ? "/dashboard/teachers"
-      : "/dashboard";
-  const navItems = isStudentRoute ? studentNavItems : teacherNavItems;
+  const basePath = "/dashboard/students";
 
   return (
     <aside
@@ -55,17 +37,15 @@ export default function Sidebar({ collapsed = false, onNavigate }) {
         )}
       >
         <div className="grid size-9 place-items-center rounded-xl bg-sky-500/15 text-sky-600 dark:text-sky-300">
-          <CalendarCheck2 className="size-5" />
+          <ClipboardCheck className="size-5" />
         </div>
         {!collapsed && (
           <div className="ml-3">
             <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">
-              {isStudentRoute ? "Student Portal" : "Attendify"}
+              Student Portal
             </p>
             <p className="text-xs text-slate-500 dark:text-slate-400">
-              {isStudentRoute
-                ? "Student attendance dashboard"
-                : "Digital attendance"}
+              Personal attendance dashboard
             </p>
           </div>
         )}

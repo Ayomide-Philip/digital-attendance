@@ -13,24 +13,10 @@ function getTitle(pathname) {
   if (pathname.startsWith("/dashboard/students/courses"))
     return "Courses / Classes";
   if (pathname.startsWith("/dashboard/students/profile")) return "Profile";
-  if (pathname === "/dashboard/teachers") return "Teacher Dashboard";
-  if (pathname.startsWith("/dashboard/teachers/attendance"))
-    return "Teacher Attendance";
-  if (pathname.startsWith("/dashboard/teachers/students")) return "My Students";
-  if (pathname.startsWith("/dashboard/teachers/reports"))
-    return "Teacher Reports";
-  if (pathname.startsWith("/dashboard/teachers/settings"))
-    return "Teacher Settings";
-  if (pathname === "/dashboard") return "Dashboard";
-  if (pathname.startsWith("/dashboard/attendance")) return "Attendance";
-  if (pathname.startsWith("/dashboard/students")) return "Students";
-  if (pathname.startsWith("/dashboard/reports")) return "Reports";
-  if (pathname.startsWith("/dashboard/settings")) return "Settings";
-  if (pathname.startsWith("/dashboard/teachers")) return "Teachers";
-  return "Digital Attendance";
+  return "Student Portal";
 }
 
-export default function Navbar({
+export default function StudentNavbar({
   onMenuClick,
   onToggleSidebar,
   sidebarCollapsed,
@@ -85,7 +71,7 @@ export default function Navbar({
         </Button>
         <Toggle />
         <div className="hidden size-9 place-items-center rounded-full border border-slate-200 bg-white text-xs font-semibold text-slate-700 shadow-sm dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 min-[430px]:grid">
-          AD
+          ST
         </div>
       </div>
     </header>
