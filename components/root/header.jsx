@@ -66,12 +66,15 @@ export default function Header() {
 
           <div className="hidden items-center gap-3 lg:flex">
             <Toggle />
-            <Link href="/sign-in">
-              <Button variant="primary" className="cursor-pointer">
-                <UserPlus className="h-4 w-4" />
-                Get Started
-              </Button>
-            </Link>
+            <Button
+              as="a"
+              variant="primary"
+              href="/sign-in"
+              className="cursor-pointer"
+            >
+              <UserPlus className="h-4 w-4" />
+              Get Started
+            </Button>
           </div>
 
           <div className="flex items-center gap-0.5 lg:hidden">
@@ -130,18 +133,16 @@ export default function Header() {
             </div>
 
             <div className="mt-7 grid gap-3 sm:mt-8">
-              <Link href="/sign-in">
-                <Button
-                  as="a"
-                  href="#contact"
-                  variant="primary"
-                  className="cursor-pointer w-full"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  <UserPlus className="h-4 w-4" />
-                  Get Started
-                </Button>
-              </Link>
+              <Button
+                as="a"
+                href="/sign-in"
+                variant="primary"
+                className="cursor-pointer w-full"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <UserPlus className="h-4 w-4" />
+                Get Started
+              </Button>
             </div>
           </div>
         </div>

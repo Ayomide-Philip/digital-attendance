@@ -1,5 +1,6 @@
 "use client";
-import { useState } from "react";
+import getUserCurrentGeoLocation from "@/lib/utility/getUserCurrentLocation";
+import { useState, useEffect } from "react";
 import { FcGoogle } from "react-icons/fc";
 
 export default function Page() {
@@ -13,6 +14,15 @@ export default function Page() {
     console.log("Google Sign In");
   };
 
+  useEffect(() => {
+    async function getLocation() {
+      const ui = await getUserCurrentGeoLocation();
+      console.log(ui);
+    }
+
+    getLocation();
+  }, []);
+
   return (
     <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-slate-100 px-4 py-10 text-slate-900 sm:px-6 dark:bg-slate-950 dark:text-white">
       <div className="pointer-events-none absolute inset-0 -z-20 bg-[radial-gradient(circle_at_10%_10%,rgba(99,102,241,0.22),transparent_32%),radial-gradient(circle_at_85%_15%,rgba(192,132,252,0.18),transparent_28%),radial-gradient(circle_at_50%_100%,rgba(59,130,246,0.12),transparent_38%)] dark:bg-[radial-gradient(circle_at_10%_10%,rgba(129,140,248,0.3),transparent_32%),radial-gradient(circle_at_85%_15%,rgba(168,85,247,0.24),transparent_28%),radial-gradient(circle_at_50%_100%,rgba(59,130,246,0.16),transparent_38%)]" />
@@ -20,10 +30,6 @@ export default function Page() {
       <div className="pointer-events-none absolute -bottom-10 right-0 -z-10 h-64 w-64 rounded-full bg-fuchsia-400/15 blur-3xl dark:bg-fuchsia-500/20" />
 
       <section className="w-full max-w-md rounded-2xl border border-slate-200/80 bg-white/75 p-6 shadow-xl ring-1 ring-slate-200/70 backdrop-blur-xl transition-all duration-300 animate-fade-up hover:-translate-y-0.5 sm:p-8 dark:border-white/10 dark:bg-slate-900/75 dark:ring-white/10">
-        {/* <div className="mx-auto mb-6 flex h-14 w-14 items-center justify-center rounded-2xl bg-linear-to-br from-indigo-500/30 to-fuchsia-500/30 ring-1 ring-white/20">
-          <GoogleIcon />
-        </div> */}
-
         <div className="space-y-2 text-center">
           <h1 className="text-3xl font-semibold tracking-tight text-slate-950 dark:text-white">
             Welcome Back

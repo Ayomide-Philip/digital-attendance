@@ -10,7 +10,7 @@ export default function Layout({ children }) {
 
       <div className="pointer-events-none absolute inset-0 -z-10 bg-[linear-gradient(to_right,rgba(148,163,184,0.14)_1px,transparent_1px),linear-gradient(to_bottom,rgba(148,163,184,0.14)_1px,transparent_1px)] bg-size-[72px_72px] opacity-35 dark:bg-[linear-gradient(to_right,rgba(148,163,184,0.12)_1px,transparent_1px),linear-gradient(to_bottom,rgba(148,163,184,0.12)_1px,transparent_1px)] dark:opacity-25 animate-grid-pan mask-[linear-gradient(to_bottom,black,transparent_92%)]" />
       <Header />
-      <main className="pt-20 sm:pt-24 lg:pt-28">
+      <main className="pt-20 sm:pt-24 lg:pt-25">
         {children}
         <Footer />
       </main>
