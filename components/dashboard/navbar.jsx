@@ -33,8 +33,8 @@ export default function Navbar({
   const title = getTitle(pathname);
 
   return (
-    <header className="sticky top-4 z-20 mb-4 flex h-16 items-center justify-between rounded-2xl border border-slate-200/70 bg-white/80 px-4 shadow-sm backdrop-blur-xl dark:border-slate-800 dark:bg-slate-950/65 sm:px-5">
-      <div className="flex items-center gap-2 sm:gap-3">
+    <header className="sticky top-4 z-20 mb-4 flex min-h-16 items-center justify-between rounded-2xl border border-slate-200/70 bg-white/80 px-3 py-2 shadow-sm backdrop-blur-xl dark:border-slate-800 dark:bg-slate-950/65 sm:h-16 sm:px-5 sm:py-0">
+      <div className="flex min-w-0 items-center gap-2 sm:gap-3">
         <Button
           variant="outline"
           size="icon-sm"
@@ -55,17 +55,17 @@ export default function Navbar({
           <PanelLeft className="size-4" />
         </Button>
 
-        <div>
-          <h1 className="text-lg font-semibold text-slate-900 dark:text-slate-100 sm:text-xl">
+        <div className="min-w-0">
+          <h1 className="truncate text-base font-semibold text-slate-900 dark:text-slate-100 sm:text-xl">
             {title}
           </h1>
-          <p className="text-xs text-slate-500 dark:text-slate-400">
+          <p className="hidden text-xs text-slate-500 dark:text-slate-400 sm:block">
             Digital Attendance System
           </p>
         </div>
       </div>
 
-      <div className="flex items-center gap-2">
+      <div className="ml-2 flex shrink-0 items-center gap-1 sm:gap-2">
         <Button
           variant="ghost"
           size="icon-sm"
@@ -78,7 +78,7 @@ export default function Navbar({
           <Bell className="size-4" />
         </Button>
         <Toggle />
-        <div className="grid size-9 place-items-center rounded-full border border-slate-200 bg-white text-xs font-semibold text-slate-700 shadow-sm dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200">
+        <div className="hidden size-9 place-items-center rounded-full border border-slate-200 bg-white text-xs font-semibold text-slate-700 shadow-sm dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 min-[430px]:grid">
           AD
         </div>
       </div>

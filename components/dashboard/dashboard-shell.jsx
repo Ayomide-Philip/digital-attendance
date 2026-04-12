@@ -1,9 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import { X } from "lucide-react";
 
 import Navbar from "@/components/dashboard/navbar";
 import Sidebar from "@/components/dashboard/sidebar";
+import { Button } from "@/components/ui/button";
 
 export default function DashboardShell({ children }) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -35,6 +37,15 @@ export default function DashboardShell({ children }) {
             mobileOpen ? "translate-x-0" : "-translate-x-full"
           }`}
         >
+          <Button
+            variant="outline"
+            size="icon-sm"
+            className="absolute top-7 right-7 z-10"
+            onClick={() => setMobileOpen(false)}
+            aria-label="Close sidebar menu"
+          >
+            <X className="size-4" />
+          </Button>
           <Sidebar onNavigate={() => setMobileOpen(false)} />
         </div>
 
