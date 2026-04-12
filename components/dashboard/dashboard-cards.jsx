@@ -40,18 +40,28 @@ export default function DashboardCards() {
         const Icon = item.icon;
 
         return (
-          <Card key={item.label} className="rounded-2xl p-5 transition-transform duration-300 hover:-translate-y-0.5">
+          <Card
+            key={item.label}
+            className="rounded-2xl p-5 transition-transform duration-300 hover:-translate-y-0.5"
+          >
             <div className="flex items-start justify-between gap-3">
               <div>
-                <p className="text-sm text-slate-500 dark:text-slate-400">{item.label}</p>
+                <p className="text-sm text-slate-500 dark:text-slate-400">
+                  {item.label}
+                </p>
                 <p className="mt-2 text-2xl font-semibold text-slate-900 dark:text-slate-100">
                   {item.value}
                 </p>
                 <p className="mt-2 text-xs font-medium text-slate-500 dark:text-slate-400">
-                  <span className="text-emerald-600 dark:text-emerald-300">{item.change}</span> from last week
+                  <span className="text-emerald-600 dark:text-emerald-300">
+                    {item.change}
+                  </span>{" "}
+                  from last week
                 </p>
               </div>
-              <div className={`grid size-10 place-items-center rounded-xl ${item.iconClass}`}>
+              <div
+                className={`grid size-10 place-items-center rounded-xl ${item.iconClass}`}
+              >
                 <Icon className="size-5" />
               </div>
             </div>

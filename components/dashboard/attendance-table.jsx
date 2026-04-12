@@ -85,7 +85,9 @@ export default function AttendanceTable() {
               <TableCell>{record.className}</TableCell>
               <TableCell>{record.checkIn}</TableCell>
               <TableCell className="text-right">
-                <Badge variant={statusVariant(record.status)}>{record.status}</Badge>
+                <Badge variant={statusVariant(record.status)}>
+                  {record.status}
+                </Badge>
               </TableCell>
             </TableRow>
           ))}

@@ -16,7 +16,11 @@ function getTitle(pathname) {
   return "Digital Attendance";
 }
 
-export default function Navbar({ onMenuClick, onToggleSidebar, sidebarCollapsed }) {
+export default function Navbar({
+  onMenuClick,
+  onToggleSidebar,
+  sidebarCollapsed,
+}) {
   const pathname = usePathname();
   const title = getTitle(pathname);
 
@@ -47,12 +51,19 @@ export default function Navbar({ onMenuClick, onToggleSidebar, sidebarCollapsed 
           <h1 className="text-lg font-semibold text-slate-900 dark:text-slate-100 sm:text-xl">
             {title}
           </h1>
-          <p className="text-xs text-slate-500 dark:text-slate-400">Digital Attendance System</p>
+          <p className="text-xs text-slate-500 dark:text-slate-400">
+            Digital Attendance System
+          </p>
         </div>
       </div>
 
       <div className="flex items-center gap-2">
-        <Button variant="ghost" size="icon-sm" className="hidden sm:inline-flex" aria-label="Search">
+        <Button
+          variant="ghost"
+          size="icon-sm"
+          className="hidden sm:inline-flex"
+          aria-label="Search"
+        >
           <Search className="size-4" />
         </Button>
         <Button variant="ghost" size="icon-sm" aria-label="Notifications">

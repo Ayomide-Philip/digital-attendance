@@ -31,7 +31,12 @@ export default function Sidebar({ collapsed = false, onNavigate }) {
         "transition-all duration-300 ease-out",
       )}
     >
-      <div className={cn("mb-4 flex items-center", collapsed ? "justify-center" : "px-2") }>
+      <div
+        className={cn(
+          "mb-4 flex items-center",
+          collapsed ? "justify-center" : "px-2",
+        )}
+      >
         <div className="grid size-9 place-items-center rounded-xl bg-sky-500/15 text-sky-600 dark:text-sky-300">
           <CalendarCheck2 className="size-5" />
         </div>
@@ -40,7 +45,9 @@ export default function Sidebar({ collapsed = false, onNavigate }) {
             <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">
               Attendify
             </p>
-            <p className="text-xs text-slate-500 dark:text-slate-400">Digital attendance</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400">
+              Digital attendance
+            </p>
           </div>
         )}
       </div>

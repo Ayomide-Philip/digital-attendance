@@ -23,7 +23,9 @@ export default function DashboardShell({ children }) {
 
         <div
           className={`fixed inset-0 z-40 bg-slate-950/40 backdrop-blur-sm transition-opacity duration-300 md:hidden ${
-            mobileOpen ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"
+            mobileOpen
+              ? "pointer-events-auto opacity-100"
+              : "pointer-events-none opacity-0"
           }`}
           onClick={() => setMobileOpen(false)}
         />
