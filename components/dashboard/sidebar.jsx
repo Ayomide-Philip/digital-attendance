@@ -13,15 +13,18 @@ import {
 import { cn } from "@/lib/utils";
 
 const navItems = [
-  { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-  { label: "Attendance", href: "/dashboard/attendance", icon: ClipboardCheck },
-  { label: "Students", href: "/dashboard/students", icon: CalendarCheck2 },
-  { label: "Reports", href: "/dashboard/reports", icon: BarChart3 },
-  { label: "Settings", href: "/dashboard/settings", icon: Settings },
+  { label: "Dashboard", slug: "", icon: LayoutDashboard },
+  { label: "Attendance", slug: "/attendance", icon: ClipboardCheck },
+  { label: "Students", slug: "/students", icon: CalendarCheck2 },
+  { label: "Reports", slug: "/reports", icon: BarChart3 },
+  { label: "Settings", slug: "/settings", icon: Settings },
 ];
 
 export default function Sidebar({ collapsed = false, onNavigate }) {
   const pathname = usePathname();
+  const basePath = pathname.startsWith("/dashboard/teachers")
+    ? "/dashboard/teachers"
+    : "/dashboard";
 
   return (
     <aside
@@ -54,15 +57,16 @@ export default function Sidebar({ collapsed = false, onNavigate }) {
 
       <nav className="space-y-1.5">
         {navItems.map((item) => {
+          const href = `${basePath}${item.slug}`;
           const isActive =
-            pathname === item.href ||
-            (item.href !== "/dashboard" && pathname.startsWith(item.href));
+            pathname === href ||
+            (href !== basePath && pathname.startsWith(href));
           const Icon = item.icon;
 
           return (
             <Link
-              key={item.href}
-              href={item.href}
+              key={href}
+              href={href}
               onClick={onNavigate}
               className={cn(
                 "group flex items-center rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200",

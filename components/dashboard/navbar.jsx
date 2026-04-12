@@ -7,6 +7,14 @@ import { Button } from "@/components/ui/button";
 import Toggle from "@/components/toggle";
 
 function getTitle(pathname) {
+  if (pathname === "/dashboard/teachers") return "Teacher Dashboard";
+  if (pathname.startsWith("/dashboard/teachers/attendance"))
+    return "Teacher Attendance";
+  if (pathname.startsWith("/dashboard/teachers/students")) return "My Students";
+  if (pathname.startsWith("/dashboard/teachers/reports"))
+    return "Teacher Reports";
+  if (pathname.startsWith("/dashboard/teachers/settings"))
+    return "Teacher Settings";
   if (pathname === "/dashboard") return "Dashboard";
   if (pathname.startsWith("/dashboard/attendance")) return "Attendance";
   if (pathname.startsWith("/dashboard/students")) return "Students";
