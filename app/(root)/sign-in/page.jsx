@@ -1,6 +1,6 @@
 "use client";
 
-import getUserCurrentGeoLocation from "@/libs/utility/getUserCurrentLocation";
+import getUserCurrentGeoLocation from "@/lib/utility/getUserCurrentLocation";
 import { useState, useEffect } from "react";
 import { FcGoogle } from "react-icons/fc";
 
