@@ -2,9 +2,9 @@ import { GraduationCap, PlayCircle } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import Card from "@/components/ui/card";
-import StudentStats from "./components/student-stats";
-import RecentAttendanceTable from "./components/recent-attendance-table";
-import UpcomingClasses from "./components/upcoming-classes";
+import StudentStats from "../../../../components/dashboard/students/student-stats";
+import RecentAttendanceTable from "../../../../components/dashboard/students/recent-attendance-table";
+import UpcomingClasses from "../../../../components/dashboard/students/upcoming-classes";
 
 export default function StudentDashboardPage() {
   return (

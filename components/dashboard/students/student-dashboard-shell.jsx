@@ -3,8 +3,8 @@
 import { useState } from "react";
 import { X } from "lucide-react";
 
-import StudentNavbar from "@/app/(dashboard)/dashboard/students/components/student-navbar";
-import StudentSidebar from "@/app/(dashboard)/dashboard/students/components/student-sidebar";
+import StudentNavbar from "@/components/dashboard/students/student-navbar";
+import StudentSidebar from "@/components/dashboard/students/student-sidebar";
 import { Button } from "@/components/ui/button";
 
 export default function StudentDashboardShell({ children }) {

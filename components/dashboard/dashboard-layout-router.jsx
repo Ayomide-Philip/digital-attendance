@@ -3,7 +3,7 @@
 import { usePathname } from "next/navigation";
 
 import DashboardShell from "@/components/dashboard/dashboard-shell";
-import StudentDashboardShell from "@/app/(dashboard)/dashboard/students/components/student-dashboard-shell";
+import StudentDashboardShell from "@/components/dashboard/students/student-dashboard-shell";
 
 export default function DashboardLayoutRouter({ children }) {
   const pathname = usePathname();
