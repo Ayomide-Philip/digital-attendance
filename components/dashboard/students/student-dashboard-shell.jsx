@@ -15,10 +15,10 @@ export default function StudentDashboardShell({ children }) {
     <div className="relative min-h-screen overflow-x-hidden bg-slate-50 dark:bg-slate-950">
       <div className="pointer-events-none absolute inset-0 opacity-70 dark:opacity-40">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(14,165,233,0.10),transparent_45%),radial-gradient(circle_at_bottom_right,rgba(16,185,129,0.10),transparent_45%)]" />
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(148,163,184,0.16)_1px,transparent_1px),linear-gradient(90deg,rgba(148,163,184,0.16)_1px,transparent_1px)] bg-[size:34px_34px]" />
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(148,163,184,0.16)_1px,transparent_1px),linear-gradient(90deg,rgba(148,163,184,0.16)_1px,transparent_1px)] bg-size-[34px_34px]" />
       </div>
 
-      <div className="relative mx-auto flex min-h-screen max-w-[1600px] gap-4 p-4">
+      <div className="relative mx-auto flex min-h-screen max-w-400 gap-4 p-4">
         <div className="hidden md:block">
           <StudentSidebar collapsed={sidebarCollapsed} />
         </div>
