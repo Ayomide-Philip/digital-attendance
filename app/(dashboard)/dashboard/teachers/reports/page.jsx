@@ -3,7 +3,10 @@
 import { useMemo, useState } from "react";
 
 import ReportCharts from "@/app/(dashboard)/dashboard/teachers/components/ReportCharts";
-import { attendancePerClassData, teacherClasses } from "@/app/(dashboard)/dashboard/teachers/components/mock-data";
+import {
+  attendancePerClassData,
+  teacherClasses,
+} from "@/app/(dashboard)/dashboard/teachers/components/mock-data";
 import { Button } from "@/components/ui/button";
 import Card from "@/components/ui/card";
 
@@ -17,7 +20,9 @@ export default function ReportsPage() {
 
   const barData = useMemo(() => {
     if (!selectedClassId) return attendancePerClassData;
-    return attendancePerClassData.filter((item) => item.name === selectedClass?.name);
+    return attendancePerClassData.filter(
+      (item) => item.name === selectedClass?.name,
+    );
   }, [selectedClass, selectedClassId]);
 
   const overallAttendance = selectedClass

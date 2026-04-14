@@ -11,11 +11,9 @@ import {
   classAttendanceHistory,
   getClassById,
   getStudentsByClass,
-  teacherStudents,
 } from "@/app/(dashboard)/dashboard/teachers/components/mock-data";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import Card from "@/components/ui/card";
-import { cn } from "@/lib/utils";
 
 const tabs = ["Students", "Attendance", "Reports"];
 
@@ -26,7 +24,9 @@ export default function SingleClassPage() {
   const [showAttendanceModal, setShowAttendanceModal] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
   const [showImportModal, setShowImportModal] = useState(false);
-  const [classStudents, setClassStudents] = useState(() => getStudentsByClass(classId));
+  const [classStudents, setClassStudents] = useState(() =>
+    getStudentsByClass(classId),
+  );
 
   const classItem = getClassById(classId);
   const historyRows = useMemo(() => {
@@ -45,7 +45,9 @@ export default function SingleClassPage() {
   }
 
   const handleRemoveStudent = (studentId) => {
-    setClassStudents((current) => current.filter((student) => student.id !== studentId));
+    setClassStudents((current) =>
+      current.filter((student) => student.id !== studentId),
+    );
   };
 
   return (
@@ -85,7 +87,10 @@ export default function SingleClassPage() {
       {activeTab === "Students" ? (
         <div className="space-y-4">
           <div className="flex flex-wrap gap-2">
-            <Button className="h-10 rounded-xl px-4" onClick={() => setShowAddModal(true)}>
+            <Button
+              className="h-10 rounded-xl px-4"
+              onClick={() => setShowAddModal(true)}
+            >
               <Plus className="size-4" />
               Add Student
             </Button>
@@ -131,12 +136,20 @@ export default function SingleClassPage() {
           </h3>
           <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-3">
             {[
-              { label: "Attendance Rate", value: `${classItem.attendanceRate}%` },
+              {
+                label: "Attendance Rate",
+                value: `${classItem.attendanceRate}%`,
+              },
               { label: "On-time Check-ins", value: "84%" },
               { label: "Missed Sessions", value: "2" },
             ].map((item) => (
-              <div key={item.label} className="rounded-xl border border-slate-200/70 p-4 dark:border-slate-800">
-                <p className="text-sm text-slate-500 dark:text-slate-400">{item.label}</p>
+              <div
+                key={item.label}
+                className="rounded-xl border border-slate-200/70 p-4 dark:border-slate-800"
+              >
+                <p className="text-sm text-slate-500 dark:text-slate-400">
+                  {item.label}
+                </p>
                 <p className="mt-2 text-2xl font-semibold text-slate-900 dark:text-slate-100">
                   {item.value}
                 </p>
@@ -153,8 +166,14 @@ export default function SingleClassPage() {
               Add Student
             </h3>
             <div className="mt-4 space-y-3">
-              <input className="h-10 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm outline-none dark:border-slate-700 dark:bg-slate-900" placeholder="Student name" />
-              <input className="h-10 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm outline-none dark:border-slate-700 dark:bg-slate-900" placeholder="Matric / ID" />
+              <input
+                className="h-10 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm outline-none dark:border-slate-700 dark:bg-slate-900"
+                placeholder="Student name"
+              />
+              <input
+                className="h-10 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm outline-none dark:border-slate-700 dark:bg-slate-900"
+                placeholder="Matric / ID"
+              />
             </div>
             <div className="mt-5 flex justify-end gap-2">
               <Button variant="outline" onClick={() => setShowAddModal(false)}>
@@ -179,7 +198,10 @@ export default function SingleClassPage() {
               Drag and drop an Excel file here
             </div>
             <div className="mt-5 flex justify-end gap-2">
-              <Button variant="outline" onClick={() => setShowImportModal(false)}>
+              <Button
+                variant="outline"
+                onClick={() => setShowImportModal(false)}
+              >
                 Cancel
               </Button>
               <Button onClick={() => setShowImportModal(false)}>Import</Button>
@@ -193,7 +215,9 @@ export default function SingleClassPage() {
         open={showAttendanceModal}
         onClose={() => setShowAttendanceModal(false)}
         className={classItem.name}
-        students={classStudents.length ? classStudents : getStudentsByClass(classId)}
+        students={
+          classStudents.length ? classStudents : getStudentsByClass(classId)
+        }
       />
     </div>
   );

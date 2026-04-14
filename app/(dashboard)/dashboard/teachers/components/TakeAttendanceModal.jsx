@@ -47,7 +47,10 @@ export default function TakeAttendanceModal({
 
         <div className="space-y-4 px-5 py-4">
           <div className="rounded-xl border border-slate-200/70 bg-slate-50 px-4 py-3 text-sm text-slate-600 dark:border-slate-800 dark:bg-slate-900/50 dark:text-slate-300">
-            Class: <span className="font-medium text-slate-900 dark:text-slate-100">{className || "Selected Class"}</span>
+            Class:{" "}
+            <span className="font-medium text-slate-900 dark:text-slate-100">
+              {className || "Selected Class"}
+            </span>
           </div>
 
           <div className="max-h-80 space-y-2 overflow-auto pr-1">

@@ -5,7 +5,11 @@ import { useMemo, useState } from "react";
 import AttendanceTable from "@/app/(dashboard)/dashboard/teachers/components/AttendanceTable";
 import ClassSwitcher from "@/app/(dashboard)/dashboard/teachers/components/ClassSwitcher";
 import TakeAttendanceModal from "@/app/(dashboard)/dashboard/teachers/components/TakeAttendanceModal";
-import { getClassHistory, getStudentsByClass, teacherClasses } from "@/app/(dashboard)/dashboard/teachers/components/mock-data";
+import {
+  getClassHistory,
+  getStudentsByClass,
+  teacherClasses,
+} from "@/app/(dashboard)/dashboard/teachers/components/mock-data";
 import { Button } from "@/components/ui/button";
 import Card from "@/components/ui/card";
 
@@ -23,7 +27,10 @@ export default function AttendancePage() {
     [selectedClassId],
   );
 
-  const rows = useMemo(() => getClassHistory(selectedClassId), [selectedClassId]);
+  const rows = useMemo(
+    () => getClassHistory(selectedClassId),
+    [selectedClassId],
+  );
 
   return (
     <div className="space-y-5">
@@ -33,7 +40,8 @@ export default function AttendancePage() {
             Attendance Management
           </h2>
           <p className="text-sm text-slate-500 dark:text-slate-400">
-            This is the only place where you can pick a class to take attendance.
+            This is the only place where you can pick a class to take
+            attendance.
           </p>
         </div>
         <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">

@@ -4,7 +4,10 @@ import { useMemo, useState } from "react";
 import { Search } from "lucide-react";
 
 import StudentList from "@/app/(dashboard)/dashboard/teachers/components/StudentList";
-import { getAllStudents, teacherClasses } from "@/app/(dashboard)/dashboard/teachers/components/mock-data";
+import {
+  getAllStudents,
+  teacherClasses,
+} from "@/app/(dashboard)/dashboard/teachers/components/mock-data";
 import { Button } from "@/components/ui/button";
 import Card from "@/components/ui/card";
 
@@ -42,9 +45,7 @@ export default function StudentsPage() {
           <Button variant="outline" className="h-10 rounded-xl px-4">
             Import via Excel
           </Button>
-          <Button className="h-10 rounded-xl px-4">
-            Add Student
-          </Button>
+          <Button className="h-10 rounded-xl px-4">Add Student</Button>
         </div>
       </div>
 
@@ -82,7 +83,11 @@ export default function StudentsPage() {
         </div>
       </Card>
 
-      <StudentList students={filteredStudents} classes={teacherClasses} mode="global" />
+      <StudentList
+        students={filteredStudents}
+        classes={teacherClasses}
+        mode="global"
+      />
     </div>
   );
 }

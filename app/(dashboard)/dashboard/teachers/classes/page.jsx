@@ -9,7 +9,8 @@ export default function ClassesPage() {
           Classes
         </h2>
         <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-          Browse all assigned classes and open a class to manage students, attendance, and reports.
+          Browse all assigned classes and open a class to manage students,
+          attendance, and reports.
         </p>
       </div>
 

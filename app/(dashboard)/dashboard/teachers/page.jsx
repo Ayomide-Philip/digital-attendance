@@ -4,7 +4,12 @@ import { BookCopy, CalendarCheck2, Plus, Users } from "lucide-react";
 import Link from "next/link";
 
 import DashboardCharts from "@/app/(dashboard)/dashboard/teachers/components/DashboardCharts";
-import { attendancePerClassData, dashboardAttendanceTrend, getAllStudents, teacherClasses } from "@/app/(dashboard)/dashboard/teachers/components/mock-data";
+import {
+  attendancePerClassData,
+  dashboardAttendanceTrend,
+  getAllStudents,
+  teacherClasses,
+} from "@/app/(dashboard)/dashboard/teachers/components/mock-data";
 import StatsCard from "@/app/(dashboard)/dashboard/teachers/components/StatsCard";
 import { buttonVariants } from "@/components/ui/button";
 import Card from "@/components/ui/card";
@@ -46,14 +51,20 @@ export default function TeachersDashboardPage() {
         <div className="flex flex-wrap gap-2">
           <Link
             href="/dashboard/teachers/attendance"
-            className={cn(buttonVariants({ variant: "default" }), "h-10 rounded-xl px-4")}
+            className={cn(
+              buttonVariants({ variant: "default" }),
+              "h-10 rounded-xl px-4",
+            )}
           >
             <CalendarCheck2 className="size-4" />
             Take Attendance
           </Link>
           <Link
             href="/dashboard/teachers/classes"
-            className={cn(buttonVariants({ variant: "outline" }), "h-10 rounded-xl px-4")}
+            className={cn(
+              buttonVariants({ variant: "outline" }),
+              "h-10 rounded-xl px-4",
+            )}
           >
             <Plus className="size-4" />
             Create Class
@@ -73,7 +84,10 @@ export default function TeachersDashboardPage() {
         ))}
       </section>
 
-      <DashboardCharts trendData={dashboardAttendanceTrend} classData={attendancePerClassData} />
+      <DashboardCharts
+        trendData={dashboardAttendanceTrend}
+        classData={attendancePerClassData}
+      />
 
       <Card className="rounded-2xl p-5">
         <div className="mb-4">
@@ -93,7 +107,9 @@ export default function TeachersDashboardPage() {
             >
               <div className="flex items-start justify-between gap-3">
                 <div>
-                  <p className="font-medium text-slate-900 dark:text-slate-100">{item.name}</p>
+                  <p className="font-medium text-slate-900 dark:text-slate-100">
+                    {item.name}
+                  </p>
                   <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
                     {item.todaysSession}
                   </p>

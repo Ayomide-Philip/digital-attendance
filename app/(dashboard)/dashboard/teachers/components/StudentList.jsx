@@ -26,7 +26,7 @@ export default function StudentList({
         </h3>
       </div>
       <div className="overflow-x-auto">
-        <table className="w-full min-w-[720px] text-sm">
+        <table className="w-full min-w-180 text-sm">
           <thead className="border-b border-slate-200/70 text-left text-xs uppercase tracking-wide text-slate-500 dark:border-slate-800 dark:text-slate-400">
             <tr>
               <th className="px-5 py-3 font-medium">Name</th>
@@ -66,7 +66,10 @@ export default function StudentList({
                   <td className="px-5 py-4">
                     <div className="flex flex-wrap gap-2">
                       {student.classIds.map((classId) => (
-                        <Badge key={`${student.id}-${classId}`} variant="secondary">
+                        <Badge
+                          key={`${student.id}-${classId}`}
+                          variant="secondary"
+                        >
                           {classNameMap[classId] || classId}
                         </Badge>
                       ))}

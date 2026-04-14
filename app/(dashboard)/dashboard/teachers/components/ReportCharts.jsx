@@ -30,11 +30,18 @@ export default function ReportCharts({ barData = [], pieData = [] }) {
         </div>
         <div className="h-72 w-full">
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={barData} margin={{ top: 10, right: 16, left: -8, bottom: 0 }}>
+            <BarChart
+              data={barData}
+              margin={{ top: 10, right: 16, left: -8, bottom: 0 }}
+            >
               <XAxis dataKey="name" stroke="currentColor" />
               <YAxis domain={[60, 100]} stroke="currentColor" />
               <Tooltip />
-              <Bar dataKey="attendance" fill="#6366f1" radius={[10, 10, 0, 0]} />
+              <Bar
+                dataKey="attendance"
+                fill="#6366f1"
+                radius={[10, 10, 0, 0]}
+              />
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -52,7 +59,14 @@ export default function ReportCharts({ barData = [], pieData = [] }) {
         <div className="h-72 w-full">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
-              <Pie data={pieData} dataKey="value" nameKey="name" innerRadius={70} outerRadius={110} paddingAngle={4}>
+              <Pie
+                data={pieData}
+                dataKey="value"
+                nameKey="name"
+                innerRadius={70}
+                outerRadius={110}
+                paddingAngle={4}
+              >
                 {pieData.map((entry, index) => (
                   <Cell key={entry.name} fill={COLORS[index % COLORS.length]} />
                 ))}
