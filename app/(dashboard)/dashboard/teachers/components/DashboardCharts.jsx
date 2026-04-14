@@ -17,7 +17,7 @@ import Card from "@/components/ui/card";
 export default function DashboardCharts({ trendData = [], classData = [] }) {
   return (
     <section className="grid grid-cols-1 gap-4 xl:grid-cols-2">
-      <Card className="rounded-2xl p-5">
+      <Card className="min-w-0 rounded-2xl p-5">
         <div className="mb-4">
           <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">
             Attendance Over Time
@@ -26,8 +26,13 @@ export default function DashboardCharts({ trendData = [], classData = [] }) {
             Weekly attendance trend.
           </p>
         </div>
-        <div className="h-72 w-full">
-          <ResponsiveContainer width="100%" height="100%">
+        <div className="h-72 w-full min-w-0">
+          <ResponsiveContainer
+            width="100%"
+            height="100%"
+            minWidth={0}
+            debounce={50}
+          >
             <LineChart
               data={trendData}
               margin={{ top: 10, right: 16, left: -8, bottom: 0 }}
@@ -57,7 +62,7 @@ export default function DashboardCharts({ trendData = [], classData = [] }) {
         </div>
       </Card>
 
-      <Card className="rounded-2xl p-5">
+      <Card className="min-w-0 rounded-2xl p-5">
         <div className="mb-4">
           <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">
             Attendance Per Class
@@ -66,8 +71,13 @@ export default function DashboardCharts({ trendData = [], classData = [] }) {
             Overall class attendance summary.
           </p>
         </div>
-        <div className="h-72 w-full">
-          <ResponsiveContainer width="100%" height="100%">
+        <div className="h-72 w-full min-w-0">
+          <ResponsiveContainer
+            width="100%"
+            height="100%"
+            minWidth={0}
+            debounce={50}
+          >
             <BarChart
               data={classData}
               margin={{ top: 10, right: 16, left: -8, bottom: 0 }}
