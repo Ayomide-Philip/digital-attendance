@@ -8,10 +8,11 @@ import Toggle from "@/components/toggle";
 
 function getTitle(pathname) {
   if (pathname === "/dashboard/students") return "Student Dashboard";
+  if (pathname === "/dashboard/students/classes") return "My Classes";
+  if (pathname.startsWith("/dashboard/students/classes/"))
+    return "Class Details";
   if (pathname.startsWith("/dashboard/students/attendance"))
-    return "My Attendance";
-  if (pathname.startsWith("/dashboard/students/courses"))
-    return "Courses / Classes";
+    return "Attendance";
   if (pathname.startsWith("/dashboard/students/profile")) return "Profile";
   return "Student Portal";
 }
