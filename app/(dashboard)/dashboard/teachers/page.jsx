@@ -1,127 +1,132 @@
-import { BookOpenCheck, Clock3, PlayCircle, Users } from "lucide-react";
+"use client";
 
-import Card from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { BookCopy, CalendarCheck2, Plus, Users } from "lucide-react";
+import Link from "next/link";
+
+import ClassSwitcher from "@/app/(dashboard)/dashboard/teachers/components/ClassSwitcher";
+import StatsCard from "@/app/(dashboard)/dashboard/teachers/components/StatsCard";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-
-const teacherStats = [
-  { label: "My Classes", value: "6", icon: BookOpenCheck },
-  { label: "Students Assigned", value: "218", icon: Users },
-  { label: "Attendance Marked", value: "4 / 6", icon: Clock3 },
-];
-
-const teacherRecords = [
-  {
-    className: "10-A",
-    period: "08:00 AM",
-    present: "36 / 40",
-    status: "Completed",
-  },
-  {
-    className: "9-B",
-    period: "09:10 AM",
-    present: "31 / 36",
-    status: "Completed",
-  },
-  {
-    className: "8-C",
-    period: "10:20 AM",
-    present: "Pending",
-    status: "Pending",
-  },
-  {
-    className: "11-D",
-    period: "11:30 AM",
-    present: "Pending",
-    status: "Pending",
-  },
-];
+  getStudentsByClass,
+  teacherClasses,
+} from "@/app/(dashboard)/dashboard/teachers/components/mock-data";
+import { useTeacherClass } from "@/app/(dashboard)/dashboard/teachers/components/TeacherClassProvider";
+import { buttonVariants } from "@/components/ui/button";
+import Card from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 
 export default function TeachersDashboardPage() {
+  const { selectedClassId } = useTeacherClass();
+  const activeStudents = getStudentsByClass(selectedClassId);
+
+  const cards = [
+    {
+      title: "Total Classes",
+      value: teacherClasses.length,
+      subtitle: "Assigned this term",
+      icon: BookCopy,
+    },
+    {
+      title: "Total Students",
+      value: selectedClassId
+        ? activeStudents.length
+        : getStudentsByClass("").length,
+      subtitle: selectedClassId ? "In selected class" : "Across all classes",
+      icon: Users,
+    },
+    {
+      title: "Attendance Taken Today",
+      value: selectedClassId ? "1 / 1" : "2 / 4",
+      subtitle: "Based on scheduled sessions",
+      icon: CalendarCheck2,
+    },
+  ];
+
+  const todaysClasses = selectedClassId
+    ? teacherClasses.filter((item) => item.id === selectedClassId)
+    : teacherClasses;
+
   return (
     <div className="space-y-5">
       <div className="flex flex-col gap-3 rounded-2xl border border-slate-200/70 bg-white/80 p-5 shadow-sm dark:border-slate-800 dark:bg-slate-950/70 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
-            Teacher Attendance Panel
+            Teacher Dashboard Overview
           </h2>
           <p className="text-sm text-slate-500 dark:text-slate-400">
-            Manage your assigned classes and submit attendance quickly.
+            Track class performance and quickly manage attendance workflows.
           </p>
         </div>
-        <Button className="h-10 rounded-xl px-4">
-          <PlayCircle className="size-4" />
-          Mark Attendance
-        </Button>
+        <ClassSwitcher />
       </div>
 
       <section className="grid grid-cols-1 gap-4 md:grid-cols-3">
-        {teacherStats.map((item) => {
-          const Icon = item.icon;
-          return (
-            <Card key={item.label} className="rounded-2xl p-5">
-              <div className="flex items-center justify-between">
-                <p className="text-sm text-slate-500 dark:text-slate-400">
-                  {item.label}
-                </p>
-                <Icon className="size-4 text-slate-500 dark:text-slate-400" />
-              </div>
-              <p className="mt-2 text-2xl font-semibold text-slate-900 dark:text-slate-100">
-                {item.value}
-              </p>
-            </Card>
-          );
-        })}
+        {cards.map((item) => (
+          <StatsCard
+            key={item.title}
+            title={item.title}
+            value={item.value}
+            subtitle={item.subtitle}
+            icon={item.icon}
+          />
+        ))}
       </section>
 
-      <Card className="overflow-hidden rounded-2xl p-0">
-        <div className="border-b border-slate-200/70 px-5 py-4 dark:border-slate-800">
-          <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">
-            Today&apos;s Class Attendance
-          </h3>
-          <p className="text-sm text-slate-500 dark:text-slate-400">
-            Progress for your scheduled classes.
-          </p>
+      {!selectedClassId ? (
+        <Card className="rounded-2xl border-dashed p-4 text-sm text-slate-600 dark:text-slate-300">
+          Select a class from the class switcher to scope your dashboard
+          context.
+        </Card>
+      ) : null}
+
+      <Card className="rounded-2xl p-5">
+        <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">
+              Today&apos;s Classes
+            </h3>
+            <p className="text-sm text-slate-500 dark:text-slate-400">
+              Your scheduled sessions for today.
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <Link
+              href="/dashboard/teachers/attendance"
+              className={cn(
+                buttonVariants({ variant: "default" }),
+                "h-9 rounded-xl px-3",
+              )}
+            >
+              <CalendarCheck2 className="size-4" />
+              Take Attendance
+            </Link>
+            <Link
+              href="/dashboard/teachers/classes"
+              className={cn(
+                buttonVariants({ variant: "outline" }),
+                "h-9 rounded-xl px-3",
+              )}
+            >
+              <Plus className="size-4" />
+              Create Class
+            </Link>
+          </div>
         </div>
 
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Class</TableHead>
-              <TableHead>Period</TableHead>
-              <TableHead>Present</TableHead>
-              <TableHead className="text-right">Status</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {teacherRecords.map((record) => (
-              <TableRow key={`${record.className}-${record.period}`}>
-                <TableCell className="font-medium">
-                  {record.className}
-                </TableCell>
-                <TableCell>{record.period}</TableCell>
-                <TableCell>{record.present}</TableCell>
-                <TableCell className="text-right">
-                  <Badge
-                    variant={
-                      record.status === "Completed" ? "success" : "warning"
-                    }
-                  >
-                    {record.status}
-                  </Badge>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+          {todaysClasses.map((item) => (
+            <div
+              key={item.id}
+              className="rounded-xl border border-slate-200/70 bg-slate-50/70 p-4 dark:border-slate-800 dark:bg-slate-900/50"
+            >
+              <p className="font-medium text-slate-900 dark:text-slate-100">
+                {item.name}
+              </p>
+              <p className="text-sm text-slate-500 dark:text-slate-400">
+                {item.todaysSession}
+              </p>
+            </div>
+          ))}
+        </div>
       </Card>
     </div>
   );

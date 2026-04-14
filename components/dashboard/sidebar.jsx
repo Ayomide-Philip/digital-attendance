@@ -4,22 +4,22 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   BarChart3,
+  BookOpen,
   CalendarCheck2,
   ClipboardCheck,
   FileText,
   LayoutDashboard,
   UserCircle2,
-  Settings,
 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
 const teacherNavItems = [
   { label: "Dashboard", slug: "", icon: LayoutDashboard },
+  { label: "Classes", slug: "/classes", icon: BookOpen },
   { label: "Attendance", slug: "/attendance", icon: ClipboardCheck },
   { label: "Students", slug: "/students", icon: CalendarCheck2 },
   { label: "Reports", slug: "/reports", icon: BarChart3 },
-  { label: "Settings", slug: "/settings", icon: Settings },
 ];
 
 const studentNavItems = [

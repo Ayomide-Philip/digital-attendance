@@ -14,6 +14,9 @@ function getTitle(pathname) {
     return "Courses / Classes";
   if (pathname.startsWith("/dashboard/students/profile")) return "Profile";
   if (pathname === "/dashboard/teachers") return "Teacher Dashboard";
+  if (pathname === "/dashboard/teachers/classes") return "Classes";
+  if (pathname.startsWith("/dashboard/teachers/classes/"))
+    return "Class Details";
   if (pathname.startsWith("/dashboard/teachers/attendance"))
     return "Teacher Attendance";
   if (pathname.startsWith("/dashboard/teachers/students")) return "My Students";
