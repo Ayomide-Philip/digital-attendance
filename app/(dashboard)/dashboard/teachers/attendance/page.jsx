@@ -6,7 +6,7 @@ import AttendanceTable from "@/app/(dashboard)/dashboard/teachers/components/Att
 import ClassSwitcher from "@/app/(dashboard)/dashboard/teachers/components/ClassSwitcher";
 import TakeAttendanceModal from "@/app/(dashboard)/dashboard/teachers/components/TakeAttendanceModal";
 import {
-  getClassHistory,
+  getAllAttendanceRecords,
   getStudentsByClass,
   teacherClasses,
 } from "@/app/(dashboard)/dashboard/teachers/components/mock-data";
@@ -15,6 +15,7 @@ import Card from "@/components/ui/card";
 
 export default function AttendancePage() {
   const [selectedClassId, setSelectedClassId] = useState("");
+  const [selectedDate, setSelectedDate] = useState("");
   const [open, setOpen] = useState(false);
 
   const selectedClass = useMemo(
@@ -27,10 +28,16 @@ export default function AttendancePage() {
     [selectedClassId],
   );
 
-  const rows = useMemo(
-    () => getClassHistory(selectedClassId),
-    [selectedClassId],
-  );
+  const rows = useMemo(() => {
+    const allRecords = getAllAttendanceRecords();
+
+    return allRecords.filter((record) => {
+      const matchesClass =
+        !selectedClassId || record.classId === selectedClassId;
+      const matchesDate = !selectedDate || record.dateISO === selectedDate;
+      return matchesClass && matchesDate;
+    });
+  }, [selectedClassId, selectedDate]);
 
   return (
     <div className="space-y-5">
@@ -49,7 +56,14 @@ export default function AttendancePage() {
             classes={teacherClasses}
             value={selectedClassId}
             onChange={setSelectedClassId}
-            placeholder="Select class"
+            placeholder="Filter / take attendance class"
+          />
+          <input
+            type="date"
+            value={selectedDate}
+            onChange={(event) => setSelectedDate(event.target.value)}
+            className="h-10 rounded-xl border border-slate-200 bg-white px-3 text-sm outline-none transition focus:border-sky-400 dark:border-slate-700 dark:bg-slate-900"
+            aria-label="Filter by date"
           />
           <Button
             className="h-10 rounded-xl px-4"
@@ -61,11 +75,7 @@ export default function AttendancePage() {
         </div>
       </div>
 
-      {!selectedClassId ? (
-        <Card className="rounded-2xl border-dashed p-4 text-sm text-slate-600 dark:text-slate-300">
-          Select a class to load its students and attendance history.
-        </Card>
-      ) : (
+      {selectedClassId ? (
         <Card className="rounded-2xl p-5">
           <div className="flex items-center justify-between gap-3">
             <div>
@@ -88,16 +98,20 @@ export default function AttendancePage() {
             ))}
           </div>
         </Card>
-      )}
+      ) : null}
 
       <AttendanceTable
-        title="Attendance History"
+        title="All Attendance Records"
         description={
-          selectedClassId
-            ? `Recent sessions for ${selectedClass?.name}.`
-            : "Select a class to see its history."
+          rows.length
+            ? "Click a record to view full attendance details."
+            : "No records found for the current filters."
         }
         rows={rows}
+        showClassColumn
+        getRowHref={(row) =>
+          `/dashboard/teachers/classes/${row.classId}/attendance/${row.id}`
+        }
       />
 
       <TakeAttendanceModal

@@ -1,5 +1,8 @@
+"use client";
+
 import { Badge } from "@/components/ui/badge";
 import Card from "@/components/ui/card";
+import { useRouter } from "next/navigation";
 import {
   Table,
   TableBody,
@@ -15,7 +18,15 @@ function getStatusVariant(status) {
   return "warning";
 }
 
-export default function AttendanceTable({ title, description, rows = [] }) {
+export default function AttendanceTable({
+  title,
+  description,
+  rows = [],
+  showClassColumn = false,
+  getRowHref,
+}) {
+  const router = useRouter();
+
   return (
     <Card className="overflow-hidden rounded-2xl p-0">
       <div className="border-b border-slate-200/70 px-5 py-4 dark:border-slate-800">
@@ -32,6 +43,7 @@ export default function AttendanceTable({ title, description, rows = [] }) {
       <Table>
         <TableHeader>
           <TableRow>
+            {showClassColumn ? <TableHead>Class</TableHead> : null}
             <TableHead>Date</TableHead>
             <TableHead>Class / Session</TableHead>
             <TableHead>Present</TableHead>
@@ -41,7 +53,19 @@ export default function AttendanceTable({ title, description, rows = [] }) {
         </TableHeader>
         <TableBody>
           {rows.map((row, index) => (
-            <TableRow key={`${row.date}-${row.title}-${index}`}>
+            <TableRow
+              key={`${row.classId || "global"}-${row.id || row.date}-${row.title}-${index}`}
+              className={getRowHref ? "cursor-pointer" : undefined}
+              onClick={
+                getRowHref
+                  ? () => {
+                      const href = getRowHref(row);
+                      if (href) router.push(href);
+                    }
+                  : undefined
+              }
+            >
+              {showClassColumn ? <TableCell>{row.className}</TableCell> : null}
               <TableCell className="font-medium text-slate-700 dark:text-slate-200">
                 {row.date}
               </TableCell>

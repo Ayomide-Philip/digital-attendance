@@ -41,7 +41,16 @@ export default function ReportCharts({ barData = [], pieData = [] }) {
             >
               <XAxis dataKey="name" stroke="currentColor" />
               <YAxis domain={[60, 100]} stroke="currentColor" />
-              <Tooltip />
+              <Tooltip
+                contentStyle={{
+                  borderRadius: 16,
+                  border: "1px solid rgba(148,163,184,0.3)",
+                  backgroundColor: "rgba(15,23,42,0.96)",
+                  color: "#e2e8f0",
+                }}
+                labelStyle={{ color: "#f8fafc", fontWeight: 600 }}
+                itemStyle={{ color: "#e2e8f0" }}
+              />
               <Bar
                 dataKey="attendance"
                 fill="#6366f1"
@@ -81,7 +90,16 @@ export default function ReportCharts({ barData = [], pieData = [] }) {
                   <Cell key={entry.name} fill={COLORS[index % COLORS.length]} />
                 ))}
               </Pie>
-              <Tooltip />
+              <Tooltip
+                contentStyle={{
+                  borderRadius: 16,
+                  border: "1px solid rgba(148,163,184,0.3)",
+                  backgroundColor: "rgba(15,23,42,0.96)",
+                  color: "#e2e8f0",
+                }}
+                labelStyle={{ color: "#f8fafc", fontWeight: 600 }}
+                itemStyle={{ color: "#e2e8f0" }}
+              />
             </PieChart>
           </ResponsiveContainer>
         </div>

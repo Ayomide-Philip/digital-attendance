@@ -134,20 +134,132 @@ export function getStudentStatus(attendancePercentage) {
 
 export const classAttendanceHistory = {
   "class-10a": [
-    { date: "Apr 13, 2026", title: "Mathematics", present: 36, absent: 4 },
-    { date: "Apr 12, 2026", title: "Science", present: 38, absent: 2 },
+    {
+      id: "att-10a-20260413",
+      date: "Apr 13, 2026",
+      dateISO: "2026-04-13",
+      title: "Mathematics",
+      present: 36,
+      absent: 4,
+      timeStarted: "08:00 AM",
+      timeEnded: "08:18 AM",
+      studentMarks: [
+        { studentId: "st-001", status: "Present", timeMarked: "08:03 AM" },
+        { studentId: "st-002", status: "Present", timeMarked: "08:04 AM" },
+        { studentId: "st-007", status: "Absent", timeMarked: "08:10 AM" },
+      ],
+    },
+    {
+      id: "att-10a-20260412",
+      date: "Apr 12, 2026",
+      dateISO: "2026-04-12",
+      title: "Science",
+      present: 38,
+      absent: 2,
+      timeStarted: "08:00 AM",
+      timeEnded: "08:16 AM",
+      studentMarks: [
+        { studentId: "st-001", status: "Present", timeMarked: "08:02 AM" },
+        { studentId: "st-002", status: "Present", timeMarked: "08:03 AM" },
+        { studentId: "st-007", status: "Present", timeMarked: "08:05 AM" },
+      ],
+    },
   ],
   "class-9b": [
-    { date: "Apr 13, 2026", title: "Physics", present: 31, absent: 5 },
-    { date: "Apr 12, 2026", title: "History", present: 33, absent: 3 },
+    {
+      id: "att-9b-20260413",
+      date: "Apr 13, 2026",
+      dateISO: "2026-04-13",
+      title: "Physics",
+      present: 31,
+      absent: 5,
+      timeStarted: "09:10 AM",
+      timeEnded: "09:28 AM",
+      studentMarks: [
+        { studentId: "st-002", status: "Present", timeMarked: "09:12 AM" },
+        { studentId: "st-003", status: "Absent", timeMarked: "09:17 AM" },
+        { studentId: "st-008", status: "Present", timeMarked: "09:14 AM" },
+      ],
+    },
+    {
+      id: "att-9b-20260412",
+      date: "Apr 12, 2026",
+      dateISO: "2026-04-12",
+      title: "History",
+      present: 33,
+      absent: 3,
+      timeStarted: "09:10 AM",
+      timeEnded: "09:26 AM",
+      studentMarks: [
+        { studentId: "st-002", status: "Present", timeMarked: "09:11 AM" },
+        { studentId: "st-003", status: "Present", timeMarked: "09:13 AM" },
+        { studentId: "st-008", status: "Present", timeMarked: "09:14 AM" },
+      ],
+    },
   ],
   "class-8c": [
-    { date: "Apr 12, 2026", title: "English", present: 30, absent: 4 },
-    { date: "Apr 11, 2026", title: "Art", present: 32, absent: 2 },
+    {
+      id: "att-8c-20260412",
+      date: "Apr 12, 2026",
+      dateISO: "2026-04-12",
+      title: "English",
+      present: 30,
+      absent: 4,
+      timeStarted: "10:20 AM",
+      timeEnded: "10:36 AM",
+      studentMarks: [
+        { studentId: "st-004", status: "Present", timeMarked: "10:22 AM" },
+        { studentId: "st-006", status: "Present", timeMarked: "10:23 AM" },
+        { studentId: "st-010", status: "Absent", timeMarked: "10:30 AM" },
+      ],
+    },
+    {
+      id: "att-8c-20260411",
+      date: "Apr 11, 2026",
+      dateISO: "2026-04-11",
+      title: "Art",
+      present: 32,
+      absent: 2,
+      timeStarted: "10:20 AM",
+      timeEnded: "10:35 AM",
+      studentMarks: [
+        { studentId: "st-004", status: "Present", timeMarked: "10:21 AM" },
+        { studentId: "st-006", status: "Present", timeMarked: "10:22 AM" },
+        { studentId: "st-010", status: "Present", timeMarked: "10:24 AM" },
+      ],
+    },
   ],
   "class-11d": [
-    { date: "Apr 12, 2026", title: "Chemistry", present: 34, absent: 4 },
-    { date: "Apr 11, 2026", title: "Biology", present: 35, absent: 3 },
+    {
+      id: "att-11d-20260412",
+      date: "Apr 12, 2026",
+      dateISO: "2026-04-12",
+      title: "Chemistry",
+      present: 34,
+      absent: 4,
+      timeStarted: "11:30 AM",
+      timeEnded: "11:46 AM",
+      studentMarks: [
+        { studentId: "st-005", status: "Absent", timeMarked: "11:40 AM" },
+        { studentId: "st-006", status: "Present", timeMarked: "11:34 AM" },
+        { studentId: "st-009", status: "Present", timeMarked: "11:33 AM" },
+      ],
+    },
+    {
+      id: "att-11d-20260411",
+      date: "Apr 11, 2026",
+      dateISO: "2026-04-11",
+      title: "Biology",
+      present: 35,
+      absent: 3,
+      timeStarted: "11:30 AM",
+      timeEnded: "11:44 AM",
+      studentMarks: [
+        { studentId: "st-005", status: "Present", timeMarked: "11:35 AM" },
+        { studentId: "st-006", status: "Present", timeMarked: "11:33 AM" },
+        { studentId: "st-009", status: "Present", timeMarked: "11:34 AM" },
+      ],
+    },
   ],
 };
 
@@ -168,7 +280,42 @@ export function getAllStudents() {
 
 export function getClassHistory(classId) {
   if (!classId) {
-    return Object.values(classAttendanceHistory).flat();
+    return getAllAttendanceRecords();
   }
-  return classAttendanceHistory[classId] || [];
+  const className = getClassById(classId)?.name || classId;
+  return (classAttendanceHistory[classId] || []).map((item) => ({
+    ...item,
+    classId,
+    className,
+  }));
+}
+
+export function getAllAttendanceRecords() {
+  return Object.entries(classAttendanceHistory)
+    .flatMap(([classId, records]) => {
+      const className = getClassById(classId)?.name || classId;
+      return records.map((record) => ({
+        ...record,
+        classId,
+        className,
+      }));
+    })
+    .sort((a, b) => b.dateISO.localeCompare(a.dateISO));
+}
+
+export function getAttendanceRecord(classId, attendanceId) {
+  const record = (classAttendanceHistory[classId] || []).find(
+    (item) => item.id === attendanceId,
+  );
+  if (!record) return null;
+
+  return {
+    ...record,
+    classId,
+    className: getClassById(classId)?.name || classId,
+  };
+}
+
+export function getStudentById(studentId) {
+  return teacherStudents.find((student) => student.id === studentId) || null;
 }

@@ -46,9 +46,12 @@ export default function DashboardCharts({ trendData = [], classData = [] }) {
               <Tooltip
                 contentStyle={{
                   borderRadius: 16,
-                  border: "1px solid rgba(148,163,184,0.2)",
-                  backgroundColor: "rgba(255,255,255,0.96)",
+                  border: "1px solid rgba(148,163,184,0.3)",
+                  backgroundColor: "rgba(15,23,42,0.96)",
+                  color: "#e2e8f0",
                 }}
+                labelStyle={{ color: "#f8fafc", fontWeight: 600 }}
+                itemStyle={{ color: "#e2e8f0" }}
               />
               <Line
                 type="monotone"
@@ -91,9 +94,12 @@ export default function DashboardCharts({ trendData = [], classData = [] }) {
               <Tooltip
                 contentStyle={{
                   borderRadius: 16,
-                  border: "1px solid rgba(148,163,184,0.2)",
-                  backgroundColor: "rgba(255,255,255,0.96)",
+                  border: "1px solid rgba(148,163,184,0.3)",
+                  backgroundColor: "rgba(15,23,42,0.96)",
+                  color: "#e2e8f0",
                 }}
+                labelStyle={{ color: "#f8fafc", fontWeight: 600 }}
+                itemStyle={{ color: "#e2e8f0" }}
               />
               <Bar
                 dataKey="attendance"

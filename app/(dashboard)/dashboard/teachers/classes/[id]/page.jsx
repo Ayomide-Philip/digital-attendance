@@ -125,6 +125,9 @@ export default function SingleClassPage() {
             title="Attendance History"
             description="Recent attendance sessions for this class."
             rows={historyRows}
+            getRowHref={(row) =>
+              `/dashboard/teachers/classes/${classId}/attendance/${row.id}`
+            }
           />
         </div>
       ) : null}
