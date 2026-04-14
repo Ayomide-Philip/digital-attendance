@@ -7,23 +7,19 @@ import { Button } from "@/components/ui/button";
 import Toggle from "@/components/toggle";
 
 function getTitle(pathname) {
+  if (pathname === "/dashboard/teachers") return "Teacher Dashboard";
+  if (pathname === "/dashboard/teachers/classes") return "Classes";
+  if (pathname.startsWith("/dashboard/teachers/classes/"))
+    return "Class Details";
+  if (pathname === "/dashboard/teachers/attendance") return "Attendance";
+  if (pathname === "/dashboard/teachers/students") return "Students";
+  if (pathname === "/dashboard/teachers/reports") return "Reports";
   if (pathname === "/dashboard/students") return "Student Dashboard";
   if (pathname.startsWith("/dashboard/students/attendance"))
     return "My Attendance";
   if (pathname.startsWith("/dashboard/students/courses"))
     return "Courses / Classes";
   if (pathname.startsWith("/dashboard/students/profile")) return "Profile";
-  if (pathname === "/dashboard/teachers") return "Teacher Dashboard";
-  if (pathname === "/dashboard/teachers/classes") return "Classes";
-  if (pathname.startsWith("/dashboard/teachers/classes/"))
-    return "Class Details";
-  if (pathname.startsWith("/dashboard/teachers/attendance"))
-    return "Teacher Attendance";
-  if (pathname.startsWith("/dashboard/teachers/students")) return "My Students";
-  if (pathname.startsWith("/dashboard/teachers/reports"))
-    return "Teacher Reports";
-  if (pathname.startsWith("/dashboard/teachers/settings"))
-    return "Teacher Settings";
   if (pathname === "/dashboard") return "Dashboard";
   if (pathname.startsWith("/dashboard/attendance")) return "Attendance";
   if (pathname.startsWith("/dashboard/students")) return "Students";

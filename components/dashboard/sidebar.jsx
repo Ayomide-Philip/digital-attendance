@@ -7,9 +7,8 @@ import {
   BookOpen,
   CalendarCheck2,
   ClipboardCheck,
-  FileText,
   LayoutDashboard,
-  UserCircle2,
+  Users,
 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -18,15 +17,15 @@ const teacherNavItems = [
   { label: "Dashboard", slug: "", icon: LayoutDashboard },
   { label: "Classes", slug: "/classes", icon: BookOpen },
   { label: "Attendance", slug: "/attendance", icon: ClipboardCheck },
-  { label: "Students", slug: "/students", icon: CalendarCheck2 },
+  { label: "Students", slug: "/students", icon: Users },
   { label: "Reports", slug: "/reports", icon: BarChart3 },
 ];
 
 const studentNavItems = [
   { label: "Dashboard", slug: "", icon: LayoutDashboard },
   { label: "My Attendance", slug: "/attendance", icon: ClipboardCheck },
-  { label: "Courses / Classes", slug: "/courses", icon: FileText },
-  { label: "Profile", slug: "/profile", icon: UserCircle2 },
+  { label: "Courses / Classes", slug: "/courses", icon: BookOpen },
+  { label: "Profile", slug: "/profile", icon: Users },
 ];
 
 export default function Sidebar({ collapsed = false, onNavigate }) {

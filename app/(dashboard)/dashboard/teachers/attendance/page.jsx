@@ -4,26 +4,26 @@ import { useMemo, useState } from "react";
 
 import AttendanceTable from "@/app/(dashboard)/dashboard/teachers/components/AttendanceTable";
 import ClassSwitcher from "@/app/(dashboard)/dashboard/teachers/components/ClassSwitcher";
-import {
-  getClassHistory,
-  teacherClasses,
-  teacherStudents,
-} from "@/app/(dashboard)/dashboard/teachers/components/mock-data";
 import TakeAttendanceModal from "@/app/(dashboard)/dashboard/teachers/components/TakeAttendanceModal";
-import { useTeacherClass } from "@/app/(dashboard)/dashboard/teachers/components/TeacherClassProvider";
+import { getClassHistory, getStudentsByClass, teacherClasses } from "@/app/(dashboard)/dashboard/teachers/components/mock-data";
 import { Button } from "@/components/ui/button";
 import Card from "@/components/ui/card";
 
 export default function AttendancePage() {
-  const { selectedClassId } = useTeacherClass();
+  const [selectedClassId, setSelectedClassId] = useState("");
   const [open, setOpen] = useState(false);
 
-  const rows = useMemo(() => {
-    return getClassHistory(selectedClassId).map((item) => ({
-      ...item,
-      status: "Completed",
-    }));
-  }, [selectedClassId]);
+  const selectedClass = useMemo(
+    () => teacherClasses.find((item) => item.id === selectedClassId) || null,
+    [selectedClassId],
+  );
+
+  const selectedStudents = useMemo(
+    () => getStudentsByClass(selectedClassId),
+    [selectedClassId],
+  );
+
+  const rows = useMemo(() => getClassHistory(selectedClassId), [selectedClassId]);
 
   return (
     <div className="space-y-5">
@@ -33,14 +33,20 @@ export default function AttendancePage() {
             Attendance Management
           </h2>
           <p className="text-sm text-slate-500 dark:text-slate-400">
-            Mark attendance and review session history.
+            This is the only place where you can pick a class to take attendance.
           </p>
         </div>
         <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
-          <ClassSwitcher />
+          <ClassSwitcher
+            classes={teacherClasses}
+            value={selectedClassId}
+            onChange={setSelectedClassId}
+            placeholder="Select class"
+          />
           <Button
             className="h-10 rounded-xl px-4"
             onClick={() => setOpen(true)}
+            disabled={!selectedClassId}
           >
             Take Attendance
           </Button>
@@ -49,23 +55,49 @@ export default function AttendancePage() {
 
       {!selectedClassId ? (
         <Card className="rounded-2xl border-dashed p-4 text-sm text-slate-600 dark:text-slate-300">
-          Select a class to auto-fill the attendance modal and history.
+          Select a class to load its students and attendance history.
         </Card>
-      ) : null}
+      ) : (
+        <Card className="rounded-2xl p-5">
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">
+                Loaded Students
+              </h3>
+              <p className="text-sm text-slate-500 dark:text-slate-400">
+                {selectedClass?.name} has {selectedStudents.length} students.
+              </p>
+            </div>
+          </div>
+          <div className="mt-4 flex flex-wrap gap-2">
+            {selectedStudents.map((student) => (
+              <span
+                key={student.id}
+                className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-sm text-slate-700 dark:border-slate-800 dark:bg-slate-900/60 dark:text-slate-300"
+              >
+                {student.name}
+              </span>
+            ))}
+          </div>
+        </Card>
+      )}
 
       <AttendanceTable
         title="Attendance History"
-        description="Recent attendance sessions across your classes."
+        description={
+          selectedClassId
+            ? `Recent sessions for ${selectedClass?.name}.`
+            : "Select a class to see its history."
+        }
         rows={rows}
       />
 
       <TakeAttendanceModal
-        key={`${selectedClassId || "all"}-${open ? "open" : "closed"}`}
+        key={`${selectedClassId || "empty"}-${open ? "open" : "closed"}`}
         open={open}
         onClose={() => setOpen(false)}
-        classes={teacherClasses}
-        initialClassId={selectedClassId}
-        students={teacherStudents}
+        className={selectedClass?.name}
+        students={selectedStudents}
       />
     </div>
   );

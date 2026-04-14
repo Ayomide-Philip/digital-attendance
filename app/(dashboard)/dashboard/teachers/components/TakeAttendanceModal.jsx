@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -9,19 +9,10 @@ import Card from "@/components/ui/card";
 export default function TakeAttendanceModal({
   open,
   onClose,
-  classes,
-  initialClassId,
+  className,
   students,
 }) {
-  const [activeClassId, setActiveClassId] = useState(initialClassId || "");
   const [statusByStudent, setStatusByStudent] = useState({});
-
-  const filteredStudents = useMemo(() => {
-    if (!activeClassId) return [];
-    return students.filter((student) =>
-      student.classIds.includes(activeClassId),
-    );
-  }, [activeClassId, students]);
 
   if (!open) return null;
 
@@ -55,31 +46,13 @@ export default function TakeAttendanceModal({
         </div>
 
         <div className="space-y-4 px-5 py-4">
-          <div>
-            <label className="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">
-              Class
-            </label>
-            <select
-              className="h-10 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm outline-none focus:border-sky-400 dark:border-slate-700 dark:bg-slate-900"
-              value={activeClassId}
-              onChange={(event) => setActiveClassId(event.target.value)}
-            >
-              <option value="">Select class</option>
-              {classes.map((item) => (
-                <option key={item.id} value={item.id}>
-                  {item.name}
-                </option>
-              ))}
-            </select>
+          <div className="rounded-xl border border-slate-200/70 bg-slate-50 px-4 py-3 text-sm text-slate-600 dark:border-slate-800 dark:bg-slate-900/50 dark:text-slate-300">
+            Class: <span className="font-medium text-slate-900 dark:text-slate-100">{className || "Selected Class"}</span>
           </div>
 
-          {!activeClassId ? (
-            <div className="rounded-xl border border-dashed border-slate-300 px-4 py-6 text-center text-sm text-slate-500 dark:border-slate-700 dark:text-slate-400">
-              Select a class to begin attendance.
-            </div>
-          ) : (
-            <div className="max-h-80 space-y-2 overflow-auto pr-1">
-              {filteredStudents.map((student) => {
+          <div className="max-h-80 space-y-2 overflow-auto pr-1">
+            {students.length ? (
+              students.map((student) => {
                 const status = statusByStudent[student.id] || "Present";
                 return (
                   <div
@@ -98,9 +71,13 @@ export default function TakeAttendanceModal({
                     </Button>
                   </div>
                 );
-              })}
-            </div>
-          )}
+              })
+            ) : (
+              <div className="rounded-xl border border-dashed border-slate-300 px-4 py-6 text-center text-sm text-slate-500 dark:border-slate-700 dark:text-slate-400">
+                No students found for this class.
+              </div>
+            )}
+          </div>
         </div>
 
         <div className="flex justify-end gap-2 border-t border-slate-200/70 px-5 py-4 dark:border-slate-800">

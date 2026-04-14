@@ -3,47 +3,34 @@
 import { BookCopy, CalendarCheck2, Plus, Users } from "lucide-react";
 import Link from "next/link";
 
-import ClassSwitcher from "@/app/(dashboard)/dashboard/teachers/components/ClassSwitcher";
+import DashboardCharts from "@/app/(dashboard)/dashboard/teachers/components/DashboardCharts";
+import { attendancePerClassData, dashboardAttendanceTrend, getAllStudents, teacherClasses } from "@/app/(dashboard)/dashboard/teachers/components/mock-data";
 import StatsCard from "@/app/(dashboard)/dashboard/teachers/components/StatsCard";
-import {
-  getStudentsByClass,
-  teacherClasses,
-} from "@/app/(dashboard)/dashboard/teachers/components/mock-data";
-import { useTeacherClass } from "@/app/(dashboard)/dashboard/teachers/components/TeacherClassProvider";
 import { buttonVariants } from "@/components/ui/button";
 import Card from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
 export default function TeachersDashboardPage() {
-  const { selectedClassId } = useTeacherClass();
-  const activeStudents = getStudentsByClass(selectedClassId);
-
-  const cards = [
+  const summaryCards = [
     {
       title: "Total Classes",
       value: teacherClasses.length,
-      subtitle: "Assigned this term",
+      subtitle: "Across all teaching groups",
       icon: BookCopy,
     },
     {
       title: "Total Students",
-      value: selectedClassId
-        ? activeStudents.length
-        : getStudentsByClass("").length,
-      subtitle: selectedClassId ? "In selected class" : "Across all classes",
+      value: getAllStudents().length,
+      subtitle: "All enrolled students",
       icon: Users,
     },
     {
       title: "Attendance Taken Today",
-      value: selectedClassId ? "1 / 1" : "2 / 4",
-      subtitle: "Based on scheduled sessions",
+      value: "3 / 4",
+      subtitle: "Scheduled sessions completed",
       icon: CalendarCheck2,
     },
   ];
-
-  const todaysClasses = selectedClassId
-    ? teacherClasses.filter((item) => item.id === selectedClassId)
-    : teacherClasses;
 
   return (
     <div className="space-y-5">
@@ -53,14 +40,29 @@ export default function TeachersDashboardPage() {
             Teacher Dashboard Overview
           </h2>
           <p className="text-sm text-slate-500 dark:text-slate-400">
-            Track class performance and quickly manage attendance workflows.
+            Global attendance summary across all your classes.
           </p>
         </div>
-        <ClassSwitcher />
+        <div className="flex flex-wrap gap-2">
+          <Link
+            href="/dashboard/teachers/attendance"
+            className={cn(buttonVariants({ variant: "default" }), "h-10 rounded-xl px-4")}
+          >
+            <CalendarCheck2 className="size-4" />
+            Take Attendance
+          </Link>
+          <Link
+            href="/dashboard/teachers/classes"
+            className={cn(buttonVariants({ variant: "outline" }), "h-10 rounded-xl px-4")}
+          >
+            <Plus className="size-4" />
+            Create Class
+          </Link>
+        </div>
       </div>
 
       <section className="grid grid-cols-1 gap-4 md:grid-cols-3">
-        {cards.map((item) => (
+        {summaryCards.map((item) => (
           <StatsCard
             key={item.title}
             title={item.title}
@@ -71,58 +73,37 @@ export default function TeachersDashboardPage() {
         ))}
       </section>
 
-      {!selectedClassId ? (
-        <Card className="rounded-2xl border-dashed p-4 text-sm text-slate-600 dark:text-slate-300">
-          Select a class from the class switcher to scope your dashboard
-          context.
-        </Card>
-      ) : null}
+      <DashboardCharts trendData={dashboardAttendanceTrend} classData={attendancePerClassData} />
 
       <Card className="rounded-2xl p-5">
-        <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">
-              Today&apos;s Classes
-            </h3>
-            <p className="text-sm text-slate-500 dark:text-slate-400">
-              Your scheduled sessions for today.
-            </p>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            <Link
-              href="/dashboard/teachers/attendance"
-              className={cn(
-                buttonVariants({ variant: "default" }),
-                "h-9 rounded-xl px-3",
-              )}
-            >
-              <CalendarCheck2 className="size-4" />
-              Take Attendance
-            </Link>
-            <Link
-              href="/dashboard/teachers/classes"
-              className={cn(
-                buttonVariants({ variant: "outline" }),
-                "h-9 rounded-xl px-3",
-              )}
-            >
-              <Plus className="size-4" />
-              Create Class
-            </Link>
-          </div>
+        <div className="mb-4">
+          <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">
+            Today&apos;s Classes
+          </h3>
+          <p className="text-sm text-slate-500 dark:text-slate-400">
+            All scheduled classes for today at a glance.
+          </p>
         </div>
 
-        <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-          {todaysClasses.map((item) => (
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
+          {teacherClasses.map((item) => (
             <div
               key={item.id}
-              className="rounded-xl border border-slate-200/70 bg-slate-50/70 p-4 dark:border-slate-800 dark:bg-slate-900/50"
+              className="rounded-xl border border-slate-200/70 bg-slate-50/70 p-4 transition hover:-translate-y-0.5 hover:bg-slate-100/70 dark:border-slate-800 dark:bg-slate-900/50 dark:hover:bg-slate-900"
             >
-              <p className="font-medium text-slate-900 dark:text-slate-100">
-                {item.name}
-              </p>
-              <p className="text-sm text-slate-500 dark:text-slate-400">
-                {item.todaysSession}
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <p className="font-medium text-slate-900 dark:text-slate-100">{item.name}</p>
+                  <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+                    {item.todaysSession}
+                  </p>
+                </div>
+                <span className="rounded-full bg-emerald-500/15 px-2.5 py-1 text-xs font-semibold text-emerald-700 dark:text-emerald-300">
+                  {item.attendanceRate}%
+                </span>
+              </div>
+              <p className="mt-3 text-xs text-slate-500 dark:text-slate-400">
+                Last attendance: {item.lastAttendanceDate}
               </p>
             </div>
           ))}
