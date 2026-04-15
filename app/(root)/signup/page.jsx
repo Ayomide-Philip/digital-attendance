@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ArrowRight, Mail, Lock, User } from "lucide-react";
 
 import AuthCard from "@/components/auth/auth-card";
+import AuthShell from "@/components/auth/auth-shell";
 import OAuthButtons from "@/components/auth/oauth-buttons";
 import PasswordInput from "@/components/auth/password-input";
 import PasswordStrengthIndicator from "@/components/auth/password-strength-indicator";
@@ -67,7 +68,11 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="w-full">
+    <AuthShell
+      title="Create your account"
+      subtitle="Start your attendance journey with a modern portal built for students and teachers in one place."
+      accent="emerald"
+    >
       <AuthCard>
         <div className="p-6 sm:p-8">
           {/* Header */}
@@ -241,6 +246,6 @@ export default function SignupPage() {
           </p>
         </div>
       </AuthCard>
-    </div>
+    </AuthShell>
   );
 }

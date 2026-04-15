@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ArrowRight, Mail, Lock } from "lucide-react";
 
 import AuthCard from "@/components/auth/auth-card";
+import AuthShell from "@/components/auth/auth-shell";
 import OAuthButtons from "@/components/auth/oauth-buttons";
 import PasswordInput from "@/components/auth/password-input";
 import { Button } from "@/components/ui/button";
@@ -57,7 +58,11 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="w-full">
+    <AuthShell
+      title="Welcome back"
+      subtitle="Sign in to manage classes, track attendance records, and stay connected with your academic dashboard."
+      accent="sky"
+    >
       <AuthCard>
         <div className="p-6 sm:p-8">
           {/* Header */}
@@ -199,6 +204,6 @@ export default function LoginPage() {
           </p>
         </div>
       </AuthCard>
-    </div>
+    </AuthShell>
   );
 }
