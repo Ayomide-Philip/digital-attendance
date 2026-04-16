@@ -12,7 +12,7 @@ export default function OAuthButtons() {
       </p>
       <Button
         variant="outline"
-        className="rounded-xl  border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-900"
+        className="rounded-xl w-full border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-900"
         onClick={() => alert("Google OAuth not implemented (frontend only)")}
       >
         <FcGoogle className="size-4" />
