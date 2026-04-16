@@ -4,6 +4,7 @@ import { Mail, User } from "lucide-react";
 import { Eye, EyeOff } from "lucide-react";
 import OAuthButtons from "@/components/auth/oauth-buttons";
 import { useState } from "react";
+import { toast } from "sonner";
 
 export default function SignupPage() {
   const [name, setName] = useState("");
@@ -13,7 +14,23 @@ export default function SignupPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  async function handleCreateNewAccount() {}
+  async function handleCreateNewAccount(e) {
+    e.preventDefault();
+    if (
+      !email ||
+      !name ||
+      !password ||
+      !confirmPassword ||
+      !email.trim() ||
+      !name.trim()
+    ) {
+      return toast.error("All fields are required. Pls fill all the fields.");
+    }
+
+    if (password !== confirmPassword) {
+      return toast.error("Passwords do not match. Please check and try again.");
+    }
+  }
   return (
     <section className="mx-auto flex min-h-[calc(100vh-14rem)] w-full max-w-5xl items-center justify-center px-4 py-8 sm:px-6 lg:px-8">
       <div className="w-full max-w-md rounded-2xl border border-slate-200/70 bg-white/90 p-6 shadow-xl backdrop-blur-sm dark:border-slate-800 dark:bg-slate-900/85 sm:p-8">
@@ -138,7 +155,7 @@ export default function SignupPage() {
 
           <button
             type="submit"
-            className="w-full rounded-xl bg-linear-to-r from-emerald-500 to-emerald-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:from-emerald-600 hover:to-emerald-700"
+            className="w-full cursor-pointer rounded-xl bg-linear-to-r from-emerald-500 to-emerald-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:from-emerald-600 hover:to-emerald-700"
           >
             Sign up
           </button>
