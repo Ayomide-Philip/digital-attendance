@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Mail, User } from "lucide-react";
 import { Eye, EyeOff } from "lucide-react";
 import OAuthButtons from "@/components/auth/oauth-buttons";
+import PasswordStrengthIndicator from "@/components/auth/password-strength-indicator";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -13,6 +14,20 @@ export default function SignupPage() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  // function getPasswordStrength(value) {
+  //   if (!value) return 0;
+
+  //   let strength = 0;
+  //   if (value.length >= 8) strength += 1;
+  //   if (value.length >= 12) strength += 1;
+  //   if (/[a-z]/.test(value)) strength += 1;
+  //   if (/[A-Z]/.test(value)) strength += 1;
+  //   if (/[0-9]/.test(value)) strength += 1;
+  //   if (/[!@#$%^&*]/.test(value)) strength += 1;
+
+  //   return Math.min(strength, 4);
+  // }
 
   async function handleCreateNewAccount(e) {
     e.preventDefault();
@@ -26,11 +41,51 @@ export default function SignupPage() {
     ) {
       return toast.error("All fields are required. Pls fill all the fields.");
     }
+    if (name.trim() < 5) {
+      return toast.error("Name must be at least 5 characters long.");
+    }
+    if (password.length < 8) {
+      return toast.error("Password must be at least 8 characters long.");
+    }
+
+    // if (getPasswordStrength(password) < 3) {
+    //   return toast.error(
+    //     "Password is too weak. Use uppercase, lowercase, numbers, and symbols.",
+    //   );
+    // }
 
     if (password !== confirmPassword) {
       return toast.error("Passwords do not match. Please check and try again.");
     }
+    try {
+      const request = await fetch("/api/auth/sign-up", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: email,
+          name: name,
+          password: password,
+        }),
+      });
+      const response = await request.json();
+      if (!request.ok || response?.error) {
+        return toast.error(
+          response?.error || "Failed to create account. Please try again.",
+        );
+      }
+      toast.success(
+        response?.message || "Account created successfully! Please log in.",
+      );
+      window.location.href = "/login";
+    } catch (err) {
+      toast.error(
+        "An error occurred while creating your account. Please try again later.",
+      );
+    }
   }
+
   return (
     <section className="mx-auto flex min-h-[calc(100vh-14rem)] w-full max-w-5xl items-center justify-center px-4 py-8 sm:px-6 lg:px-8">
       <div className="w-full max-w-md rounded-2xl border border-slate-200/70 bg-white/90 p-6 shadow-xl backdrop-blur-sm dark:border-slate-800 dark:bg-slate-900/85 sm:p-8">
@@ -116,6 +171,7 @@ export default function SignupPage() {
                 )}
               </button>
             </div>
+            <PasswordStrengthIndicator password={password} />
           </div>
 
           <div className="space-y-2">
