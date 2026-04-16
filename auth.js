@@ -2,7 +2,13 @@ import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import User from "./lib/models/user.model";
 import bcrypt from "bcrypt";
-import { BETTER_AUTH_SECRET } from "./lib/database/config";
+import {
+  BETTER_AUTH_SECRET,
+  GOOGLE_CLIENT_ID,
+  GOOGLE_CLIENT_SECRET,
+} from "./lib/database/config";
+import Google from "next-auth/providers/google";
+import { connectDatabase } from "./lib/database/connectdb";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
@@ -12,7 +18,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         password: {},
       },
       authorize: async (credentials) => {
+        await connectDatabase();
         const { email, password } = credentials;
+        if (!email || !password) {
+          console.log("Email and password are required");
+          return null;
+        }
         // check if the user exist
         const userExist = await User.findOne({ email: email.trim() }).select(
           "+password",
@@ -36,11 +47,22 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         return {
           id: userExist?._id.toString(),
           name: userExist?.name,
-          email: userExist?.email,
+          email: userExist?.email.toLowerCase(),
           image: userExist?.image,
           role: userExist?.role,
         };
       },
+    }),
+    Google({
+      authorization: {
+        params: {
+          prompt: "consent",
+          access_type: "offline",
+          response_type: "code",
+        },
+      },
+      clientId: GOOGLE_CLIENT_ID,
+      clientSecret: GOOGLE_CLIENT_SECRET,
     }),
   ],
   pages: {
@@ -52,7 +74,48 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     maxAge: 24 * 60 * 60,
   },
   callbacks: {
-    async jwt({ token, user }) {
+    async signIn({ user, profile, account }) {
+      await connectDatabase();
+      if (!user?.email) return false;
+      const isGoogleProvider = account?.provider === "google";
+      const email = user.email.trim().toLowerCase();
+      let userExist = await User.findOne({
+        email: email,
+      });
+
+      if (!userExist) {
+        userExist = await User.create({
+          name: user?.name,
+          email: email,
+          image: user?.image,
+          googleId: isGoogleProvider ? profile?.sub : undefined,
+        });
+      }
+
+      let updateNeeded = false;
+      if (userExist?.image !== user?.image) {
+        userExist.image = user?.image;
+        updateNeeded = true;
+      }
+      if (isGoogleProvider) {
+        if (userExist.googleId !== profile?.sub) {
+          userExist.googleId = profile?.sub;
+          updateNeeded = true;
+        }
+      }
+      if (updateNeeded) {
+        await userExist.save();
+      }
+
+      user.id = userExist._id.toString();
+      user.role = userExist.role;
+      user.image = userExist.image;
+      return true;
+    },
+    async jwt({ token, user, account }) {
+      if (account) {
+        token.accountProvider = account.provider;
+      }
       if (user) {
         token.id = user.id;
         token.name = user.name;
@@ -69,6 +132,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         session.user.email = token.email;
         session.user.image = token.image;
         session.user.role = token.role;
+        session.user.provider = token.accountProvider;
       }
       return session;
     },
