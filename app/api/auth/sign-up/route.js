@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { connectDatabase } from "@/lib/database/connectdb";
 import User from "@/lib/models/user.model";
+import { hashPassword } from "@/lib/utility/hashPassword";
 
 export async function POST(req) {
   const { name, email, password } = await req.json();
@@ -65,8 +66,16 @@ export async function POST(req) {
       );
     }
     // create new user
+    const newUser = await User.create({
+      name,
+      email,
+      password: await hashPassword(password),
+    });
 
-    return NextResponse.json({ name, email, password }, { status: 200 });
+    return NextResponse.json(
+      { message: "Account created successfully" , newUser},
+      { status: 200 },
+    );
   } catch (err) {
     console.log(err);
     return NextResponse.json(
