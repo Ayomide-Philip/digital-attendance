@@ -73,7 +73,12 @@ export async function POST(req) {
     });
 
     return NextResponse.json(
-      { message: "Account created successfully" , newUser},
+      {
+        message: "Account created successfully",
+        user: {
+          id: newUser._id,
+        },
+      },
       { status: 200 },
     );
   } catch (err) {
