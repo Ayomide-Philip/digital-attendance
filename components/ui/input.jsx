@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 
-const Input = ({ className, type = "text", ...props }) => {
+function Input({ className, type = "text", ...props }) {
   return (
     <input
       type={type}
@@ -11,6 +11,6 @@ const Input = ({ className, type = "text", ...props }) => {
       {...props}
     />
   );
-};
+}
 
 export { Input };

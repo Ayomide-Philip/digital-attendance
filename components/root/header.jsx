@@ -69,7 +69,7 @@ export default function Header() {
             <Button
               as="a"
               variant="primary"
-              href="/sign-in"
+              href="/login"
               className="cursor-pointer"
             >
               <UserPlus className="h-4 w-4" />
@@ -135,7 +135,7 @@ export default function Header() {
             <div className="mt-7 grid gap-3 sm:mt-8">
               <Button
                 as="a"
-                href="/sign-in"
+                href="/login"
                 variant="primary"
                 className="cursor-pointer w-full"
                 onClick={() => setMobileMenuOpen(false)}

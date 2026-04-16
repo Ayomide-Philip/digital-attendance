@@ -28,8 +28,8 @@ export default function LoginPage() {
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
       newErrors.email = "Invalid email address";
     if (!password) newErrors.password = "Password is required";
-    else if (password.length < 6)
-      newErrors.password = "Password must be at least 6 characters";
+    else if (password.length < 8)
+      newErrors.password = "Password must be at least 8 characters";
     return newErrors;
   };
 
@@ -80,9 +80,7 @@ export default function LoginPage() {
             </p>
           </div>
 
-          {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Email */}
             <div className="space-y-2">
               <Label
                 htmlFor="email"
@@ -113,7 +111,6 @@ export default function LoginPage() {
               )}
             </div>
 
-            {/* Password */}
             <PasswordInput
               label="Password"
               value={password}
@@ -127,7 +124,6 @@ export default function LoginPage() {
               placeholder="Enter your password"
             />
 
-            {/* Remember & Forgot */}
             <div className="flex items-center justify-between gap-3 text-sm">
               <label className="flex items-center gap-2 cursor-pointer">
                 <Checkbox
@@ -146,24 +142,21 @@ export default function LoginPage() {
               </Link>
             </div>
 
-            {/* Error Message */}
             {Object.keys(errors).length > 0 && (
               <div className="rounded-xl border border-rose-200 bg-rose-50 p-3 text-sm text-rose-700 dark:border-rose-900/50 dark:bg-rose-900/20 dark:text-rose-400">
                 Please fix the errors above before submitting.
               </div>
             )}
 
-            {/* Success Message */}
             {successMessage && (
               <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-700 dark:border-emerald-900/50 dark:bg-emerald-900/20 dark:text-emerald-400">
                 {successMessage}
               </div>
             )}
 
-            {/* Login Button */}
             <Button
               type="submit"
-              className="w-full rounded-xl bg-linear-to-r from-sky-500 to-sky-600 py-2.5 font-semibold text-white hover:from-sky-600 hover:to-sky-700 transition"
+              className="w-full rounded-xl bg-linear-to-r from-sky-500 to-sky-600 py-3 font-semibold text-white hover:from-sky-600 hover:to-sky-700 transition"
               disabled={isLoading}
             >
               {isLoading ? (
@@ -180,7 +173,6 @@ export default function LoginPage() {
             </Button>
           </form>
 
-          {/* Divider */}
           <div className="my-6 flex items-center gap-3">
             <div className="h-px flex-1 bg-slate-200 dark:bg-slate-800" />
             <span className="text-xs text-slate-500 dark:text-slate-400">
@@ -189,12 +181,10 @@ export default function LoginPage() {
             <div className="h-px flex-1 bg-slate-200 dark:bg-slate-800" />
           </div>
 
-          {/* OAuth */}
           <OAuthButtons />
 
-          {/* Footer */}
           <p className="mt-6 text-center text-sm text-slate-600 dark:text-slate-400">
-            Don't have an account?{" "}
+            Don&apos;t have an account?{" "}
             <Link
               href="/signup"
               className="font-semibold text-sky-600 hover:text-sky-700 dark:text-sky-400 dark:hover:text-sky-300 transition"
