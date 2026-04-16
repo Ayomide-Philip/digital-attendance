@@ -53,15 +53,19 @@ export async function POST(req) {
 
   try {
     await connectDatabase();
-    const userExists = await User.findOne({ email: email.trim() });
-
-    if(userExists){
-        return NextResponse.json({
-            error: "An account with this email already exists"
-        },{
-            status:401
-        })
+    // check if user exists
+    if (await User.findOne({ email: email.trim() })) {
+      return NextResponse.json(
+        {
+          error: "An account with this email already exists",
+        },
+        {
+          status: 401,
+        },
+      );
     }
+    // create new user
+
     return NextResponse.json({ name, email, password }, { status: 200 });
   } catch (err) {
     console.log(err);
