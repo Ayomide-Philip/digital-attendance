@@ -2,6 +2,7 @@ import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import User from "./lib/models/user.model";
 import bcrypt from "bcrypt";
+import { BETTER_AUTH_SECRET } from "./lib/database/config";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
@@ -72,4 +73,5 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       return session;
     },
   },
+  secret: BETTER_AUTH_SECRET,
 });
