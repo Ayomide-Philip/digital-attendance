@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Mail, User } from "lucide-react";
+import OAuthButtons from "@/components/auth/oauth-buttons";
 
 export default function SignupPage() {
   return (
@@ -99,20 +100,7 @@ export default function SignupPage() {
             <div className="h-px flex-1 bg-slate-200 dark:bg-slate-800" />
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
-            <button
-              type="button"
-              className="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
-            >
-              Google
-            </button>
-            <button
-              type="button"
-              className="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
-            >
-              GitHub
-            </button>
-          </div>
+          <OAuthButtons />
         </form>
 
         <p className="mt-6 text-center text-sm text-slate-600 dark:text-slate-400">
