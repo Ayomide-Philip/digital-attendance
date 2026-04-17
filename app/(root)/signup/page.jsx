@@ -15,22 +15,28 @@ export default function SignupPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  // function getPasswordStrength(value) {
-  //   if (!value) return 0;
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  function getPasswordStrength(value) {
+    if (!value) return 0;
 
-  //   let strength = 0;
-  //   if (value.length >= 8) strength += 1;
-  //   if (value.length >= 12) strength += 1;
-  //   if (/[a-z]/.test(value)) strength += 1;
-  //   if (/[A-Z]/.test(value)) strength += 1;
-  //   if (/[0-9]/.test(value)) strength += 1;
-  //   if (/[!@#$%^&*]/.test(value)) strength += 1;
+    let strength = 0;
+    if (value.length >= 8) strength += 1;
+    if (value.length >= 12) strength += 1;
+    if (/[a-z]/.test(value)) strength += 1;
+    if (/[A-Z]/.test(value)) strength += 1;
+    if (/[0-9]/.test(value)) strength += 1;
+    if (/[!@#$%^&*]/.test(value)) strength += 1;
 
-  //   return Math.min(strength, 4);
-  // }
+    return Math.min(strength, 4);
+  }
 
   async function handleCreateNewAccount(e) {
     e.preventDefault();
+
+    if (isSubmitting) {
+      return;
+    }
+
     if (
       !email ||
       !name ||
@@ -41,7 +47,7 @@ export default function SignupPage() {
     ) {
       return toast.error("All fields are required. Pls fill all the fields.");
     }
-    if (name.trim() < 5) {
+    if (name.trim().length < 5) {
       return toast.error("Name must be at least 5 characters long.");
     }
     if (password.length < 8) {
@@ -57,6 +63,9 @@ export default function SignupPage() {
     if (password !== confirmPassword) {
       return toast.error("Passwords do not match. Please check and try again.");
     }
+
+    setIsSubmitting(true);
+
     try {
       const request = await fetch("/api/auth/sign-up", {
         method: "POST",
@@ -83,6 +92,8 @@ export default function SignupPage() {
       toast.error(
         "An error occurred while creating your account. Please try again later.",
       );
+    } finally {
+      setIsSubmitting(false);
     }
   }
 
@@ -211,9 +222,10 @@ export default function SignupPage() {
 
           <button
             type="submit"
-            className="w-full cursor-pointer rounded-xl bg-linear-to-r from-emerald-500 to-emerald-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:from-emerald-600 hover:to-emerald-700"
+            disabled={isSubmitting}
+            className="w-full cursor-pointer rounded-xl bg-linear-to-r from-emerald-500 to-emerald-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:from-emerald-600 hover:to-emerald-700 disabled:cursor-not-allowed disabled:opacity-70"
           >
-            Sign up
+            {isSubmitting ? "Creating account..." : "Sign up"}
           </button>
 
           <div className="my-2 flex items-center gap-3">
