@@ -1,8 +1,23 @@
 import { connectDatabase } from "@/lib/database/connectdb";
 import User from "@/lib/models/user.model";
 import { NextResponse } from "next/server";
-export async function PUT(req) {
-  const { role, userId } = await req.json();
+import { auth } from "@/auth";
+
+export const PUT = auth(async function PUT(req) {
+  console.log(req.auth);
+  if (!req?.auth || !req?.auth?.user) {
+    return NextResponse.json(
+      {
+        error: "Unauthorized Access",
+      },
+      {
+        status: 400,
+      },
+    );
+  }
+
+  const { role } = await req.json();
+  const userId = req?.auth?.user?.id;
 
   if (!userId) {
     return NextResponse.json(
@@ -73,4 +88,4 @@ export async function PUT(req) {
       },
     );
   }
-}
+});

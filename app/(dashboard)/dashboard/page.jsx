@@ -4,10 +4,54 @@ import Card from "@/components/ui/card";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Button } from "@base-ui/react";
+import { toast } from "sonner";
+import { SessionProvider, useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { redirect } from "next/navigation";
 
-export default function DashboardRolePickerPage() {
-  function setRolesForNewUsers(role) {
-    console.log(`Set user role to ${role}`);
+export default function Page() {
+  return (
+    <SessionProvider>
+      <DashboardRolePickerPage />
+    </SessionProvider>
+  );
+}
+
+export function DashboardRolePickerPage() {
+  const { update, data: session } = useSession();
+  const router = useRouter();
+  if (session?.user?.role === "student") return redirect("/dashboard/students");
+  if (session?.user?.role === "teacher") return redirect("/dashboard/teachers");
+  async function setRolesForNewUsers(role) {
+    if (!role) return toast.error("Please select a role to continue.");
+    try {
+      const request = await fetch("/api/user/role", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          role: role.trim().toLowerCase(),
+        }),
+        credentials: "include",
+      });
+      const response = await request.json();
+      if (!request.ok || response?.error) {
+        return toast.error(
+          response?.error || "Failed to set user role. Please try again.",
+        );
+      }
+      toast.success(response?.message || "User role updated successfully!");
+      if (response?.ok) {
+        await update();
+        router.push("/dashboard");
+      }
+    } catch (err) {
+      console.log(err);
+      return toast.error(
+        "An error occurred while setting your role. Please try again.",
+      );
+    }
   }
   return (
     <div className="relative min-h-screen overflow-hidden bg-slate-50 px-4 py-10 dark:bg-slate-950 sm:px-6">
@@ -42,7 +86,7 @@ export default function DashboardRolePickerPage() {
                 buttonVariants({ variant: "default" }),
                 "mt-6 h-10 rounded-xl px-4 cursor-pointer",
               )}
-              onClick={setRolesForNewUsers("teacher")}
+              onClick={() => setRolesForNewUsers("teacher")}
             >
               Continue as Teacher
             </Button>
@@ -64,7 +108,7 @@ export default function DashboardRolePickerPage() {
                 buttonVariants({ variant: "default" }),
                 "mt-6 h-10 rounded-xl px-4 cursor-pointer",
               )}
-              onClick={setRolesForNewUsers("student")}
+              onClick={() => setRolesForNewUsers("student")}
             >
               Continue as Student
             </Button>

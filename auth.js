@@ -112,7 +112,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       user.image = userExist.image;
       return true;
     },
-    async jwt({ token, user, account, trigger }) {
+    async jwt({ token, user, account, trigger, session }) {
       if (account) {
         token.accountProvider = account.provider;
       }
@@ -123,11 +123,17 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         token.image = user.image;
         token.role = user.role;
       }
-      if (trigger === "update") {
-        await connectDatabase();
-        const userExist = await User.findById(token.id);
-        token.role = userExist?.role;
-      }
+      // if (trigger === "update") {
+      //   console.log("UPDATE TRIGGER FIRED");
+      //   const dbUser = await User.findById(token.id).select("role");
+      //   console.log("DB USER:", dbUser);
+      //   if (dbUser) {
+      //     token.role = dbUser.role;
+      //   }
+      // }
+      await connectDatabase();
+      const dbUser = await User.findById(token.id).select("role");
+      token.role = dbUser?.role;
       return token;
     },
     async session({ session, token }) {
