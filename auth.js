@@ -123,14 +123,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         token.image = user.image;
         token.role = user.role;
       }
-      // if (trigger === "update") {
-      //   console.log("UPDATE TRIGGER FIRED");
-      //   const dbUser = await User.findById(token.id).select("role");
-      //   console.log("DB USER:", dbUser);
-      //   if (dbUser) {
-      //     token.role = dbUser.role;
-      //   }
-      // }
       await connectDatabase();
       const dbUser = await User.findById(token.id).select("role");
       token.role = dbUser?.role;
