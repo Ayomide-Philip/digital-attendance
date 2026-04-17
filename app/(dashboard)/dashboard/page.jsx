@@ -5,8 +5,22 @@ import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Button } from "@base-ui/react";
 import { toast } from "sonner";
+import { useSession, SessionProvider } from "next-auth/react";
+import { redirect } from "next/navigation";
 
-export default function DashboardRolePickerPage() {
+export default function Page() {
+  return (
+    <SessionProvider>
+      <DashboardRolePickerPage />
+    </SessionProvider>
+  );
+}
+
+export function DashboardRolePickerPage() {
+  const { data: session } = useSession();
+  if (session?.user?.role === "teacher") return redirect("/dashboard/teachers");
+  if (session?.user?.role === "student") return redirect("/dashboard/students");
+
   async function setRolesForNewUsers(role) {
     if (!role) return toast.error("Please select a role to continue.");
     try {
