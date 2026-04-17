@@ -5,6 +5,17 @@ export async function POST(req) {
     await req.json();
 
   // logic for validating the input
+  if (!teacherId || !teacherId.trim()) {
+    return NextResponse.json(
+      {
+        error: "Invalid Parameters",
+      },
+      {
+        status: 400,
+      },
+    );
+  }
+
   if (!name || !name.trim()) {
     return NextResponse.json(
       {
@@ -42,6 +53,20 @@ export async function POST(req) {
     return NextResponse.json(
       {
         error: "Code must be between 3 and 50 characters",
+      },
+      {
+        status: 400,
+      },
+    );
+  }
+
+  if (
+    description &&
+    (description.trim().length < 5 || description.trim().length > 100)
+  ) {
+    return NextResponse.json(
+      {
+        error: "Description must be between 5 and 100 characters",
       },
       {
         status: 400,
