@@ -5,23 +5,8 @@ import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Button } from "@base-ui/react";
 import { toast } from "sonner";
-import { SessionProvider, useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import { redirect } from "next/navigation";
 
-export default function Page() {
-  return (
-    <SessionProvider>
-      <DashboardRolePickerPage />
-    </SessionProvider>
-  );
-}
-
-export function DashboardRolePickerPage() {
-  const { update, data: session } = useSession();
-  const router = useRouter();
-  if (session?.user?.role === "student") return redirect("/dashboard/students");
-  if (session?.user?.role === "teacher") return redirect("/dashboard/teachers");
+export default function DashboardRolePickerPage() {
   async function setRolesForNewUsers(role) {
     if (!role) return toast.error("Please select a role to continue.");
     try {

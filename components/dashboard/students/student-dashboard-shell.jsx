@@ -7,7 +7,7 @@ import StudentNavbar from "@/components/dashboard/students/student-navbar";
 import StudentSidebar from "@/components/dashboard/students/student-sidebar";
 import { Button } from "@/components/ui/button";
 
-export default function StudentDashboardShell({ children }) {
+export default function StudentDashboardShell({ children, session }) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -54,6 +54,7 @@ export default function StudentDashboardShell({ children }) {
             onMenuClick={() => setMobileOpen(true)}
             onToggleSidebar={() => setSidebarCollapsed((prev) => !prev)}
             sidebarCollapsed={sidebarCollapsed}
+            session={session}
           />
           <div className="pb-6">{children}</div>
         </main>

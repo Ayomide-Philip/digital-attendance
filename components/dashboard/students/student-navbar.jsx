@@ -2,7 +2,6 @@
 
 import { Bell, Menu, PanelLeft, Search } from "lucide-react";
 import { usePathname } from "next/navigation";
-
 import { Button } from "@/components/ui/button";
 import Toggle from "@/components/toggle";
 
@@ -21,6 +20,7 @@ export default function StudentNavbar({
   onMenuClick,
   onToggleSidebar,
   sidebarCollapsed,
+  session,
 }) {
   const pathname = usePathname();
   const title = getTitle(pathname);
@@ -72,7 +72,7 @@ export default function StudentNavbar({
         </Button>
         <Toggle />
         <div className="hidden size-9 place-items-center rounded-full border border-slate-200 bg-white text-xs font-semibold text-slate-700 shadow-sm dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 min-[430px]:grid">
-          ST
+          {`${session?.user?.name?.split(" ")[0]?.[0]} ${session?.user?.name?.split(" ")[1]?.[0]}`}
         </div>
       </div>
     </header>
