@@ -42,10 +42,7 @@ export function DashboardRolePickerPage() {
         );
       }
       toast.success(response?.message || "User role updated successfully!");
-      if (response?.ok) {
-        await update();
-        router.push("/dashboard");
-      }
+      window.location.reload();
     } catch (err) {
       console.log(err);
       return toast.error(
