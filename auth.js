@@ -112,7 +112,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       user.image = userExist.image;
       return true;
     },
-    async jwt({ token, user, account }) {
+    async jwt({ token, user, account, trigger, session }) {
       if (account) {
         token.accountProvider = account.provider;
       }
@@ -122,6 +122,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         token.email = user.email;
         token.image = user.image;
         token.role = user.role;
+      }
+      if (trigger === "update") {
+        await connectDatabase();
+        const userExist = await User.findById(token.id);
+        token.role = userExist?.role;
       }
       return token;
     },

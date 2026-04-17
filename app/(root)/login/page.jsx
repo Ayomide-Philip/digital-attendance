@@ -1,8 +1,31 @@
+"use client";
 import Link from "next/link";
-import { Lock, Mail } from "lucide-react";
+import { Eye, EyeOff, Lock, Mail } from "lucide-react";
 import OAuthButtons from "@/components/auth/oauth-buttons";
-
+import { useState } from "react";
+import { signIn } from "next-auth/react";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 export default function LoginPage() {
+  const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+
+  async function handleLogin(e) {
+    e.preventDefault();
+    const signin = await signIn("credentials", {
+      email,
+      password,
+      redirect: false,
+      callbackUrl: "/dashboard",
+    });
+    console.log(signin);
+    if (signin?.error) {
+      return toast.error("Invalid email or password. Pls try again.");
+    }
+    router.push(signin?.url || "/dashboard");
+  }
   return (
     <section className="mx-auto flex min-h-[calc(100vh-14rem)] w-full max-w-5xl items-center justify-center px-4 py-8 sm:px-6 lg:px-8">
       <div className="w-full max-w-md rounded-2xl border border-slate-200/70 bg-white/90 p-6 shadow-xl backdrop-blur-sm dark:border-slate-800 dark:bg-slate-900/85 sm:p-8">
@@ -18,7 +41,7 @@ export default function LoginPage() {
           </p>
         </div>
 
-        <form className="space-y-4">
+        <form className="space-y-4" onSubmit={handleLogin}>
           <div className="space-y-2">
             <label
               htmlFor="email"
@@ -32,6 +55,8 @@ export default function LoginPage() {
                 type="email"
                 placeholder="name@example.com"
                 className="w-full rounded-xl border border-slate-200 bg-white py-2.5 pr-3 pl-10 text-sm outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 dark:border-slate-800 dark:bg-slate-950"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
               <Mail className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-slate-400" />
             </div>
@@ -44,12 +69,28 @@ export default function LoginPage() {
             >
               Password
             </label>
-            <input
-              id="password"
-              type="password"
-              placeholder="Enter your password"
-              className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 dark:border-slate-800 dark:bg-slate-950"
-            />
+            <div className="relative">
+              <input
+                id="password"
+                type={showPassword ? "text" : "password"}
+                placeholder="Enter your password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 pr-10 text-sm outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 dark:border-slate-800 dark:bg-slate-950"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword((prev) => !prev)}
+                className="absolute cursor-pointer top-1/2 right-3 -translate-y-1/2 text-slate-500 transition hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200"
+                aria-label={showPassword ? "Hide password" : "Show password"}
+              >
+                {showPassword ? (
+                  <EyeOff className="size-4" />
+                ) : (
+                  <Eye className="size-4" />
+                )}
+              </button>
+            </div>
           </div>
 
           <div className="flex items-center justify-between text-sm">
