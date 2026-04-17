@@ -1,7 +1,6 @@
 import { connectDatabase } from "@/lib/database/connectdb";
 import User from "@/lib/models/user.model";
 import { NextResponse } from "next/server";
-import mongoose from "mongoose";
 export async function PUT(req) {
   const { role, userId } = await req.json();
 

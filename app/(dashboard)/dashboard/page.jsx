@@ -1,11 +1,14 @@
-import Link from "next/link";
+"use client";
 import { GraduationCap, Users } from "lucide-react";
-
 import Card from "@/components/ui/card";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { Button } from "@base-ui/react";
 
 export default function DashboardRolePickerPage() {
+  function setRolesForNewUsers(role) {
+    console.log(`Set user role to ${role}`);
+  }
   return (
     <div className="relative min-h-screen overflow-hidden bg-slate-50 px-4 py-10 dark:bg-slate-950 sm:px-6">
       <div className="pointer-events-none absolute inset-0 opacity-70 dark:opacity-40">
@@ -34,15 +37,15 @@ export default function DashboardRolePickerPage() {
             <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
               Manage class attendance, students, reports, and teaching settings.
             </p>
-            <Link
-              href="/dashboard/teachers"
+            <Button
               className={cn(
                 buttonVariants({ variant: "default" }),
-                "mt-6 h-10 rounded-xl px-4",
+                "mt-6 h-10 rounded-xl px-4 cursor-pointer",
               )}
+              onClick={setRolesForNewUsers("teacher")}
             >
               Continue as Teacher
-            </Link>
+            </Button>
           </Card>
 
           <Card className="rounded-2xl p-6 transition-transform duration-300 hover:-translate-y-0.5">
@@ -56,15 +59,15 @@ export default function DashboardRolePickerPage() {
               View your attendance, classes, and profile from the student
               portal.
             </p>
-            <Link
-              href="/dashboard/students"
+            <Button
               className={cn(
                 buttonVariants({ variant: "default" }),
-                "mt-6 h-10 rounded-xl px-4",
+                "mt-6 h-10 rounded-xl px-4 cursor-pointer",
               )}
+              onClick={setRolesForNewUsers("student")}
             >
               Continue as Student
-            </Link>
+            </Button>
           </Card>
         </div>
       </div>
