@@ -112,7 +112,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       user.image = userExist.image;
       return true;
     },
-    async jwt({ token, user, account, trigger, session }) {
+    async jwt({ token, user, account, trigger }) {
       if (account) {
         token.accountProvider = account.provider;
       }
