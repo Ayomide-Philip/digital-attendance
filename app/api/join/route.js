@@ -1,6 +1,7 @@
 import { connectDatabase } from "@/lib/database/connectdb";
 import User from "@/lib/models/user.model";
 import { NextResponse } from "next/server";
+import Classes from "@/lib/models/classes.model";
 
 export const POST = async function POST(req) {
   const searchParams = req.nextUrl.searchParams;
@@ -68,7 +69,7 @@ export const POST = async function POST(req) {
     return NextResponse.json({
       classId,
       studentId,
-      user,
+      classExist,
     });
   } catch (err) {
     console.log(err);
