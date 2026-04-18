@@ -33,7 +33,7 @@ export default function CreateClassPage() {
 
   function addDepartmentalCode(inputValue = departmentalCodeInput) {
     const normalized = inputValue.trim().toLowerCase();
-    if (!normalized) {
+    if (!normalized || normalized.length < 2) {
       return;
     }
     if (departmentalCodes.includes(normalized)) {
@@ -58,7 +58,6 @@ export default function CreateClassPage() {
       emailSuffix,
       departmentalCodes,
     );
-    setIsSubmitting(true);
     // validating teachers input
     if (!className || !className.trim()) {
       return toast.error("Class name is required");
@@ -72,7 +71,7 @@ export default function CreateClassPage() {
     if (classCode.trim().length < 3) {
       return toast.error("Class code must be at least 3 characters long");
     }
-    if (emailSuffix) {
+    if (emailSuffix.trim()) {
       if (!emailSuffix.startsWith("@")) {
         return toast.error("Email suffix must start with @");
       }
@@ -84,6 +83,49 @@ export default function CreateClassPage() {
       ) {
         return toast.error("Invalid email suffix format e.g. @school.edu");
       }
+    }
+    if (description.trim()) {
+      if (description.trim().length < 10) {
+        return toast.error("Description must be at least 10 characters long");
+      }
+      if (description.trim().length > 300) {
+        return toast.error("Description must be less than 300 characters long");
+      }
+    }
+    if (departmentalCodes?.length > 0) {
+      // Add validation for departmental codes if needed
+      const invalidCode = departmentalCodes?.find((code) => code.length < 2);
+      if (invalidCode) {
+        return toast.error(
+          `Departmental code "${invalidCode}" must be at least 2 characters long`,
+        );
+      }
+      const duplicateCode = departmentalCodes?.map((code) =>
+        code.trim().toLowerCase(),
+      );
+      if (new Set(duplicateCode).size !== duplicateCode?.length) {
+        return toast.error("Departmental codes must be unique");
+      }
+    }
+    setIsSubmitting(true);
+    setSubmitMessage("All validations passed! Submitting form...");
+    try {
+      const request = await fetch("/api/classes", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: className.trim(),
+          code: classCode.trim().toLowerCase(),
+          description: description.trim(),
+          emailSuffix: emailSuffix.trim().toLowerCase() || "",
+          departmentalCode: departmentalCodes || [],
+        }),
+      });
+    } catch (err) {
+      console.log(err);
+      return toast.error("An unexpected error occurred. Please try again.");
     }
   }
 
@@ -252,7 +294,7 @@ export default function CreateClassPage() {
                   <button
                     type="button"
                     onClick={() => addDepartmentalCode()}
-                    className="inline-flex items-center justify-center gap-2 rounded-lg border border-sky-300 bg-sky-50 px-3 py-2 text-sm font-medium text-sky-700 transition hover:bg-sky-100 dark:border-sky-800 dark:bg-sky-950/50 dark:text-sky-300 dark:hover:bg-sky-900/60"
+                    className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-lg border border-sky-300 bg-sky-50 px-3 py-2 text-sm font-medium text-sky-700 transition hover:bg-sky-100 dark:border-sky-800 dark:bg-sky-950/50 dark:text-sky-300 dark:hover:bg-sky-900/60"
                   >
                     <Plus className="size-4" />
                     Add
