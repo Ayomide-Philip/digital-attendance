@@ -20,7 +20,6 @@ export default function CreateClassPage() {
   const [departmentalCodeInput, setDepartmentalCodeInput] = useState("");
   const [departmentalCodes, setDepartmentalCodes] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitMessage, setSubmitMessage] = useState("");
 
   function resetForm() {
     setClassName("");
@@ -103,7 +102,6 @@ export default function CreateClassPage() {
       }
     }
     setIsSubmitting(true);
-    setSubmitMessage("All validations passed! Submitting form...");
     try {
       const request = await fetch("/api/classes", {
         method: "POST",
@@ -124,9 +122,6 @@ export default function CreateClassPage() {
           response?.error || "Failed to create class. Please try again.",
         );
       }
-      setSubmitMessage(
-        response?.error || response?.message || "Class created successfully!",
-      );
       window.location.href = `/dashboard/teachers/classes/`;
     } catch (err) {
       console.log(err);
@@ -313,12 +308,6 @@ export default function CreateClassPage() {
               </p>
             </div>
           </div>
-
-          {submitMessage ? (
-            <p className="rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-700 dark:border-emerald-900/60 dark:bg-emerald-950/40 dark:text-emerald-300">
-              {submitMessage}
-            </p>
-          ) : null}
 
           <div className="flex flex-col-reverse gap-3 border-t border-slate-200 pt-5 dark:border-slate-800 sm:flex-row sm:justify-end">
             <button
