@@ -78,9 +78,7 @@ export default function CreateClassPage() {
       if (emailSuffix.trim().length < 5) {
         return toast.error("Email suffix must be at least 5 characters long");
       }
-      if (
-        !/^@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)+$/.test(`test${emailSuffix.trim()}`)
-      ) {
+      if (!/^@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)+$/.test(`${emailSuffix.trim()}`)) {
         return toast.error("Invalid email suffix format e.g. @school.edu");
       }
     }
@@ -93,17 +91,14 @@ export default function CreateClassPage() {
       }
     }
     if (departmentalCodes?.length > 0) {
-      // Add validation for departmental codes if needed
-      const invalidCode = departmentalCodes?.find((code) => code.length < 2);
-      if (invalidCode) {
+      const normalized = departmentalCodes.map((c) => c.trim().toLowerCase());
+      if (normalized.some((code) => code.length < 2)) {
         return toast.error(
-          `Departmental code "${invalidCode}" must be at least 2 characters long`,
+          "All departmental codes must be at least 2 characters long",
         );
       }
-      const duplicateCode = departmentalCodes?.map((code) =>
-        code.trim().toLowerCase(),
-      );
-      if (new Set(duplicateCode).size !== duplicateCode?.length) {
+      // Add validation for departmental codes if needed
+      if (new Set(normalized).size !== normalized?.length) {
         return toast.error("Departmental codes must be unique");
       }
     }
@@ -123,9 +118,19 @@ export default function CreateClassPage() {
           departmentalCode: departmentalCodes || [],
         }),
       });
+      const response = await request.json();
+      if (!request.ok || response?.error) {
+        return toast.error(
+          response?.error || "Failed to create class. Please try again.",
+        );
+      }
+      setSubmitMessage("Class created successfully!");
+      window.location.href = `/dashboard/teachers/classes/`;
     } catch (err) {
       console.log(err);
       return toast.error("An unexpected error occurred. Please try again.");
+    } finally {
+      setIsSubmitting(false);
     }
   }
 
