@@ -54,6 +54,17 @@ export const POST = async function POST(req) {
         },
       );
     }
+    // check if the student is already in the class
+    if (classExist?.students?.includes(studentId)) {
+      return NextResponse.json(
+        {
+          error: "Student already in the class",
+        },
+        {
+          status: 400,
+        },
+      );
+    }
     return NextResponse.json({
       classId,
       studentId,
