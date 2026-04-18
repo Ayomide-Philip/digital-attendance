@@ -11,20 +11,32 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   async function handleLogin(e) {
     e.preventDefault();
-    const signin = await signIn("credentials", {
-      email,
-      password,
-      redirect: false,
-      callbackUrl: "/dashboard",
-    });
-    console.log(signin);
-    if (signin?.error) {
-      return toast.error("Invalid email or password. Pls try again.");
+    if (isSubmitting) {
+      return;
     }
-    router.push(signin?.url || "/dashboard");
+
+    setIsSubmitting(true);
+
+    try {
+      const signin = await signIn("credentials", {
+        email,
+        password,
+        redirect: false,
+        callbackUrl: "/dashboard",
+      });
+
+      if (signin?.error) {
+        return toast.error("Invalid email or password. Pls try again.");
+      }
+
+      router.push(signin?.url || "/dashboard");
+    } finally {
+      setIsSubmitting(false);
+    }
   }
   return (
     <section className="mx-auto flex min-h-[calc(100vh-14rem)] w-full max-w-5xl items-center justify-center px-4 py-8 sm:px-6 lg:px-8">
@@ -108,9 +120,10 @@ export default function LoginPage() {
 
           <button
             type="submit"
-            className="w-full rounded-xl bg-linear-to-r from-sky-500 to-sky-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:from-sky-600 hover:to-sky-700"
+            disabled={isSubmitting}
+            className="w-full cursor-pointer rounded-xl bg-linear-to-r from-sky-500 to-sky-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:from-sky-600 hover:to-sky-700 disabled:cursor-not-allowed disabled:opacity-70"
           >
-            Login
+            {isSubmitting ? "Logging in..." : "Login"}
           </button>
 
           <div className="my-2 flex items-center gap-3">
