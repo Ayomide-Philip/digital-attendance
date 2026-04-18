@@ -1,8 +1,22 @@
 import ClassCard from "@/app/(dashboard)/dashboard/teachers/components/ClassCard";
 import { teacherClasses } from "@/app/(dashboard)/dashboard/teachers/components/mock-data";
 import Link from "next/link";
+import { auth } from "@/auth";
+import { redirect } from "next/navigation";
+import { BASE_URL } from "@/lib/database/config";
+import { cookies } from "next/headers";
 
-export default function ClassesPage() {
+export default async function ClassesPage() {
+  const session = await auth();
+  if (!session || !session.user) return redirect("/login");
+  const request = await fetch(`${BASE_URL}/api/teacher/classes`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Cookie: (await cookies()).toString(),
+    },
+  });
+  const { classes } = await request.json();
   return (
     <div className="space-y-5">
       <div className="rounded-2xl border border-slate-200/70 bg-white/80 p-5 shadow-sm dark:border-slate-800 dark:bg-slate-950/70">
@@ -28,7 +42,7 @@ export default function ClassesPage() {
       </div>
 
       <section className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
-        {teacherClasses.map((item) => (
+        {classes.map((item) => (
           <ClassCard key={item.id} item={item} />
         ))}
       </section>

@@ -103,7 +103,7 @@ export default function CreateClassPage() {
     }
     setIsSubmitting(true);
     try {
-      const request = await fetch("/api/classes", {
+      const request = await fetch("/api/teacher/classes", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
