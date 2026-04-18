@@ -1,4 +1,5 @@
 import { connectDatabase } from "@/lib/database/connectdb";
+import Classes from "@/lib/models/classes.model";
 import User from "@/lib/models/user.model";
 import { NextResponse } from "next/server";
 
@@ -64,7 +65,7 @@ export async function POST(req) {
 
   if (
     description &&
-    (description.trim().length < 10 || description.trim().length > 100)
+    (description?.trim()?.length < 10 || description?.trim()?.length > 100)
   ) {
     return NextResponse.json(
       {
@@ -76,7 +77,7 @@ export async function POST(req) {
     );
   }
 
-  if (emailSuffix.trim()) {
+  if (emailSuffix?.trim()) {
     if (!emailSuffix.trim().includes("@")) {
       return NextResponse.json(
         {
@@ -99,7 +100,7 @@ export async function POST(req) {
     }
   }
 
-  if (departmentalCode.length > 0) {
+  if (departmentalCode?.length > 0) {
     const codeLessThanThreeChar = departmentalCode.filter(
       (c) => c.trim().length < 3,
     );
@@ -130,18 +131,49 @@ export async function POST(req) {
       );
     }
 
-    
+    if (teacher?.role !== "teacher") {
+      return NextResponse.json(
+        {
+          error: "User does not have priviledge to perform action",
+        },
+        {
+          status: 403,
+        },
+      );
+    }
+
+    const existingClass = await Classes.findOne({
+      teacher: teacher._id,
+      code: code.trim().toLowerCase(),
+    });
+
+    if (existingClass) {
+      return NextResponse.json(
+        {
+          error:
+            "You already have a class with this code. Please choose a different code.",
+        },
+        {
+          status: 400,
+        },
+      );
+    }
+
+    const newClass = await Classes.create({
+      name: name.trim(),
+      code: code.trim().toLowerCase(),
+      description: description?.trim() || "",
+      teacher: teacher?._id,
+      rules: {
+        emailSuffix: emailSuffix?.trim() || "",
+        departmentCode: departmentalCode || [],
+      },
+    });
+
     return NextResponse.json(
       {
-        message: "Create a new class",
-        data: {
-          name,
-          code,
-          description,
-          teacherId,
-          emailSuffix,
-          departmentalCode,
-        },
+        message: "Class created successfully",
+        class: newClass,
       },
       {
         status: 201,
