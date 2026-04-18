@@ -99,10 +99,10 @@ export async function POST(req) {
       );
     }
   }
-
+  let uniqueDepartmentalCode = [];
   if (departmentalCode?.length > 0) {
     const codeLessThanThreeChar = departmentalCode.filter(
-      (c) => c.trim().length < 3,
+      (c) => c?.trim()?.length < 3,
     );
     if (codeLessThanThreeChar.length > 0) {
       return NextResponse.json(
@@ -114,6 +114,22 @@ export async function POST(req) {
         },
       );
     }
+    const lowerCaseDeptCode = departmentalCode.map((c) =>
+      c.trim().toLowerCase(),
+    );
+    uniqueDepartmentalCode.push(...new Set(lowerCaseDeptCode));
+  }
+
+  if (uniqueDepartmentalCode.length !== departmentalCode?.length) {
+    return NextResponse.json(
+      {
+        error:
+          "Duplicate departmental code found. Please ensure all departmental codes are unique.",
+      },
+      {
+        status: 400,
+      },
+    );
   }
 
   try {
@@ -166,7 +182,7 @@ export async function POST(req) {
       teacher: teacher?._id,
       rules: {
         emailSuffix: emailSuffix?.trim() || "",
-        departmentCode: departmentalCode || [],
+        departmentCode: uniqueDepartmentalCode || [],
       },
     });
 
