@@ -66,10 +66,27 @@ export const POST = async function POST(req) {
         },
       );
     }
+    // check if the user meet the class rules
+    const rules = classExist?.rules || { emailSuffix: "", departmentCode: [] };
+
+    if (rules?.emailSuffix?.trim()) {
+      const emailSuffix = rules.emailSuffix.trim().toLowerCase();
+      if (!user.email.toLowerCase().endsWith(emailSuffix)) {
+        return NextResponse.json(
+          {
+            error: `Email must end with ${emailSuffix}`,
+          },
+          {
+            status: 400,
+          },
+        );
+      }
+    }
+
     return NextResponse.json({
       classId,
       studentId,
-      classExist,
+      rules,
     });
   } catch (err) {
     console.log(err);
