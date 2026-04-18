@@ -1,10 +1,10 @@
 import ClassCard from "@/app/(dashboard)/dashboard/teachers/components/ClassCard";
-import { teacherClasses } from "@/app/(dashboard)/dashboard/teachers/components/mock-data";
 import Link from "next/link";
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import { BASE_URL } from "@/lib/database/config";
 import { cookies } from "next/headers";
+import { FolderOpen } from "lucide-react";
 
 export default async function ClassesPage() {
   const session = await auth();
@@ -16,7 +16,8 @@ export default async function ClassesPage() {
       Cookie: (await cookies()).toString(),
     },
   });
-  const { classes } = await request.json();
+  const response = await request.json();
+  const classes = Array.isArray(response?.classes) ? response.classes : [];
   return (
     <div className="space-y-5">
       <div className="rounded-2xl border border-slate-200/70 bg-white/80 p-5 shadow-sm dark:border-slate-800 dark:bg-slate-950/70">
@@ -41,11 +42,34 @@ export default async function ClassesPage() {
         </div>
       </div>
 
-      <section className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
-        {classes.map((item) => (
-          <ClassCard key={item?._id} item={item} />
-        ))}
-      </section>
+      {classes.length === 0 ? (
+        <section className="rounded-2xl border border-dashed border-slate-300 bg-white/70 p-8 text-center shadow-sm dark:border-slate-700 dark:bg-slate-950/50">
+          <div className="mx-auto flex size-12 items-center justify-center rounded-xl bg-sky-100 text-sky-700 dark:bg-sky-950/50 dark:text-sky-300">
+            <FolderOpen className="size-5" />
+          </div>
+          <h3 className="mt-4 text-base font-semibold text-slate-900 dark:text-slate-100">
+            No classes yet
+          </h3>
+          <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
+            You have not created any class yet. Click &quot;Create Class&quot;
+            to add your first class.
+          </p>
+          <div className="mt-5">
+            <Link
+              href="/dashboard/teachers/classes/create"
+              className="inline-flex items-center justify-center rounded-lg bg-sky-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-sky-700 dark:bg-sky-500 dark:hover:bg-sky-400"
+            >
+              Create Class
+            </Link>
+          </div>
+        </section>
+      ) : (
+        <section className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+          {classes.map((item) => (
+            <ClassCard key={item?._id} item={item} />
+          ))}
+        </section>
+      )}
     </div>
   );
 }
