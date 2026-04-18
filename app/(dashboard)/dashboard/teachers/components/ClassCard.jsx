@@ -22,11 +22,14 @@ export default function ClassCard({ item }) {
     item?.description?.trim() || "No description available for this class.";
 
   return (
-    <Link href={`/dashboard/teachers/classes/${classId}`}>
-      <Card className="rounded-2xl p-5 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-slate-200/40 dark:hover:shadow-black/20">
+    <Link
+      href={`/dashboard/teachers/classes/${classId}`}
+      className="block h-full"
+    >
+      <Card className="flex h-full flex-col rounded-2xl p-5 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-slate-200/40 dark:hover:shadow-black/20">
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
-            <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">
+            <h3 className="line-clamp-2 min-h-12 text-base font-semibold text-slate-900 dark:text-slate-100">
               {item.name}
             </h3>
 
@@ -41,11 +44,11 @@ export default function ClassCard({ item }) {
           <ArrowUpRight className="mt-1 size-4 shrink-0 text-slate-400" />
         </div>
 
-        <p className="mt-3 line-clamp-2 text-sm text-slate-600 dark:text-slate-300">
+        <p className="mt-3 line-clamp-2 min-h-10 text-sm text-slate-600 dark:text-slate-300">
           {description}
         </p>
 
-        <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-slate-600 dark:text-slate-300">
+        <div className="mt-auto pt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-slate-600 dark:text-slate-300">
           <span className="inline-flex items-center gap-2">
             <Users className="size-4" />
             {studentsCount} students
