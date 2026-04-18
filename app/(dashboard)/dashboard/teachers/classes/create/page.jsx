@@ -124,7 +124,9 @@ export default function CreateClassPage() {
           response?.error || "Failed to create class. Please try again.",
         );
       }
-      setSubmitMessage("Class created successfully!");
+      setSubmitMessage(
+        response?.error || response?.message || "Class created successfully!",
+      );
       window.location.href = `/dashboard/teachers/classes/`;
     } catch (err) {
       console.log(err);

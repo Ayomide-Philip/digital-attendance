@@ -15,7 +15,7 @@ export const POST = auth(async function POST(req) {
       },
     );
   }
-  const teacherId = req.auth.user.id;
+  const teacherId = req?.auth?.user?.id;
   const { name, code, description, emailSuffix, departmentalCode } =
     await req.json();
 
