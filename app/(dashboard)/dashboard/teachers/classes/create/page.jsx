@@ -115,6 +115,7 @@ export default function CreateClassPage() {
           emailSuffix: emailSuffix.trim().toLowerCase() || "",
           departmentalCode: departmentalCodes || [],
         }),
+        credentials: "include",
       });
       const response = await request.json();
       if (!request.ok || response?.error) {

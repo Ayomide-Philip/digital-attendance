@@ -4,6 +4,69 @@ import Classes from "@/lib/models/classes.model";
 import User from "@/lib/models/user.model";
 import { NextResponse } from "next/server";
 
+export const GET = auth(async function GET(req) {
+  if (!req?.auth || !req?.auth?.user) {
+    return NextResponse.json(
+      {
+        error: "Unauthorized Access",
+      },
+      {
+        status: 401,
+      },
+    );
+  }
+  const teacherId = req?.auth?.user?.id;
+
+  try {
+    await connectDatabase();
+    // check if the teacher account exist in my db
+    const teacher = await User.findById(teacherId);
+    if (!teacher) {
+      return NextResponse.json(
+        {
+          error: "Unauthorized Access",
+        },
+        {
+          status: 401,
+        },
+      );
+    }
+
+    if (teacher?.role !== "teacher") {
+      return NextResponse.json(
+        {
+          error: "User does not have priviledge to perform action",
+        },
+        {
+          status: 403,
+        },
+      );
+    }
+
+    const classes = await Classes.find({ teacher: teacher?._id });
+
+    return NextResponse.json(
+      {
+        message: "Classes fetched successfully",
+        classes,
+      },
+      {
+        status: 200,
+      },
+    );
+  } catch (err) {
+    console.log(err);
+    return NextResponse.json(
+      {
+        error: "An error occurred while fetching classes",
+      },
+      {
+        status: 400,
+      },
+    );
+  }
+});
+
 export const POST = auth(async function POST(req) {
   if (!req?.auth || !req?.auth?.user) {
     return NextResponse.json(
