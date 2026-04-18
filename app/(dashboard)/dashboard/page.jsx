@@ -17,7 +17,8 @@ export default function Page() {
 }
 
 export function DashboardRolePickerPage() {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
+  if (status === "loading") return null;
   if (session?.user?.role === "teacher") return redirect("/dashboard/teachers");
   if (session?.user?.role === "student") return redirect("/dashboard/students");
 
