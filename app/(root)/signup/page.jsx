@@ -14,6 +14,7 @@ export default function SignupPage() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [role, setRole] = useState("");
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   function getPasswordStrength(value) {
@@ -42,6 +43,8 @@ export default function SignupPage() {
       !name ||
       !password ||
       !confirmPassword ||
+      !role ||
+      !role.trim() ||
       !email.trim() ||
       !name.trim()
     ) {
@@ -73,9 +76,10 @@ export default function SignupPage() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          email: email,
+          email: email.trim().toLowerCase(),
           name: name,
           password: password,
+          role: role.trim(),
         }),
       });
       const response = await request.json();
@@ -216,6 +220,36 @@ export default function SignupPage() {
                 ) : (
                   <Eye className="size-4" />
                 )}
+              </button>
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-slate-700 dark:text-slate-200">
+              Select Role
+            </label>
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                type="button"
+                onClick={() => setRole("student")}
+                className={`rounded-xl cursor-pointer border-2 px-4 py-3 text-sm font-medium transition ${
+                  role === "student"
+                    ? "border-emerald-500 bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300"
+                    : "border-slate-200 bg-white text-slate-600 hover:border-emerald-300 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-400"
+                }`}
+              >
+                Student
+              </button>
+              <button
+                type="button"
+                onClick={() => setRole("teacher")}
+                className={`rounded-xl cursor-pointer border-2 px-4 py-3 text-sm font-medium transition ${
+                  role === "teacher"
+                    ? "border-emerald-500 bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300"
+                    : "border-slate-200 bg-white text-slate-600 hover:border-emerald-300 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-400"
+                }`}
+              >
+                Teacher
               </button>
             </div>
           </div>

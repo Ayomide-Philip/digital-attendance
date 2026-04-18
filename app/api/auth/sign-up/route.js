@@ -4,7 +4,7 @@ import User from "@/lib/models/user.model";
 import { hashPassword } from "@/lib/utility/hashPassword";
 
 export async function POST(req) {
-  const { name, email, password } = await req.json();
+  const { name, email, password, role } = await req.json();
   // checking if all fields are provided
   if (
     !name ||
@@ -12,7 +12,9 @@ export async function POST(req) {
     !email ||
     !email.trim() ||
     !password ||
-    !password.trim()
+    !password.trim() ||
+    !role ||
+    !role.trim()
   ) {
     return NextResponse.json(
       { error: "All fields are required" },
@@ -45,6 +47,13 @@ export async function POST(req) {
     );
   }
 
+  if (!["student", "teacher"].includes(role.trim())) {
+    return NextResponse.json(
+      { error: "Role must be either 'student' or 'teacher'" },
+      { status: 400 },
+    );
+  }
+
   if (password.trim().length < 8) {
     return NextResponse.json(
       { error: "Password must be at least 8 characters long" },
@@ -68,8 +77,9 @@ export async function POST(req) {
     // create new user
     const newUser = await User.create({
       name,
-      email,
+      email: email.trim().toLowerCase(),
       password: await hashPassword(password),
+      role: role.trim(),
     });
 
     return NextResponse.json(
