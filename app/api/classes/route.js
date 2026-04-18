@@ -1,3 +1,5 @@
+import { connectDatabase } from "@/lib/database/connectdb";
+import User from "@/lib/models/user.model";
 import { NextResponse } from "next/server";
 
 export async function POST(req) {
@@ -113,20 +115,47 @@ export async function POST(req) {
     }
   }
 
-  return NextResponse.json(
-    {
-      message: "Create a new class",
-      data: {
-        name,
-        code,
-        description,
-        teacherId,
-        emailSuffix,
-        departmentalCode,
+  try {
+    await connectDatabase();
+    // check if the teacher account exist in my db
+    const teacher = await User.findById(teacherId);
+    if (!teacher) {
+      return NextResponse.json(
+        {
+          error: "Unauthorized Access",
+        },
+        {
+          status: 401,
+        },
+      );
+    }
+
+    
+    return NextResponse.json(
+      {
+        message: "Create a new class",
+        data: {
+          name,
+          code,
+          description,
+          teacherId,
+          emailSuffix,
+          departmentalCode,
+        },
       },
-    },
-    {
-      status: 201,
-    },
-  );
+      {
+        status: 201,
+      },
+    );
+  } catch (err) {
+    console.log(err);
+    return NextResponse.json(
+      {
+        error: "An error occurred while trying to create a new class",
+      },
+      {
+        status: 400,
+      },
+    );
+  }
 }
