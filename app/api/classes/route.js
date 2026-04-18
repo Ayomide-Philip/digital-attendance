@@ -4,7 +4,7 @@ export async function POST(req) {
   const { name, code, description, teacherId, emailSuffix, departmentalCode } =
     await req.json();
 
-  // logic for validating the input
+  // logic for validating teachers input
   if (!teacherId || !teacherId.trim()) {
     return NextResponse.json(
       {
@@ -62,16 +62,55 @@ export async function POST(req) {
 
   if (
     description &&
-    (description.trim().length < 5 || description.trim().length > 100)
+    (description.trim().length < 10 || description.trim().length > 100)
   ) {
     return NextResponse.json(
       {
-        error: "Description must be between 5 and 100 characters",
+        error: "Description must be between 10 and 100 characters",
       },
       {
         status: 400,
       },
     );
+  }
+
+  if (emailSuffix.trim()) {
+    if (!emailSuffix.trim().includes("@")) {
+      return NextResponse.json(
+        {
+          error: "Email suffix needs @ to validate students",
+        },
+        {
+          status: 400,
+        },
+      );
+    }
+    if (emailSuffix.trim().length < 5) {
+      return NextResponse.json(
+        {
+          error: "Email suffix can't be less than 5 character",
+        },
+        {
+          status: 400,
+        },
+      );
+    }
+  }
+
+  if (departmentalCode.length > 0) {
+    const codeLessThanThreeChar = departmentalCode.filter(
+      (c) => c.trim().length < 3,
+    );
+    if (codeLessThanThreeChar.length > 0) {
+      return NextResponse.json(
+        {
+          error: `There ${codeLessThanThreeChar.length > 1 ? "are" : "is"} ${codeLessThanThreeChar?.length} departmental code${codeLessThanThreeChar?.length > 1 ? "s" : ""} less than 3 character`,
+        },
+        {
+          status: 400,
+        },
+      );
+    }
   }
 
   return NextResponse.json(
