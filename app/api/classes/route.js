@@ -1,10 +1,22 @@
+import { auth } from "@/auth";
 import { connectDatabase } from "@/lib/database/connectdb";
 import Classes from "@/lib/models/classes.model";
 import User from "@/lib/models/user.model";
 import { NextResponse } from "next/server";
 
-export async function POST(req) {
-  const { name, code, description, teacherId, emailSuffix, departmentalCode } =
+export const POST = auth(async function POST(req) {
+  if (!req?.auth || !req?.auth?.user) {
+    return NextResponse.json(
+      {
+        error: "Unauthorized Access",
+      },
+      {
+        status: 401,
+      },
+    );
+  }
+  const teacherId = req.auth.user.id;
+  const { name, code, description, emailSuffix, departmentalCode } =
     await req.json();
 
   // logic for validating teachers input
@@ -206,4 +218,4 @@ export async function POST(req) {
       },
     );
   }
-}
+});
