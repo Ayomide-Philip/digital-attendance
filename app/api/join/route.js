@@ -42,6 +42,18 @@ export const POST = async function POST(req) {
         },
       );
     }
+    // check if the class exist in my db
+    const classExist = await Classes.findById(classId);
+    if (!classExist) {
+      return NextResponse.json(
+        {
+          error: "Class not found",
+        },
+        {
+          status: 400,
+        },
+      );
+    }
     return NextResponse.json({
       classId,
       studentId,
