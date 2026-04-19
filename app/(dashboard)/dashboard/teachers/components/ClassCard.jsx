@@ -1,5 +1,11 @@
 import Link from "next/link";
-import { ArrowUpRight, CalendarDays, Hash, Users } from "lucide-react";
+import {
+  ArrowUpRight,
+  Building2,
+  CalendarDays,
+  Hash,
+  Users,
+} from "lucide-react";
 
 import Card from "@/components/ui/card";
 
@@ -34,6 +40,12 @@ export default function ClassCard({ item }) {
         </p>
 
         <div className="mt-auto pt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-slate-600 dark:text-slate-300">
+          {item?.school?.trim() ? (
+            <span className="inline-flex items-center gap-2 capitalize">
+              <Building2 className="size-4" />
+              {item?.school}
+            </span>
+          ) : null}
           <span className="inline-flex items-center gap-2">
             <Users className="size-4" />
             {item?.students?.length || 0} students
