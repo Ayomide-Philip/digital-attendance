@@ -55,7 +55,9 @@ export const GET = auth(async function GET(req) {
       students: { $in: [new mongoose.Types.ObjectId(userId)] },
     })
       .populate("teacher", "name displayName")
-      .select("name teacher school attendance status code createdAt");
+      .select(
+        "name teacher school attendance status code createdAt description",
+      );
     return NextResponse.json({ classes }, { status: 200 });
   } catch (err) {
     console.log(err);

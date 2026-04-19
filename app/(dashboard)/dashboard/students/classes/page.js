@@ -29,7 +29,7 @@ export default async function StudentClassesPage() {
 
       <section className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
         {studentClasses.map((item) => (
-          <StudentClassCard key={item.id} item={item} />
+          <StudentClassCard key={item?._id} item={item} />
         ))}
       </section>
     </div>
