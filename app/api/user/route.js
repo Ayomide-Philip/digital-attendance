@@ -1,4 +1,5 @@
 import { connectDatabase } from "@/lib/database/connectdb";
+import User from "@/lib/models/user.model";
 import { NextResponse } from "next/server";
 
 export async function GET(req) {
@@ -59,9 +60,14 @@ export const PUT = async function PUT(req) {
   }
   // validate level
   if (level && !["100", "200", "300", "400", "500"].includes(level.trim())) {
-    return NextResponse.json({
-      error: "Level must be one of 100, 200, 300, 400 or 500",
-    });
+    return NextResponse.json(
+      {
+        error: "Level must be one of 100, 200, 300, 400 or 500",
+      },
+      {
+        status: 400,
+      },
+    );
   }
   // validate school
   if (school && school.trim().length < 5) {
@@ -77,9 +83,84 @@ export const PUT = async function PUT(req) {
 
   try {
     await connectDatabase();
+    // check if the user exist in the database
+    const user = await User.findById(userId.trim());
+    if (!user) {
+      return NextResponse.json(
+        {
+          error: "Unauthorized Access",
+        },
+        {
+          status: 401,
+        },
+      );
+    }
+    // check if user has a role
+    if (!user.role || user.role === "NA") {
+      return NextResponse.json(
+        {
+          error: "Unauthorized Access",
+        },
+        {
+          status: 401,
+        },
+      );
+    }
+    //  check if the teacher is passing details ment for student only
+    if ((matricNo || level) && user.role !== "student") {
+      return NextResponse.json(
+        {
+          error: "Only students can have matric number or level",
+        },
+        {
+          status: 400,
+        },
+      );
+    }
+
+    // update user information
+    let updatingInfo = false;
+    if (displayName && displayName.trim() !== user?.displayName) {
+      user.displayName = displayName.trim();
+      updatingInfo = true;
+    }
+    if (matricNo && matricNo.trim() !== user?.matricNo) {
+      if (user.matricNo) {
+        return NextResponse.json(
+          { error: "Matric number cannot be updated once set" },
+          { status: 400 },
+        );
+      }
+      user.matricNo = matricNo.trim();
+      updatingInfo = true;
+    }
+    if (department && department.trim() !== user?.department) {
+      user.department = department.trim();
+      updatingInfo = true;
+    }
+    if (level && level.trim() !== user?.level) {
+      user.level = level.trim();
+      updatingInfo = true;
+    }
+    if (school && school.trim() !== user?.school) {
+      user.school = school.trim();
+      updatingInfo = true;
+    }
+    if (!updatingInfo) {
+      return NextResponse.json(
+        {
+          error: "No valid information provided to update",
+        },
+        {
+          status: 400,
+        },
+      );
+    }
+    await user.save();
     return NextResponse.json(
       {
-        message: "User API is working with PUT method!",
+        message: "Updated user information successfully",
+        user: user,
       },
       {
         status: 200,
@@ -87,6 +168,14 @@ export const PUT = async function PUT(req) {
     );
   } catch (err) {
     console.error(err);
+    if (err.code === 11000) {
+      return NextResponse.json(
+        {
+          error: "A user with this matric number already exists in this school",
+        },
+        { status: 400 },
+      );
+    }
     return NextResponse.json(
       {
         error: "An error occurred while updating user information",
