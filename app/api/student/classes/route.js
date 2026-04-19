@@ -43,7 +43,7 @@ export const GET = auth(async function GET(req) {
     if (user?.role !== "student") {
       return NextResponse.json(
         {
-          error: "Only students can access their classes.",
+          error: "User doesnt have right to perform this action.",
         },
         {
           status: 403,
@@ -53,7 +53,9 @@ export const GET = auth(async function GET(req) {
     // get all classes the user belongs to
     const classes = await Classes.find({
       students: { $in: [new mongoose.Types.ObjectId(userId)] },
-    }).populate("teacher", "name displayName");
+    })
+      .populate("teacher", "name displayName")
+      .select("name teacher school attendance status code createdAt");
     return NextResponse.json({ classes }, { status: 200 });
   } catch (err) {
     console.log(err);
