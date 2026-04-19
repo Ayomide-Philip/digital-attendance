@@ -126,7 +126,7 @@ export const PUT = async function PUT(req) {
     }
     if (
       matricNo.toLowerCase() &&
-      matricNo.trim().toLowerCase() !== user?.matricNo.toLowerCase()
+      matricNo.trim().toLowerCase() !== user?.matricNo?.toLowerCase()
     ) {
       if (user.matricNo) {
         return NextResponse.json(
@@ -152,7 +152,7 @@ export const PUT = async function PUT(req) {
     }
     if (
       school.toLowerCase() &&
-      school.trim().toLowerCase() !== user?.school.toLowerCase()
+      school.trim().toLowerCase() !== user?.school?.toLowerCase()
     ) {
       user.school = school.trim();
       updatingInfo = true;
