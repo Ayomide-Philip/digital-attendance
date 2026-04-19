@@ -2,6 +2,7 @@ import { connectDatabase } from "@/lib/database/connectdb";
 import User from "@/lib/models/user.model";
 import { NextResponse } from "next/server";
 import Classes from "@/lib/models/classes.model";
+import mongoose from "mongoose";
 
 export const POST = async function POST(req) {
   const searchParams = req.nextUrl.searchParams;
@@ -123,10 +124,10 @@ export const POST = async function POST(req) {
     const addStudent = await Classes.updateOne(
       {
         _id: classId,
-        students: { $ne: studentId },
+        students: { $ne: new mongoose.Types.ObjectId(studentId) },
       },
       {
-        $addToSet: { students: studentId },
+        $addToSet: { students: new mongoose.Types.ObjectId(studentId) },
       },
     );
     console.log(addStudent);
