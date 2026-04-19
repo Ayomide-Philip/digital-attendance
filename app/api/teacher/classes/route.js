@@ -79,7 +79,7 @@ export const POST = auth(async function POST(req) {
     );
   }
   const teacherId = req?.auth?.user?.id;
-  const { name, code, description, emailSuffix, departmentalCode } =
+  const { name, code, description, emailSuffix, departmentalCode, school } =
     await req.json();
 
   // logic for validating teachers input
@@ -210,6 +210,19 @@ export const POST = auth(async function POST(req) {
     );
   }
 
+  if (school?.trim()) {
+    if (school.trim().length < 3 || school.trim().length > 100) {
+      return NextResponse.json(
+        {
+          error: "School name must be between 3 and 100 characters",
+        },
+        {
+          status: 400,
+        },
+      );
+    }
+  }
+
   try {
     await connectDatabase();
     // check if the teacher account exist in my db
@@ -262,6 +275,7 @@ export const POST = auth(async function POST(req) {
         emailSuffix: emailSuffix?.trim() || "",
         departmentCode: uniqueDepartmentalCode || [],
       },
+      school: school?.trim() || "",
     });
 
     return NextResponse.json(

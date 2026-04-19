@@ -4,6 +4,7 @@ import { useState } from "react";
 import {
   AlignLeft,
   BookOpenText,
+  Building2,
   Hash,
   Mail,
   Plus,
@@ -13,6 +14,7 @@ import {
 import { toast } from "sonner";
 
 export default function CreateClassPage() {
+  const [school, setSchool] = useState("");
   const [className, setClassName] = useState("");
   const [classCode, setClassCode] = useState("");
   const [description, setDescription] = useState("");
@@ -22,6 +24,7 @@ export default function CreateClassPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   function resetForm() {
+    setSchool("");
     setClassName("");
     setClassCode("");
     setDescription("");
@@ -101,6 +104,12 @@ export default function CreateClassPage() {
         return toast.error("Departmental codes must be unique");
       }
     }
+    if (!school || !school.trim()) {
+      return toast.error("School name is required");
+    }
+    if (school.trim().length < 3) {
+      return toast.error("School name must be at least 3 characters long");
+    }
     setIsSubmitting(true);
     try {
       const request = await fetch("/api/teacher/classes", {
@@ -109,6 +118,7 @@ export default function CreateClassPage() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
+          school: school.trim(),
           name: className.trim(),
           code: classCode.trim().toLowerCase(),
           description: description.trim(),
@@ -147,6 +157,26 @@ export default function CreateClassPage() {
 
         <form className="space-y-5 sm:space-y-6" onSubmit={handleSubmit}>
           <div className="grid grid-cols-1 gap-4 sm:gap-5 md:grid-cols-2">
+            <div className="md:col-span-2">
+              <label
+                htmlFor="school"
+                className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-200"
+              >
+                School Name
+              </label>
+              <div className="relative">
+                <Building2 className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-slate-400" />
+                <input
+                  id="school"
+                  type="text"
+                  value={school}
+                  onChange={(event) => setSchool(event.target.value)}
+                  placeholder="Your School Name"
+                  className="w-full rounded-xl border border-slate-200 bg-white py-3 pr-3 pl-10 text-sm text-slate-900 outline-none transition-all duration-200 placeholder:text-slate-400 focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-100 sm:py-2.5"
+                />
+              </div>
+            </div>
+
             <div className="md:col-span-2">
               <label
                 htmlFor="className"
