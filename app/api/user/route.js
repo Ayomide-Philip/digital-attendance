@@ -124,7 +124,10 @@ export const PUT = async function PUT(req) {
       user.displayName = displayName.trim();
       updatingInfo = true;
     }
-    if (matricNo && matricNo.trim() !== user?.matricNo) {
+    if (
+      matricNo.toLowerCase() &&
+      matricNo.trim().toLowerCase() !== user?.matricNo.toLowerCase()
+    ) {
       if (user.matricNo) {
         return NextResponse.json(
           { error: "Matric number cannot be updated once set" },
@@ -134,19 +137,27 @@ export const PUT = async function PUT(req) {
       user.matricNo = matricNo.trim();
       updatingInfo = true;
     }
-    if (department && department.trim() !== user?.department) {
+
+    if (
+      department.toLowerCase() &&
+      department.trim().toLowerCase() !== user?.department.toLowerCase()
+    ) {
       user.department = department.trim();
       updatingInfo = true;
     }
+
     if (level && level.trim() !== user?.level) {
       user.level = level.trim();
       updatingInfo = true;
     }
-    if (school && school.trim() !== user?.school) {
+    if (
+      school.toLowerCase() &&
+      school.trim().toLowerCase() !== user?.school.toLowerCase()
+    ) {
       user.school = school.trim();
       updatingInfo = true;
     }
-    if (!updatingInfo) {
+    if (updatingInfo === false) {
       return NextResponse.json(
         {
           error: "No valid information provided to update",
