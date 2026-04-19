@@ -120,15 +120,18 @@ export const PUT = async function PUT(req) {
 
     // update user information
     let updatingInfo = false;
-    if (displayName && displayName.trim() !== user?.displayName) {
+    if (
+      displayName?.toLowerCase() &&
+      displayName?.trim()?.toLowerCase() !== user?.displayName?.toLowerCase()
+    ) {
       user.displayName = displayName.trim();
       updatingInfo = true;
     }
     if (
-      matricNo.toLowerCase() &&
-      matricNo.trim().toLowerCase() !== user?.matricNo?.toLowerCase()
+      matricNo?.toLowerCase() &&
+      matricNo?.trim()?.toLowerCase() !== user?.matricNo?.toLowerCase()
     ) {
-      if (user.matricNo) {
+      if (user?.matricNo) {
         return NextResponse.json(
           { error: "Matric number cannot be updated once set" },
           { status: 400 },
@@ -139,20 +142,20 @@ export const PUT = async function PUT(req) {
     }
 
     if (
-      department.toLowerCase() &&
-      department.trim().toLowerCase() !== user?.department.toLowerCase()
+      department?.toLowerCase() &&
+      department?.trim()?.toLowerCase() !== user?.department?.toLowerCase()
     ) {
       user.department = department.trim();
       updatingInfo = true;
     }
 
-    if (level && level.trim() !== user?.level) {
+    if (level && level?.trim() !== user?.level) {
       user.level = level.trim();
       updatingInfo = true;
     }
     if (
-      school.toLowerCase() &&
-      school.trim().toLowerCase() !== user?.school?.toLowerCase()
+      school?.toLowerCase() &&
+      school?.trim()?.toLowerCase() !== user?.school?.toLowerCase()
     ) {
       user.school = school.trim();
       updatingInfo = true;
