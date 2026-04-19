@@ -88,8 +88,8 @@ export default function CreateClassPage() {
       if (description.trim().length < 10) {
         return toast.error("Description must be at least 10 characters long");
       }
-      if (description.trim().length > 300) {
-        return toast.error("Description must be less than 300 characters long");
+      if (description.trim().length > 500) {
+        return toast.error("Description must be less than 500 characters long");
       }
     }
     if (departmentalCodes?.length > 0) {

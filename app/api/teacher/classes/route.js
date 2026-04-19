@@ -140,11 +140,11 @@ export const POST = auth(async function POST(req) {
 
   if (
     description &&
-    (description?.trim()?.length < 10 || description?.trim()?.length > 100)
+    (description?.trim()?.length < 10 || description?.trim()?.length > 500)
   ) {
     return NextResponse.json(
       {
-        error: "Description must be between 10 and 100 characters",
+        error: "Description must be between 10 and 500 characters",
       },
       {
         status: 400,
