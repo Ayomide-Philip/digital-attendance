@@ -1,3 +1,4 @@
+import { connectDatabase } from "@/lib/database/connectdb";
 import { NextResponse } from "next/server";
 
 export async function GET(req) {
@@ -73,12 +74,26 @@ export const PUT = async function PUT(req) {
       },
     );
   }
-  return NextResponse.json(
-    {
-      message: "User API is working with PUT method!",
-    },
-    {
-      status: 200,
-    },
-  );
+
+  try {
+    await connectDatabase();
+    return NextResponse.json(
+      {
+        message: "User API is working with PUT method!",
+      },
+      {
+        status: 200,
+      },
+    );
+  } catch (err) {
+    console.error(err);
+    return NextResponse.json(
+      {
+        error: "An error occurred while updating user information",
+      },
+      {
+        status: 500,
+      },
+    );
+  }
 };
