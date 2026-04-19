@@ -130,8 +130,7 @@ export const POST = async function POST(req) {
         $addToSet: { students: new mongoose.Types.ObjectId(studentId) },
       },
     );
-    console.log(addStudent);
-    if (addStudent.modifiedCount === 0) {
+    if (addStudent.modifiedCount === 0 || !addStudent?.acknowledged) {
       return NextResponse.json(
         {
           error: "Failed to join class. Please try again.",
