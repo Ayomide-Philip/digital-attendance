@@ -3,11 +3,22 @@ import User from "@/lib/models/user.model";
 import { NextResponse } from "next/server";
 import Classes from "@/lib/models/classes.model";
 import mongoose from "mongoose";
+import { auth } from "@/auth";
 
-export const POST = async function POST(req) {
+export const POST = auth(async function POST(req) {
+  if (!req?.auth || !req?.auth?.user) {
+    return NextResponse.json(
+      {
+        error: "Unauthorized Access",
+      },
+      {
+        status: 401,
+      },
+    );
+  }
+  const studentId = req?.auth?.user?.id;
   const searchParams = req.nextUrl.searchParams;
   const classId = searchParams.get("classId");
-  const { studentId } = await req.json();
   if (!classId || !classId.trim() || !studentId || !studentId.trim()) {
     return NextResponse.json(
       {
@@ -155,4 +166,4 @@ export const POST = async function POST(req) {
       },
     );
   }
-};
+});
