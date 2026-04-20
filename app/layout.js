@@ -37,17 +37,25 @@ export default function RootLayout({ children }) {
           toastOptions={{
             classNames: {
               toast:
-                "!w-[94vw] sm:!w-auto sm:!max-w-[640px] !rounded-2xl !border !border-emerald-200/80 dark:!border-emerald-900/70 !bg-white/90 dark:!bg-slate-900/90 !backdrop-blur-md !px-4 sm:!px-5 !py-3.5 !shadow-[0_10px_30px_-12px_rgba(15,23,42,0.45)] dark:!shadow-[0_12px_30px_-14px_rgba(0,0,0,0.7)]",
+                "!w-[94vw] sm:!w-auto sm:!max-w-[560px] !rounded-2xl !border !border-slate-200/90 dark:!border-slate-800 !bg-gradient-to-b !from-white/95 !to-slate-50/95 dark:!from-slate-900/96 dark:!to-slate-950/96 !backdrop-blur-xl !px-4 sm:!px-5 !py-3.5 !shadow-[0_18px_40px_-22px_rgba(15,23,42,0.6)] dark:!shadow-[0_18px_40px_-20px_rgba(2,6,23,0.85)]",
               title:
                 "!text-[13px] sm:!text-sm !font-semibold !tracking-tight !text-slate-900 dark:!text-slate-100",
               description:
                 "!mt-1 !text-xs sm:!text-sm !leading-relaxed !text-slate-600 dark:!text-slate-300",
+              icon: "!text-slate-700 dark:!text-slate-200",
+              success:
+                "!border-emerald-200 dark:!border-emerald-900/70 !from-emerald-50/95 !to-white/95 dark:!from-emerald-950/35 dark:!to-slate-950/96",
+              error:
+                "!border-rose-200 dark:!border-rose-900/70 !from-rose-50/95 !to-white/95 dark:!from-rose-950/35 dark:!to-slate-950/96",
+              warning:
+                "!border-amber-200 dark:!border-amber-900/70 !from-amber-50/95 !to-white/95 dark:!from-amber-950/35 dark:!to-slate-950/96",
+              info: "!border-sky-200 dark:!border-sky-900/70 !from-sky-50/95 !to-white/95 dark:!from-sky-950/35 dark:!to-slate-950/96",
               actionButton:
-                "!rounded-lg !bg-emerald-600 !text-white !font-medium hover:!bg-emerald-700",
+                "!rounded-lg !bg-emerald-600 !text-white !font-medium !shadow-sm hover:!bg-emerald-700",
               cancelButton:
                 "!rounded-lg !bg-slate-200 !text-slate-700 !font-medium hover:!bg-slate-300 dark:!bg-slate-700 dark:!text-slate-100 dark:hover:!bg-slate-600",
               closeButton:
-                "!border !border-slate-200 !bg-white/85 !text-slate-600 hover:!bg-slate-100 dark:!border-slate-700 dark:!bg-slate-800/80 dark:!text-slate-300 dark:hover:!bg-slate-700",
+                "!border !border-slate-200 !bg-white/90 !text-slate-600 hover:!bg-slate-100 dark:!border-slate-700 dark:!bg-slate-800/85 dark:!text-slate-300 dark:hover:!bg-slate-700",
             },
           }}
         />
