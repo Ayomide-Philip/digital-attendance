@@ -18,7 +18,7 @@ export default function ClassCard({ item }) {
       <Card className="flex h-full flex-col rounded-2xl p-5 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-slate-200/40 dark:hover:shadow-black/20">
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
-            <h3 className="line-clamp-2 min-h-12 text-base font-semibold text-slate-900 dark:text-slate-100">
+            <h3 className="line-clamp-2 capitalize min-h-12 text-base font-semibold text-slate-900 dark:text-slate-100">
               {item?.name?.trim()}
             </h3>
 

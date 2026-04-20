@@ -147,10 +147,10 @@ export const PUT = async function PUT(req) {
     if (!user.role || user.role === "NA") {
       return NextResponse.json(
         {
-          error: "Unauthorized Access",
+          error: "Choose a role",
         },
         {
-          status: 401,
+          status: 403,
         },
       );
     }
