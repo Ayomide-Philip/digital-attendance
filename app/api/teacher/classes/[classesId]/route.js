@@ -38,6 +38,16 @@ export const GET = auth(async function GET(req, { params }) {
         },
       );
     }
+    if (user?.role !== "teacher") {
+      return NextResponse.json(
+        {
+          error: "User does not have priviledge to perform action",
+        },
+        {
+          status: 403,
+        },
+      );
+    }
     return NextResponse.json({
       message: "Class details fetched successfully",
       classesId,
