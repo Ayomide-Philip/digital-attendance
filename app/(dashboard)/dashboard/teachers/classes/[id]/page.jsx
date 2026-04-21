@@ -3,7 +3,7 @@ import ClassIdBody from "../../components/classIdBody";
 import { cookies } from "next/headers";
 import ClassErrorState from "../../components/classErrorStand";
 
-export default async function SingleClassPage({ params }) {
+export default async function Page({ params }) {
   const { id } = await params;
   const request = await fetch(`${BASE_URL}/api/teacher/classes/${id}`, {
     method: "GET",
@@ -26,7 +26,7 @@ export default async function SingleClassPage({ params }) {
   const students = classes?.students || [];
   return (
     <div className="space-y-5">
-      <div className="flex flex-col gap-3 rounded-2xl border border-slate-200/70 bg-white/80 p-5 shadow-sm dark:border-slate-800 dark:bg-slate-950/70 sm:flex-row sm:items-center sm:justify-between">
+      {/* <div className="flex flex-col gap-3 rounded-2xl border border-slate-200/70 bg-white/80 p-5 shadow-sm dark:border-slate-800 dark:bg-slate-950/70 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
             {classes?.name || "Untitled Class"}
@@ -56,7 +56,7 @@ export default async function SingleClassPage({ params }) {
             Default tab: Students
           </span>
         </div>
-      </div>
+      </div> */}
 
       <ClassIdBody students={students} classId={id} />
     </div>
