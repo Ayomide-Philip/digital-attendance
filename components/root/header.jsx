@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Toggle from "../toggle";
+import InstallAppButton from "@/components/pwa/install-app-button";
 
 export default function Header() {
   return (
@@ -16,6 +17,7 @@ export default function Header() {
 
           <div className="flex items-center gap-2 sm:gap-3">
             <Toggle />
+            <InstallAppButton className="hidden sm:inline-flex" />
             <Link
               href="/login"
               className="inline-flex h-10 items-center justify-center rounded-xl px-4 text-sm font-medium text-slate-700 transition-all duration-200 hover:scale-[1.01] hover:bg-white/60 hover:text-slate-950 dark:text-slate-200 dark:hover:bg-white/10 dark:hover:text-white"

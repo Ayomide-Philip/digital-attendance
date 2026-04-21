@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import Toggle from "@/components/toggle";
+import InstallAppButton from "@/components/pwa/install-app-button";
 
 function getTitle(pathname) {
   if (pathname === "/dashboard/teachers") return "Teacher Dashboard";
@@ -82,6 +83,7 @@ export default function Navbar({
         <Button variant="ghost" size="icon-sm" aria-label="Notifications">
           <Bell className="size-4" />
         </Button>
+        <InstallAppButton compact className="hidden sm:inline-flex" />
         <Toggle />
         <div className="hidden size-9 place-items-center rounded-full border border-slate-200 bg-white text-xs font-semibold text-slate-700 shadow-sm dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 min-[430px]:grid">
           AD

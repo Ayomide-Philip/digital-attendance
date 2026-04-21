@@ -2,6 +2,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import ThemeProviders from "@/components/theme-providers";
 import { Toaster } from "sonner";
+import { PwaProvider } from "@/components/pwa/pwa-provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,6 +29,16 @@ export default function RootLayout({ children }) {
       suppressHydrationWarning
       data-scroll-behavior="smooth"
     >
+      <head>
+        <link rel="manifest" href="/manifest.json" />
+        <meta name="theme-color" content="#0f172a" />
+        <meta name="application-name" content="Attendify" />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <link rel="icon" href="/favicon.svg" />
+        <link rel="apple-touch-icon" href="/icons/icon-192x192.svg" />
+      </head>
       <body className="min-h-full bg-slate-50 text-slate-950 dark:bg-slate-950 dark:text-white">
         <Toaster
           position="top-center"
@@ -60,7 +71,9 @@ export default function RootLayout({ children }) {
             },
           }}
         />
-        <ThemeProviders>{children}</ThemeProviders>
+        <PwaProvider>
+          <ThemeProviders>{children}</ThemeProviders>
+        </PwaProvider>
       </body>
     </html>
   );
