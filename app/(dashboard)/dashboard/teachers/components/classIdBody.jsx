@@ -99,7 +99,7 @@ const staticSettings = {
   updatedAt: "2026-04-19T13:01:17.711Z",
 };
 
-export default function ClassIdBody({students}) {
+export default function ClassIdBody({ students }) {
   const params = useParams();
   const classId = params?.id || staticClass.id;
   const [activeTab, setActiveTab] = useState("Students");
