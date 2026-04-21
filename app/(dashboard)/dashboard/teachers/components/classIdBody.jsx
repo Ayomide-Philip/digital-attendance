@@ -99,7 +99,8 @@ const staticSettings = {
   updatedAt: "2026-04-19T13:01:17.711Z",
 };
 
-export default function ClassIdBody() {
+export default function ClassIdBody({students}) {
+    console.log(students)
   const params = useParams();
   const classId = params?.id || staticClass.id;
   const [activeTab, setActiveTab] = useState("Students");
@@ -161,8 +162,7 @@ export default function ClassIdBody() {
           </div>
 
           <StudentList
-            students={classStudents}
-            classes={[classItem]}
+            students={students}
             mode="class"
             onRemoveStudent={handleRemoveStudent}
           />

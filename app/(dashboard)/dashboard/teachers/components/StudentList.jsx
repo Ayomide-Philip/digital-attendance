@@ -12,7 +12,6 @@ function getClassNameMap(classes) {
 
 export default function StudentList({
   students = [],
-  classes = [],
   mode = "global",
   onRemoveStudent,
 }) {

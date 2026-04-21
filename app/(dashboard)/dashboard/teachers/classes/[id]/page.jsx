@@ -23,7 +23,7 @@ export default async function SingleClassPage({ params }) {
       />
     );
   }
-
+  const students = classes?.students || [];
   return (
     <div className="space-y-5">
       <div className="flex flex-col gap-3 rounded-2xl border border-slate-200/70 bg-white/80 p-5 shadow-sm dark:border-slate-800 dark:bg-slate-950/70 sm:flex-row sm:items-center sm:justify-between">
@@ -58,7 +58,7 @@ export default async function SingleClassPage({ params }) {
         </div>
       </div>
 
-      <ClassIdBody />
+      <ClassIdBody students={students} />
     </div>
   );
 }
