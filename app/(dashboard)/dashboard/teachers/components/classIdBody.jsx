@@ -100,7 +100,6 @@ const staticSettings = {
 };
 
 export default function ClassIdBody({students}) {
-    console.log(students)
   const params = useParams();
   const classId = params?.id || staticClass.id;
   const [activeTab, setActiveTab] = useState("Students");
