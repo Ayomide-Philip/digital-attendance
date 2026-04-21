@@ -1,4 +1,4 @@
-const CACHE_VERSION = "attendify-v1";
+const CACHE_VERSION = "attendify-v2";
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const OFFLINE_URL = "/offline";
@@ -68,6 +68,11 @@ function isStaticAsset(request) {
   );
 }
 
+function isNextBuildAsset(request) {
+  const url = new URL(request.url);
+  return url.pathname.startsWith("/_next/");
+}
+
 async function cacheFirst(request) {
   const cachedResponse = await caches.match(request);
   if (cachedResponse) {
@@ -115,6 +120,11 @@ self.addEventListener("fetch", (event) => {
   }
 
   if (request.url.includes("/api/")) {
+    event.respondWith(networkFirst(request));
+    return;
+  }
+
+  if (isNextBuildAsset(request)) {
     event.respondWith(networkFirst(request));
     return;
   }

@@ -58,7 +58,7 @@ export default async function SingleClassPage({ params }) {
         </div>
       </div>
 
-      <ClassIdBody students={students} />
+      <ClassIdBody students={students} classId={id} />
     </div>
   );
 }

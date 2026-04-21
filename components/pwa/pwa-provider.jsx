@@ -22,6 +22,21 @@ export function PwaProvider({ children }) {
   const [isInstalled, setIsInstalled] = useState(false);
 
   useEffect(() => {
+    if (process.env.NODE_ENV !== "production") {
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker
+          .getRegistrations()
+          .then((registrations) => {
+            registrations.forEach((registration) => registration.unregister());
+          })
+          .catch(() => {});
+      }
+
+      setCanInstall(false);
+      setUpdateAvailable(false);
+      return;
+    }
+
     const isStandalone =
       window.matchMedia("(display-mode: standalone)").matches ||
       window.navigator.standalone === true;
