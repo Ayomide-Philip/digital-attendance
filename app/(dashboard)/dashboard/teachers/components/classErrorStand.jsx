@@ -5,10 +5,10 @@ import Card from "@/components/ui/card";
 export default function ClassErrorState({
   error,
   retryHref,
-  dashboardHref = "/dashboard/teachers/",
+  dashboardHref = "/dashboard/teachers/classes",
 }) {
   return (
-    <div >
+    <div>
       <div className="pointer-events-none absolute -right-16 -top-20 h-48 w-48 rounded-full bg-sky-300/20 blur-3xl dark:bg-sky-600/10" />
       <div className="pointer-events-none absolute -bottom-20 -left-16 h-52 w-52 rounded-full bg-rose-300/15 blur-3xl dark:bg-rose-600/10" />
 
