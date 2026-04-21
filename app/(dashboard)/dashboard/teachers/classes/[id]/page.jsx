@@ -2,6 +2,8 @@ import { BASE_URL } from "@/lib/database/config";
 import ClassIdBody from "../../components/classIdBody";
 import { cookies } from "next/headers";
 import Card from "@/components/ui/card";
+import Link from "next/link";
+import ClassErrorState from "../../components/classErrorStand";
 
 export default async function SingleClassPage({ params }) {
   const { id } = await params;
@@ -17,11 +19,10 @@ export default async function SingleClassPage({ params }) {
 
   if (error) {
     return (
-      <Card className="rounded-2xl p-5">
-        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">
-          {error}
-        </h2>
-      </Card>
+      <ClassErrorState
+        error={error}
+        retryHref={`/dashboard/teachers/classes/${id}`}
+      />
     );
   }
 

@@ -84,6 +84,21 @@ const staticAttendanceHistory = [
   },
 ];
 
+const staticSettings = {
+  teacher: {
+    _id: "69e4afa455516dc69b4ecdf1",
+    name: "John Doe",
+    email: "a@gmail.com",
+  },
+  rules: {
+    emailSuffix: "",
+    departmentCode: [],
+    _id: "69e4b5ecebcf1bfe5ae8ef08",
+  },
+  createdAt: "2026-04-19T11:01:00.618Z",
+  updatedAt: "2026-04-19T13:01:17.711Z",
+};
+
 export default function ClassIdBody() {
   const params = useParams();
   const classId = params?.id || staticClass.id;
@@ -199,6 +214,90 @@ export default function ClassIdBody() {
                 </p>
               </div>
             ))}
+          </div>
+        </Card>
+      ) : null}
+
+      {activeTab === "Settings" ? (
+        <Card className="rounded-2xl p-5">
+          <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">
+            Class Settings
+          </h3>
+
+          <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
+            <div className="rounded-xl border border-slate-200/70 p-4 dark:border-slate-800">
+              <h4 className="text-sm font-semibold text-slate-900 dark:text-slate-100">
+                Teacher
+              </h4>
+              <div className="mt-3 space-y-2 text-sm">
+                <p className="text-slate-600 dark:text-slate-300">
+                  <span className="font-medium text-slate-800 dark:text-slate-200">
+                    ID:
+                  </span>{" "}
+                  {staticSettings.teacher._id}
+                </p>
+                <p className="text-slate-600 dark:text-slate-300">
+                  <span className="font-medium text-slate-800 dark:text-slate-200">
+                    Name:
+                  </span>{" "}
+                  {staticSettings.teacher.name}
+                </p>
+                <p className="text-slate-600 dark:text-slate-300">
+                  <span className="font-medium text-slate-800 dark:text-slate-200">
+                    Email:
+                  </span>{" "}
+                  {staticSettings.teacher.email}
+                </p>
+              </div>
+            </div>
+
+            <div className="rounded-xl border border-slate-200/70 p-4 dark:border-slate-800">
+              <h4 className="text-sm font-semibold text-slate-900 dark:text-slate-100">
+                Rules
+              </h4>
+              <div className="mt-3 space-y-2 text-sm">
+                <p className="text-slate-600 dark:text-slate-300">
+                  <span className="font-medium text-slate-800 dark:text-slate-200">
+                    Rules ID:
+                  </span>{" "}
+                  {staticSettings.rules._id}
+                </p>
+                <p className="text-slate-600 dark:text-slate-300">
+                  <span className="font-medium text-slate-800 dark:text-slate-200">
+                    Email Suffix:
+                  </span>{" "}
+                  {staticSettings.rules.emailSuffix || "Not set"}
+                </p>
+                <p className="text-slate-600 dark:text-slate-300">
+                  <span className="font-medium text-slate-800 dark:text-slate-200">
+                    Department Codes:
+                  </span>{" "}
+                  {staticSettings.rules.departmentCode.length
+                    ? staticSettings.rules.departmentCode.join(", ")
+                    : "None"}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-4 rounded-xl border border-slate-200/70 p-4 dark:border-slate-800">
+            <h4 className="text-sm font-semibold text-slate-900 dark:text-slate-100">
+              Metadata
+            </h4>
+            <div className="mt-3 grid grid-cols-1 gap-2 text-sm md:grid-cols-2">
+              <p className="text-slate-600 dark:text-slate-300">
+                <span className="font-medium text-slate-800 dark:text-slate-200">
+                  Created At:
+                </span>{" "}
+                {new Date(staticSettings.createdAt).toLocaleString()}
+              </p>
+              <p className="text-slate-600 dark:text-slate-300">
+                <span className="font-medium text-slate-800 dark:text-slate-200">
+                  Updated At:
+                </span>{" "}
+                {new Date(staticSettings.updatedAt).toLocaleString()}
+              </p>
+            </div>
           </div>
         </Card>
       ) : null}
