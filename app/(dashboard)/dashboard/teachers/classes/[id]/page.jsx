@@ -1,8 +1,6 @@
 import { BASE_URL } from "@/lib/database/config";
 import ClassIdBody from "../../components/classIdBody";
 import { cookies } from "next/headers";
-import Card from "@/components/ui/card";
-import Link from "next/link";
 import ClassErrorState from "../../components/classErrorStand";
 
 export default async function SingleClassPage({ params }) {
