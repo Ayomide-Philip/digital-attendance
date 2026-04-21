@@ -24,41 +24,15 @@ export default async function Page({ params }) {
     );
   }
   const students = classes?.students || [];
+  const settings = {
+    rules: classes?.rules || { emailSuffix: "", departmentCode: [] },
+    school: classes?.school || "",
+    createdAt: classes?.createdAt || "",
+    updatedAt: classes?.updatedAt || "",
+  };
   return (
     <div className="space-y-5">
-      {/* <div className="flex flex-col gap-3 rounded-2xl border border-slate-200/70 bg-white/80 p-5 shadow-sm dark:border-slate-800 dark:bg-slate-950/70 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
-            {classes?.name || "Untitled Class"}
-          </h2>
-          <p className="text-sm text-slate-500 dark:text-slate-400">
-            {classes?.student?.length ?? classes?.students?.length ?? 0}{" "}
-            students enrolled.
-          </p>
-          {classes?.description ? (
-            <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-              {classes?.description}
-            </p>
-          ) : null}
-        </div>
-        <div className="flex flex-wrap gap-2">
-          {classes?.code ? (
-            <span className="rounded-full bg-slate-500/15 px-3 py-1 text-sm font-medium uppercase text-slate-700 dark:text-slate-300">
-              {classes?.code}
-            </span>
-          ) : null}
-          {classes?.school ? (
-            <span className="rounded-full bg-emerald-500/15 px-3 py-1 text-sm font-medium capitalize text-emerald-700 dark:text-emerald-300">
-              {classes?.school}
-            </span>
-          ) : null}
-          <span className="rounded-full bg-sky-500/15 px-3 py-1 text-sm font-medium text-sky-700 dark:text-sky-300">
-            Default tab: Students
-          </span>
-        </div>
-      </div> */}
-
-      <ClassIdBody students={students} classId={id} />
+      <ClassIdBody students={students} classId={id} settings={settings} />
     </div>
   );
 }
