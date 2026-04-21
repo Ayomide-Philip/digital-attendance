@@ -38,7 +38,9 @@ export default function InstallAppButton({ className, compact = false }) {
       }}
     >
       <Icon className="size-4" />
-      <span className={compact ? "sr-only" : "hidden sm:inline"}>{actionLabel}</span>
+      <span className={compact ? "sr-only" : "hidden sm:inline"}>
+        {actionLabel}
+      </span>
     </Button>
   );
 }

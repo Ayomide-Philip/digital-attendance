@@ -1,6 +1,13 @@
 "use client";
 
-import { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
 import { toast } from "sonner";
 
@@ -69,7 +76,8 @@ export function PwaProvider({ children }) {
               installingWorker.state === "installed" &&
               navigator.serviceWorker.controller
             ) {
-              waitingWorkerRef.current = registration.waiting || installingWorker;
+              waitingWorkerRef.current =
+                registration.waiting || installingWorker;
               setUpdateAvailable(true);
               toast.info("A new version is ready. Update to refresh the app.");
             }

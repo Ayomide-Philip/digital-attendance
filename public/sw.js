@@ -23,16 +23,18 @@ self.addEventListener("install", (event) => {
 
 self.addEventListener("activate", (event) => {
   event.waitUntil(
-    caches.keys().then((cacheNames) =>
-      Promise.all(
-        cacheNames
-          .filter(
-            (cacheName) =>
-              cacheName !== STATIC_CACHE && cacheName !== RUNTIME_CACHE,
-          )
-          .map((cacheName) => caches.delete(cacheName)),
+    caches
+      .keys()
+      .then((cacheNames) =>
+        Promise.all(
+          cacheNames
+            .filter(
+              (cacheName) =>
+                cacheName !== STATIC_CACHE && cacheName !== RUNTIME_CACHE,
+            )
+            .map((cacheName) => caches.delete(cacheName)),
+        ),
       ),
-    ),
   );
   self.clients.claim();
 });
