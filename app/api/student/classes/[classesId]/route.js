@@ -54,7 +54,11 @@ export const GET = auth(async function GET(req, { params }) {
     const classes = await Classes.findOne({
       _id: new mongoose.Types.ObjectId(classesId),
       students: new mongoose.Types.ObjectId(userId),
-    });
+    })
+      .populate("teacher", "name displayName")
+      .select(
+        "name teacher school attendance code createdAt description rules",
+      );
 
     if (!classes) {
       return NextResponse.json(
