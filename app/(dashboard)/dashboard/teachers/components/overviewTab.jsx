@@ -93,21 +93,21 @@ const infoItems = [
   { label: "Created", value: formatDate(classOverview.createdAt) },
 ];
 
-export default function OverviewTab() {
+export default function OverviewTab({ overview }) {
   return (
     <div className="space-y-5">
       <Card className="rounded-2xl border border-slate-200/70 bg-white/85 p-6 shadow-sm dark:border-slate-800 dark:bg-slate-950/70">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
             <h2 className="text-2xl font-semibold tracking-tight text-slate-900 dark:text-slate-100">
-              {classOverview.name}
+              {overview?.title}
             </h2>
             <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-              {classOverview.subtitle}
+              {overview?.description || "No description available."}
             </p>
           </div>
           <span className="inline-flex items-center rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-emerald-700 dark:text-emerald-300">
-            {classOverview.status}
+            {overview?.code}
           </span>
         </div>
       </Card>

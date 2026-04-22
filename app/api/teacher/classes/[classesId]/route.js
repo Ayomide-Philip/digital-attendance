@@ -55,7 +55,7 @@ export const GET = auth(async function GET(req, { params }) {
       teacher: new mongoose.Types.ObjectId(teacherId),
     })
       .populate("students", "name email matricNo department")
-      .populate("teacher", "name email");
+      .populate("teacher", "name email department");
     if (!classExists) {
       return NextResponse.json(
         {

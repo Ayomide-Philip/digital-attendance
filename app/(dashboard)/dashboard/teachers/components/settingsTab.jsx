@@ -304,3 +304,7 @@ function SettingsCard({ title, description, children, className = "" }) {
     </Card>
   );
 }
+
+function isValidEmailSuffix(value) {
+  return /^@([a-z0-9-]+\.)+[a-z]{2,}$/i.test(value.trim());
+}

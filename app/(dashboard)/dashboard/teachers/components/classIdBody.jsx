@@ -1,16 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import {
-  AlertTriangle,
-  CalendarClock,
-  CheckCircle2,
-  PencilLine,
-  School,
-  Sparkles,
-} from "lucide-react";
-import { toast } from "sonner";
-
+import { AlertTriangle } from "lucide-react";
 import AttendanceTable from "@/app/(dashboard)/dashboard/teachers/components/AttendanceTable";
 import TakeAttendanceModal from "@/app/(dashboard)/dashboard/teachers/components/TakeAttendanceModal";
 import { Button } from "@/components/ui/button";
@@ -123,10 +114,6 @@ const dateTimeFormatter = new Intl.DateTimeFormat("en-GB", {
   hour12: false,
 });
 
-function formatDateTime(value) {
-  return `${dateTimeFormatter.format(new Date(value))} UTC`;
-}
-
 function normalizeDepartmentCode(value) {
   return value
     .trim()
@@ -138,39 +125,7 @@ function isValidEmailSuffix(value) {
   return /^@([a-z0-9-]+\.)+[a-z]{2,}$/i.test(value.trim());
 }
 
-function dedupeCodes(codes) {
-  return Array.from(
-    new Set(codes.map((code) => normalizeDepartmentCode(code)).filter(Boolean)),
-  );
-}
-
-function SettingsCard({ title, description, children, className = "" }) {
-  return (
-    <Card
-      className={`rounded-2xl border border-slate-200/70 p-5 shadow-sm dark:border-slate-800 ${className}`}
-    >
-      <div className="flex flex-col gap-1 border-b border-slate-200/70 pb-4 dark:border-slate-800 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">
-            {title}
-          </h3>
-          {description ? (
-            <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-              {description}
-            </p>
-          ) : null}
-        </div>
-      </div>
-      <div className="pt-4">{children}</div>
-    </Card>
-  );
-}
-
-export default function ClassIdBody({
-  students,
-  classId = staticClass.id,
-  settings,
-}) {
+export default function ClassIdBody({ students, classId, settings, overview }) {
   const initialStudents = students?.length ? students : staticStudents;
 
   const [activeTab, setActiveTab] = useState("Overview");
@@ -203,7 +158,7 @@ export default function ClassIdBody({
     <>
       <Tabs activeTab={activeTab} setActiveTab={setActiveTab} tabs={tabs} />
 
-      {activeTab === "Overview" ? <OverviewTab /> : null}
+      {activeTab === "Overview" ? <OverviewTab overview={overview} /> : null}
 
       {activeTab === "Students" ? <StudentsTab students={students} /> : null}
 

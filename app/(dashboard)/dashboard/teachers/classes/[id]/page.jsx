@@ -30,9 +30,23 @@ export default async function Page({ params }) {
     createdAt: classes?.createdAt || "",
     updatedAt: classes?.updatedAt || "",
   };
+  const overview = {
+    title: classes?.name || "",
+    code: classes?.code || "",
+    teacher: classes?.teacher || null,
+    school: classes?.school || "",
+    createdAt: classes?.createdAt || "",
+    students: students || [],
+    description: classes?.description || "",
+  };
   return (
     <div className="space-y-5">
-      <ClassIdBody students={students} classId={id} settings={settings} />
+      <ClassIdBody
+        students={students}
+        classId={id}
+        settings={settings}
+        overview={overview}
+      />
     </div>
   );
 }
