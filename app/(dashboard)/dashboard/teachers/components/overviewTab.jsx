@@ -157,7 +157,7 @@ export default function OverviewTab({ overview }) {
                 <p className="text-sm text-slate-500 dark:text-slate-400">
                   {item.label}
                 </p>
-                <p className="mt-2 text-2xl font-semibold text-slate-900 dark:text-slate-100">
+                <p className="mt-2 capitalize text-2xl font-semibold text-slate-900 dark:text-slate-100">
                   {item.value}
                 </p>
               </div>
@@ -186,7 +186,7 @@ export default function OverviewTab({ overview }) {
                 <p className="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
                   {item.label}
                 </p>
-                <p className="mt-2 text-sm font-semibold text-slate-900 dark:text-slate-100">
+                <p className="mt-2 capitalize text-sm font-semibold text-slate-900 dark:text-slate-100">
                   {item.value}
                 </p>
               </div>
