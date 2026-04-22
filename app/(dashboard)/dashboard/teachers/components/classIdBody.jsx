@@ -18,6 +18,7 @@ import Card from "@/components/ui/card";
 import Tabs from "./tabs";
 import SettingsTab from "./settingsTab";
 import StudentsTab from "./studentsTab";
+import OverviewTab from "./overviewTab";
 
 const tabs = ["Overview", "Students", "Attendance", "Settings"];
 
@@ -115,34 +116,6 @@ const staticSettings = {
   updatedAt: "2026-04-21T07:44:14.156Z",
 };
 
-const previewCandidates = [
-  {
-    name: "Amina Yusuf",
-    email: "amina.yusuf@oauife.edu.ng",
-    department: "CSC",
-  },
-  {
-    name: "David Okonkwo",
-    email: "david.okonkwo@oauife.edu.ng",
-    department: "MTH",
-  },
-  {
-    name: "Nora Adesina",
-    email: "nora.adesina@oauife.edu.ng",
-    department: "EEE",
-  },
-  {
-    name: "Faith Oladipo",
-    email: "faith.oladipo@example.com",
-    department: "ENG",
-  },
-];
-
-const defaultTemplateRules = {
-  emailSuffix: "@oauife.edu.ng",
-  departmentCodes: ["CSC", "MTH", "EEE"],
-};
-
 const dateTimeFormatter = new Intl.DateTimeFormat("en-GB", {
   dateStyle: "medium",
   timeStyle: "short",
@@ -226,153 +199,11 @@ export default function ClassIdBody({
 
   const historyRows = useMemo(() => staticAttendanceHistory, []);
 
-  const handleRemoveStudent = (studentId) => {
-    setClassStudents((current) =>
-      current.filter((student) => (student.id || student._id) !== studentId),
-    );
-  };
-
-  const runDangerAction = () => {
-    if (!confirmAction) return;
-
-    setIsSaving(true);
-
-    const nextRules =
-      confirmAction === "reset"
-        ? {
-            emailSuffix: defaultTemplateRules.emailSuffix,
-            departmentCodes: defaultTemplateRules.departmentCodes,
-          }
-        : {
-            emailSuffix: "",
-            departmentCodes: [],
-          };
-
-    setRules(nextRules);
-    setDepartmentInput("");
-    setFieldErrors({ emailSuffix: "", departmentCode: "" });
-    setLastUpdated(new Date().toISOString());
-
-    toast.success(
-      confirmAction === "reset"
-        ? "Class settings reset locally."
-        : "Class access rules cleared locally.",
-    );
-
-    setConfirmAction(null);
-    setIsSaving(false);
-  };
-
   return (
     <>
       <Tabs activeTab={activeTab} setActiveTab={setActiveTab} tabs={tabs} />
 
-      {activeTab === "Overview" ? (
-        <div className="space-y-5">
-          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-            {[
-              {
-                label: "Attendance Rate",
-                value: `${classItem.attendanceRate}%`,
-                icon: CheckCircle2,
-              },
-              {
-                label: "Students Enrolled",
-                value: classItem.studentsCount,
-                icon: Sparkles,
-              },
-              {
-                label: "School",
-                value: staticSettings.school,
-                icon: School,
-              },
-              {
-                label: "Last Updated",
-                value: formatDateTime(lastUpdated),
-                icon: CalendarClock,
-              },
-            ].map((item) => (
-              <Card
-                key={item.label}
-                className="rounded-2xl border border-slate-200/70 bg-white/80 p-5 shadow-sm dark:border-slate-800 dark:bg-slate-950/70"
-              >
-                <div className="flex items-start justify-between gap-4">
-                  <div>
-                    <p className="text-sm text-slate-500 dark:text-slate-400">
-                      {item.label}
-                    </p>
-                    <p className="mt-2 text-xl font-semibold text-slate-900 dark:text-slate-100">
-                      {item.value}
-                    </p>
-                  </div>
-                  <div className="rounded-xl bg-sky-500/15 p-2 text-sky-700 dark:text-sky-300">
-                    <item.icon className="size-5" />
-                  </div>
-                </div>
-              </Card>
-            ))}
-          </div>
-
-          <div className="grid gap-5 xl:grid-cols-[1.2fr_.8fr]">
-            <Card className="rounded-2xl border border-slate-200/70 bg-white/80 p-5 shadow-sm dark:border-slate-800 dark:bg-slate-950/70">
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-sky-700 dark:text-sky-300">
-                    Class Snapshot
-                  </p>
-                  <h3 className="mt-1 text-lg font-semibold text-slate-900 dark:text-slate-100">
-                    {classItem.name}
-                  </h3>
-                  <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
-                    Manage the live class workspace without leaving the
-                    dashboard.
-                  </p>
-                </div>
-                <PencilLine className="size-5 text-slate-400" />
-              </div>
-
-              <div className="mt-5 grid gap-3 sm:grid-cols-2">
-                <div className="rounded-xl border border-slate-200/70 p-4 dark:border-slate-800">
-                  <p className="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
-                    School
-                  </p>
-                  <p className="mt-2 text-sm font-semibold text-slate-900 dark:text-slate-100">
-                    {staticSettings.school}
-                  </p>
-                </div>
-                <div className="rounded-xl border border-slate-200/70 p-4 dark:border-slate-800">
-                  <p className="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
-                    Class ID
-                  </p>
-                  <p className="mt-2 text-sm font-semibold text-slate-900 dark:text-slate-100">
-                    {classId}
-                  </p>
-                </div>
-              </div>
-            </Card>
-
-            <Card className="rounded-2xl border border-slate-200/70 bg-linear-to-b from-sky-50/80 to-white p-5 shadow-sm dark:border-slate-800 dark:from-sky-950/20 dark:to-slate-950">
-              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-sky-700 dark:text-sky-300">
-                Audit
-              </p>
-              <div className="mt-4 space-y-3 text-sm text-slate-600 dark:text-slate-300">
-                <div className="flex items-start justify-between gap-3 rounded-xl border border-slate-200/70 p-3 dark:border-slate-800">
-                  <span>Created</span>
-                  <span className="font-medium text-slate-900 dark:text-slate-100">
-                    {formatDateTime(staticSettings.createdAt)}
-                  </span>
-                </div>
-                <div className="flex items-start justify-between gap-3 rounded-xl border border-slate-200/70 p-3 dark:border-slate-800">
-                  <span>Last Updated</span>
-                  <span className="font-medium text-slate-900 dark:text-slate-100">
-                    {formatDateTime(lastUpdated)}
-                  </span>
-                </div>
-              </div>
-            </Card>
-          </div>
-        </div>
-      ) : null}
+      {activeTab === "Overview" ? <OverviewTab /> : null}
 
       {activeTab === "Students" ? <StudentsTab students={students} /> : null}
 
