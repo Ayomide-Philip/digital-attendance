@@ -74,6 +74,12 @@ export const POST = auth(async function POST(req, { params }) {
         { status: 401 },
       );
     }
+    if (user?.role !== "teacher") {
+      return NextResponse.json(
+        { error: "Unable to perform this action" },
+        { status: 403 },
+      );
+    }
     return NextResponse.json({
       message: "POST attendance for class",
       userId,
