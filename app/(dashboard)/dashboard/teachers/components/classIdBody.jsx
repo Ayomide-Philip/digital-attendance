@@ -107,24 +107,6 @@ const staticSettings = {
   updatedAt: "2026-04-21T07:44:14.156Z",
 };
 
-const dateTimeFormatter = new Intl.DateTimeFormat("en-GB", {
-  dateStyle: "medium",
-  timeStyle: "short",
-  timeZone: "UTC",
-  hour12: false,
-});
-
-function normalizeDepartmentCode(value) {
-  return value
-    .trim()
-    .toUpperCase()
-    .replace(/[^A-Z0-9]/g, "");
-}
-
-function isValidEmailSuffix(value) {
-  return /^@([a-z0-9-]+\.)+[a-z]{2,}$/i.test(value.trim());
-}
-
 export default function ClassIdBody({ students, classId, settings, overview }) {
   const initialStudents = students?.length ? students : staticStudents;
 
@@ -134,17 +116,8 @@ export default function ClassIdBody({ students, classId, settings, overview }) {
   const [showImportModal, setShowImportModal] = useState(false);
   const [confirmAction, setConfirmAction] = useState(null);
   const [classStudents, setClassStudents] = useState(initialStudents);
-  const [rules, setRules] = useState(() => ({
-    emailSuffix: staticSettings.rules.emailSuffix,
-    departmentCodes: staticSettings.rules.departmentCode,
-  }));
-  const [departmentInput, setDepartmentInput] = useState("");
-  const [fieldErrors, setFieldErrors] = useState({
-    emailSuffix: "",
-    departmentCode: "",
-  });
+
   const [isSaving, setIsSaving] = useState(false);
-  const [lastUpdated, setLastUpdated] = useState(staticSettings.updatedAt);
 
   const classItem = {
     ...staticClass,
