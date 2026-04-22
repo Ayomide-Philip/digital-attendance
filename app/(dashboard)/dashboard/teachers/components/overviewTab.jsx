@@ -10,6 +10,8 @@ import {
   Users,
 } from "lucide-react";
 import Card from "@/components/ui/card";
+import { watchLocationWithBounds } from "@/lib/utility/getUserCurrentLocation";
+import { useEffect } from "react";
 
 const classOverview = {
   name: "Advanced Algebra",
@@ -94,6 +96,35 @@ const infoItems = [
 ];
 
 export default function OverviewTab({ overview }) {
+  useEffect(() => {
+    const connection =
+      navigator.connection ||
+      navigator.mozConnection ||
+      navigator.webkitConnection;
+    console.log(connection);
+    function startTracking() {
+      const watcher = watchLocationWithBounds(
+        (bounds) => {
+          console.log("Location Bounds:", bounds);
+        },
+        (error) => {
+          console.error("Error watching location:", error);
+        },
+      );
+
+      const timer = setTimeout(() => {
+        watcher.stop();
+        console.log("Tracking stopped after 30s");
+      }, 30000);
+
+      return () => {
+        clearTimeout(timer);
+        watcher.stop();
+      };
+    }
+
+    startTracking();
+  }, []);
   const quickStats = [
     {
       label: "Total Students",

@@ -35,6 +35,13 @@ export const POST = auth(async function POST(req, { params }) {
     );
   }
 
+  if (description && description.trim().length > 500) {
+    return NextResponse.json(
+      { error: "Description must be less than 500 characters" },
+      { status: 400 },
+    );
+  }
+
   return NextResponse.json({
     message: "POST attendance for class",
     userId,
