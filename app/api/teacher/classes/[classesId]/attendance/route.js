@@ -3,6 +3,8 @@ import { connectDatabase } from "@/lib/database/connectdb";
 import { NextResponse } from "next/server";
 import mongoose from "mongoose";
 import User from "@/lib/models/user.model";
+import Classes from "@/lib/models/classes.model";
+import Attandance from "@/lib/models/attendance.model";
 
 export const POST = auth(async function POST(req, { params }) {
   // if (!req?.auth || !req?.auth?.user) {
@@ -80,10 +82,30 @@ export const POST = auth(async function POST(req, { params }) {
         { status: 403 },
       );
     }
+    const classExists = await Classes.findOne({
+      _id: new mongoose.Types.ObjectId(classesId),
+      teacher: new mongoose.Types.ObjectId(userId),
+    });
+
+    if (!classExists) {
+      return NextResponse.json(
+        { error: "Class not found or unauthorized access" },
+        { status: 404 },
+      );
+    }
+
+    const newAttendance = await Attandance.create({
+      teacherId: new mongoose.Types.ObjectId(userId),
+      classesId: new mongoose.Types.ObjectId(classesId),
+      title: title.trim(),
+      description: description ? description.trim() : "",
+      startTime: new Date(startTime),
+      endTime: new Date(endTime),
+    });
+
     return NextResponse.json({
       message: "POST attendance for class",
-      userId,
-      classesId,
+      attendance: newAttendance,
     });
   } catch (err) {
     console.log(err);
