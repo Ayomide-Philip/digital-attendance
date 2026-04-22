@@ -10,8 +10,7 @@ export const POST = auth(async function POST(req, { params }) {
   // }
   // const userId = req?.auth?.user?.id;
   const { classesId } = await params;
-  const { userId, title, description, startTime, endTime, allowedRadius } =
-    await req.json();
+  const { userId, title, description, startTime, endTime } = await req.json();
   // validate input data here
   if (!classesId || !classesId.trim() || !userId || !userId.trim()) {
     return NextResponse.json({ error: "Invalid Parameters" }, { status: 400 });
