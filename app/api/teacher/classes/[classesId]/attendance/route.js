@@ -109,6 +109,17 @@ export const POST = auth(async function POST(req, { params }) {
     });
   } catch (err) {
     console.log(err);
+    if (err.code === 11000) {
+      return NextResponse.json(
+        {
+          error:
+            "An attendance record with the same class and time already exists",
+        },
+        {
+          status: 409,
+        },
+      );
+    }
     return NextResponse.json(
       {
         error: "An error occurred while creating attendance",
