@@ -10,9 +10,24 @@ import {
 import Card from "@/components/ui/card";
 
 export default function ClassCard({ item }) {
+  const classId = item?._id || item?.id;
+
+  if (!classId) {
+    return (
+      <Card className="flex h-full flex-col rounded-2xl p-5">
+        <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">
+          {item?.name?.trim() || "Untitled class"}
+        </h3>
+        <p className="mt-2 text-sm text-rose-600 dark:text-rose-300">
+          This class cannot be opened because it has no valid id.
+        </p>
+      </Card>
+    );
+  }
+
   return (
     <Link
-      href={`/dashboard/teachers/classes/${item?._id}`}
+      href={`/dashboard/teachers/classes/${classId}`}
       className="block h-full"
     >
       <Card className="flex h-full flex-col rounded-2xl p-5 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-slate-200/40 dark:hover:shadow-black/20">

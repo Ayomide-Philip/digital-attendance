@@ -1,12 +1,23 @@
-import { BASE_URL } from "@/lib/database/config";
 import ClassIdBody from "../../components/classIdBody";
-import { cookies } from "next/headers";
 import ClassErrorState from "../../components/classErrorStand";
+import { cookies } from "next/headers";
+import { BASE_URL } from "@/lib/database/config";
 
 export default async function Page({ params }) {
   const { id } = await params;
+
+  if (!id || id === "undefined" || id === "null") {
+    return (
+      <ClassErrorState
+        error="Invalid class id in URL"
+        retryHref="/dashboard/teachers/classes"
+      />
+    );
+  }
+
   const request = await fetch(`${BASE_URL}/api/teacher/classes/${id}`, {
     method: "GET",
+    cache: "no-store",
     headers: {
       "Content-Type": "application/json",
       Cookie: (await cookies()).toString(),
@@ -15,10 +26,10 @@ export default async function Page({ params }) {
   const response = await request.json();
   const { classes, error } = response;
 
-  if (error) {
+  if (!request.ok || error || !classes) {
     return (
       <ClassErrorState
-        error={error}
+        error={error || "Class not found or you do not have access to it"}
         retryHref={`/dashboard/teachers/classes/${id}`}
       />
     );
