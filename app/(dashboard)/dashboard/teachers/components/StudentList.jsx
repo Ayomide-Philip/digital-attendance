@@ -9,6 +9,15 @@ export default function StudentList({
   mode = "global",
   onRemoveStudent,
 }) {
+  const hasEmailColumn = students.some((student) => student.email);
+  const hasDepartmentColumn = students.some((student) => student.department);
+  const columnCount =
+    1 +
+    (mode === "class" ? 1 : 0) +
+    (hasEmailColumn ? 1 : 0) +
+    (hasDepartmentColumn ? 1 : 0) +
+    (mode === "class" ? 1 : 0);
+
   return (
     <Card className="overflow-hidden rounded-2xl p-0">
       <div className="border-b border-slate-200/70 px-5 py-4 dark:border-slate-800">
@@ -25,10 +34,10 @@ export default function StudentList({
               {mode === "class" ? (
                 <th className="px-5 py-3 font-medium">Matric / ID</th>
               ) : null}
-              {students.some((student) => student.email) ? (
+              {hasEmailColumn ? (
                 <th className="px-5 py-3 font-medium">Email</th>
               ) : null}
-              {students.some((student) => student.department) ? (
+              {hasDepartmentColumn ? (
                 <th className="px-5 py-3 font-medium">Department</th>
               ) : null}
               {mode === "class" ? (
@@ -38,50 +47,61 @@ export default function StudentList({
           </thead>
 
           <tbody className="divide-y divide-slate-200/70 dark:divide-slate-800">
-            {students.map((student, index) => (
-              <tr
-                key={student.id || student._id || index}
-                className="transition hover:bg-slate-50/80 dark:hover:bg-slate-900/60"
-              >
-                <td className="px-5 py-4 font-medium text-slate-900 dark:text-slate-100">
-                  {student.name}
+            {students.length === 0 ? (
+              <tr>
+                <td
+                  colSpan={columnCount}
+                  className="px-5 py-10 text-center text-sm text-slate-500 dark:text-slate-400"
+                >
+                  No students found.
                 </td>
-
-                {mode === "class" ? (
-                  <td className="px-5 py-4 text-slate-600 dark:text-slate-300">
-                    {student.matricNo || student.matricId || student._id || "-"}
-                  </td>
-                ) : null}
-
-                {students.some((item) => item.email) ? (
-                  <td className="px-5 py-4 text-slate-600 dark:text-slate-300">
-                    {student.email || "-"}
-                  </td>
-                ) : null}
-
-                {students.some((item) => item.department) ? (
-                  <td className="px-5 py-4 text-slate-600 dark:text-slate-300">
-                    {student.department || "-"}
-                  </td>
-                ) : null}
-
-                {mode === "class" ? (
-                  <td className="px-5 py-4 text-right">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="text-rose-600 hover:text-rose-700 dark:text-rose-300 dark:hover:text-rose-200"
-                      // onClick={() =>
-                      //   onRemoveStudent?.(student.id || student._id)
-                      // }
-                    >
-                      <Trash2 className="size-4" />
-                      Remove
-                    </Button>
-                  </td>
-                ) : null}
               </tr>
-            ))}
+            ) : (
+              students.map((student, index) => (
+                <tr
+                  key={student.id || student._id || index}
+                  className="transition hover:bg-slate-50/80 dark:hover:bg-slate-900/60"
+                >
+                  <td className="px-5 py-4 font-medium text-slate-900 dark:text-slate-100">
+                    {student.name}
+                  </td>
+
+                  {mode === "class" ? (
+                    <td className="px-5 py-4 text-slate-600 dark:text-slate-300">
+                      {student?.matricNo || "-"}
+                    </td>
+                  ) : null}
+
+                  {hasEmailColumn ? (
+                    <td className="px-5 py-4 text-slate-600 dark:text-slate-300">
+                      {student?.email || "-"}
+                    </td>
+                  ) : null}
+
+                  {hasDepartmentColumn ? (
+                    <td className="px-5 py-4 text-slate-600 dark:text-slate-300">
+                      {student?.department || "-"}
+                    </td>
+                  ) : null}
+
+                  {mode === "class" ? (
+                    <td className="px-5 py-4 text-right">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="text-rose-600 hover:text-rose-700 dark:text-rose-300 dark:hover:text-rose-200"
+                        // onClick={() =>
+                        //   onRemoveStudent?.(student.id || student._id)
+                        // }
+                      >
+                        <Trash2 className="size-4" />
+                        Remove
+                      </Button>
+                    </td>
+                  ) : null}
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>
