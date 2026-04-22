@@ -1,5 +1,8 @@
 import { auth } from "@/auth";
+import { connectDatabase } from "@/lib/database/connectdb";
 import { NextResponse } from "next/server";
+import mongoose from "mongoose";
+import User from "@/lib/models/user.model";
 
 export const POST = auth(async function POST(req, { params }) {
   // if (!req?.auth || !req?.auth?.user) {
@@ -11,7 +14,7 @@ export const POST = auth(async function POST(req, { params }) {
   // const userId = req?.auth?.user?.id;
   const { classesId } = await params;
   const { userId, title, description, startTime, endTime } = await req.json();
-  // validate input data here
+
   if (!classesId || !classesId.trim() || !userId || !userId.trim()) {
     return NextResponse.json({ error: "Invalid Parameters" }, { status: 400 });
   }
@@ -62,9 +65,29 @@ export const POST = auth(async function POST(req, { params }) {
     );
   }
 
-  return NextResponse.json({
-    message: "POST attendance for class",
-    userId,
-    classesId,
-  });
+  try {
+    await connectDatabase();
+    const user = await User.findById(new mongoose.Types.ObjectId(userId));
+    if (!user) {
+      return NextResponse.json(
+        { error: "Unauthorized Access" },
+        { status: 401 },
+      );
+    }
+    return NextResponse.json({
+      message: "POST attendance for class",
+      userId,
+      classesId,
+    });
+  } catch (err) {
+    console.log(err);
+    return NextResponse.json(
+      {
+        error: "An error occurred while creating attendance",
+      },
+      {
+        status: 500,
+      },
+    );
+  }
 });
