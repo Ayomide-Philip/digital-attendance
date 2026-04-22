@@ -108,7 +108,7 @@ export default function OverviewTab({ overview }) {
           console.log("Location Bounds:", bounds);
         },
         (error) => {
-          console.error("Error watching location:", error);
+          console.log("Error watching location:", error);
         },
       );
 
