@@ -1,70 +1,133 @@
 import {
-  PencilLine,
+  BadgeCheck,
+  BookOpen,
+  Calendar,
   CheckCircle2,
-  Sparkles,
+  Clock3,
+  GraduationCap,
+  NotebookPen,
   School,
-  CalendarClock,
+  Users,
 } from "lucide-react";
 import Card from "@/components/ui/card";
 
-const classId = "CLS-ENG-2026-014";
-const classItem = {
-  name: "Software Engineering 401",
-  attendanceRate: 92,
-  studentsCount: 128,
+const classOverview = {
+  name: "Advanced Algebra",
+  subtitle: "CSC Department",
+  status: "Active",
+  code: "ALG-401",
+  department: "Computer Science",
+  lecturer: "Dr. Amaka Nwosu",
+  school: "School of Computing & Engineering",
+  createdAt: "2026-01-18T10:15:00.000Z",
 };
-const lastUpdated = "2026-04-22T09:15:00.000Z";
-const staticSettings = {
-  school: "Faculty of Engineering",
-  createdAt: "2026-02-03T11:20:00.000Z",
-};
+
+const quickStats = [
+  {
+    label: "Total Students",
+    value: "128",
+    icon: Users,
+    tone: "bg-sky-500/10 text-sky-700 dark:text-sky-300",
+  },
+  {
+    label: "Present Today",
+    value: "116",
+    icon: BadgeCheck,
+    tone: "bg-emerald-500/10 text-emerald-700 dark:text-emerald-300",
+  },
+  {
+    label: "Attendance Rate",
+    value: "91%",
+    icon: CheckCircle2,
+    tone: "bg-violet-500/10 text-violet-700 dark:text-violet-300",
+  },
+  {
+    label: "Class Sessions",
+    value: "24",
+    icon: Calendar,
+    tone: "bg-amber-500/10 text-amber-700 dark:text-amber-300",
+  },
+];
+
+const recentActivity = [
+  {
+    title: "Attendance marked for Week 3",
+    time: "2 hours ago",
+    icon: CheckCircle2,
+  },
+  {
+    title: "New student joined class",
+    time: "Yesterday",
+    icon: GraduationCap,
+  },
+  {
+    title: "Class updated by teacher",
+    time: "2 days ago",
+    icon: NotebookPen,
+  },
+];
+
+const upcomingSessions = [
+  {
+    topic: "Matrix Transformations",
+    date: "Apr 24, 2026",
+    time: "10:00 AM - 12:00 PM",
+  },
+  {
+    topic: "Linear Optimization",
+    date: "Apr 27, 2026",
+    time: "09:00 AM - 11:00 AM",
+  },
+  {
+    topic: "Revision & Quiz",
+    date: "Apr 30, 2026",
+    time: "01:00 PM - 02:30 PM",
+  },
+];
+
+const infoItems = [
+  { label: "Class Code", value: classOverview.code },
+  { label: "Department", value: classOverview.department },
+  { label: "Lecturer", value: classOverview.lecturer },
+  { label: "School", value: classOverview.school },
+  { label: "Created", value: formatDate(classOverview.createdAt) },
+];
 
 export default function OverviewTab() {
-  const summaryCards = [
-    {
-      label: "Attendance Rate",
-      value: `${classItem.attendanceRate}%`,
-      icon: CheckCircle2,
-      iconTone: "bg-emerald-500/15 text-emerald-700 dark:text-emerald-300",
-    },
-    {
-      label: "Students Enrolled",
-      value: classItem.studentsCount,
-      icon: Sparkles,
-      iconTone: "bg-violet-500/15 text-violet-700 dark:text-violet-300",
-    },
-    {
-      label: "School",
-      value: staticSettings.school,
-      icon: School,
-      iconTone: "bg-amber-500/15 text-amber-700 dark:text-amber-300",
-    },
-    {
-      label: "Last Updated",
-      value: formatDateTime(lastUpdated),
-      icon: CalendarClock,
-      iconTone: "bg-sky-500/15 text-sky-700 dark:text-sky-300",
-    },
-  ];
-
   return (
     <div className="space-y-5">
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-        {summaryCards.map((item) => (
+      <Card className="rounded-2xl border border-slate-200/70 bg-white/85 p-6 shadow-sm dark:border-slate-800 dark:bg-slate-950/70">
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <h2 className="text-2xl font-semibold tracking-tight text-slate-900 dark:text-slate-100">
+              {classOverview.name}
+            </h2>
+            <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+              {classOverview.subtitle}
+            </p>
+          </div>
+          <span className="inline-flex items-center rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-emerald-700 dark:text-emerald-300">
+            {classOverview.status}
+          </span>
+        </div>
+      </Card>
+
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        {quickStats.map((item) => (
           <Card
             key={item.label}
-            className="rounded-2xl border border-slate-200/70 bg-white/80 p-5 shadow-sm transition-transform duration-300 hover:-translate-y-0.5 dark:border-slate-800 dark:bg-slate-950/70"
+            className="rounded-2xl border border-slate-200/70 bg-white/85 p-5 shadow-sm transition-transform duration-300 hover:-translate-y-0.5 dark:border-slate-800 dark:bg-slate-950/70"
           >
-            <div className="flex items-start justify-between gap-4">
+            <div className="flex items-start justify-between gap-3">
               <div>
                 <p className="text-sm text-slate-500 dark:text-slate-400">
                   {item.label}
                 </p>
-                <p className="mt-2 text-xl font-semibold text-slate-900 dark:text-slate-100">
+                <p className="mt-2 text-2xl font-semibold text-slate-900 dark:text-slate-100">
                   {item.value}
                 </p>
               </div>
-              <div className={`rounded-xl p-2 ${item.iconTone}`}>
+              <div className={`rounded-xl p-2.5 ${item.tone}`}>
                 <item.icon className="size-5" />
               </div>
             </div>
@@ -72,71 +135,100 @@ export default function OverviewTab() {
         ))}
       </div>
 
-      <div className="grid gap-5 xl:grid-cols-[1.2fr_.8fr]">
-        <Card className="rounded-2xl border border-slate-200/70 bg-white/80 p-6 shadow-sm dark:border-slate-800 dark:bg-slate-950/70">
-          <div className="flex items-start justify-between gap-4">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-sky-700 dark:text-sky-300">
-                Class Snapshot
-              </p>
-              <h3 className="mt-1 text-lg font-semibold text-slate-900 dark:text-slate-100">
-                {classItem.name}
-              </h3>
-              <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
-                Manage the live class workspace without leaving the dashboard.
-              </p>
-            </div>
-            <PencilLine className="size-5 text-slate-400" />
+      <div className="grid gap-5 xl:grid-cols-[1.1fr_.9fr]">
+        <Card className="rounded-2xl border border-slate-200/70 bg-white/85 p-6 shadow-sm dark:border-slate-800 dark:bg-slate-950/70">
+          <div className="mb-4 flex items-center gap-2">
+            <School className="size-4 text-sky-600 dark:text-sky-300" />
+            <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">
+              Class Information
+            </h3>
           </div>
-
-          <div className="mt-5 grid gap-3 sm:grid-cols-2">
-            <div className="rounded-xl border border-slate-200/70 bg-slate-50/70 p-4 dark:border-slate-800 dark:bg-slate-900/50">
-              <p className="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
-                School
-              </p>
-              <p className="mt-2 text-sm font-semibold text-slate-900 dark:text-slate-100">
-                {staticSettings.school}
-              </p>
-            </div>
-            <div className="rounded-xl border border-slate-200/70 bg-slate-50/70 p-4 dark:border-slate-800 dark:bg-slate-900/50">
-              <p className="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
-                Class ID
-              </p>
-              <p className="mt-2 text-sm font-semibold text-slate-900 dark:text-slate-100">
-                {classId}
-              </p>
-            </div>
+          <div className="grid gap-3 sm:grid-cols-2">
+            {infoItems.map((item) => (
+              <div
+                key={item.label}
+                className="rounded-xl border border-slate-200/70 bg-slate-50/70 p-4 dark:border-slate-800 dark:bg-slate-900/40"
+              >
+                <p className="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
+                  {item.label}
+                </p>
+                <p className="mt-2 text-sm font-semibold text-slate-900 dark:text-slate-100">
+                  {item.value}
+                </p>
+              </div>
+            ))}
           </div>
         </Card>
 
-        <Card className="rounded-2xl border border-slate-200/70 bg-linear-to-b from-sky-50/80 to-white p-5 shadow-sm dark:border-slate-800 dark:from-sky-950/20 dark:to-slate-950">
-          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-sky-700 dark:text-sky-300">
-            Audit
-          </p>
-          <div className="mt-4 space-y-3 text-sm text-slate-600 dark:text-slate-300">
-            <div className="flex items-start justify-between gap-3 rounded-xl border border-slate-200/70 p-3 dark:border-slate-800">
-              <span>Created</span>
-              <span className="font-medium text-slate-900 dark:text-slate-100">
-                {formatDateTime(staticSettings.createdAt)}
-              </span>
-            </div>
-            <div className="flex items-start justify-between gap-3 rounded-xl border border-slate-200/70 p-3 dark:border-slate-800">
-              <span>Last Updated</span>
-              <span className="font-medium text-slate-900 dark:text-slate-100">
-                {formatDateTime(lastUpdated)}
-              </span>
-            </div>
+        <Card className="rounded-2xl border border-slate-200/70 bg-white/85 p-6 shadow-sm dark:border-slate-800 dark:bg-slate-950/70">
+          <div className="mb-4 flex items-center gap-2">
+            <Clock3 className="size-4 text-sky-600 dark:text-sky-300" />
+            <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">
+              Recent Activity
+            </h3>
+          </div>
+
+          <div className="space-y-3">
+            {recentActivity.map((item) => (
+              <div
+                key={item.title}
+                className="flex items-start gap-3 rounded-xl border border-slate-200/70 p-3 dark:border-slate-800"
+              >
+                <div className="rounded-lg bg-sky-500/10 p-2 text-sky-700 dark:text-sky-300">
+                  <item.icon className="size-4" />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-sm font-medium text-slate-900 dark:text-slate-100">
+                    {item.title}
+                  </p>
+                  <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                    {item.time}
+                  </p>
+                </div>
+              </div>
+            ))}
           </div>
         </Card>
       </div>
+
+      <Card className="rounded-2xl border border-slate-200/70 bg-white/85 p-6 shadow-sm dark:border-slate-800 dark:bg-slate-950/70">
+        <div className="mb-4 flex items-center gap-2">
+          <BookOpen className="size-4 text-sky-600 dark:text-sky-300" />
+          <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">
+            Upcoming Sessions
+          </h3>
+        </div>
+
+        <div className="space-y-3">
+          {upcomingSessions.map((session) => (
+            <div
+              key={`${session.topic}-${session.date}`}
+              className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-200/70 p-4 dark:border-slate-800"
+            >
+              <div>
+                <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">
+                  {session.topic}
+                </p>
+                <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                  {session.date}
+                </p>
+              </div>
+              <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700 dark:bg-slate-800 dark:text-slate-300">
+                {session.time}
+              </span>
+            </div>
+          ))}
+        </div>
+      </Card>
     </div>
   );
 }
 
-function formatDateTime(dateTimeString) {
-  const date = new Date(dateTimeString);
-  return date.toLocaleString(undefined, {
-    dateStyle: "medium",
-    timeStyle: "short",
+function formatDate(dateString) {
+  const date = new Date(dateString);
+  return date.toLocaleDateString(undefined, {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
   });
 }
