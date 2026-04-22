@@ -10,27 +10,8 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
-
 import { Button } from "@/components/ui/button";
 import Card from "@/components/ui/card";
-
-const fallbackPreviewCandidates = [
-  {
-    name: "Amina Yusuf",
-    email: "amina.yusuf@oauife.edu.ng",
-    department: "CSC",
-  },
-  {
-    name: "David Okonkwo",
-    email: "david.okonkwo@oauife.edu.ng",
-    department: "MTH",
-  },
-  {
-    name: "Nora Adesina",
-    email: "nora.adesina@oauife.edu.ng",
-    department: "EEE",
-  },
-];
 
 export default function SettingsTab({ settings = {} }) {
   const [rules, setRules] = useState({
@@ -43,9 +24,14 @@ export default function SettingsTab({ settings = {} }) {
   const schoolName = settings?.school || "Not set";
 
   const handleAddDepartmentCode = () => {
-    const nextCode = departmentInput.trim().toUpperCase();
+    const nextCode = departmentInput.trim().toLowerCase();
 
     if (!nextCode) {
+      return;
+    }
+
+    if (rules.departmentCodes.includes(nextCode)) {
+      toast.error("This department code has already been added.");
       return;
     }
 
@@ -64,12 +50,11 @@ export default function SettingsTab({ settings = {} }) {
   const handleDangerAction = () => {
     if (confirmAction === "reset") {
       setRules({ emailSuffix: "", departmentCodes: [] });
-      toast.success("Class settings reset locally.");
+      toast.success("Class rules reset to defaults.");
     }
 
     if (confirmAction === "delete") {
-      setRules({ emailSuffix: "", departmentCodes: [] });
-      toast.success("Class access rules deleted locally.");
+      toast.success("Class deleted successfully.");
     }
 
     setConfirmAction(null);
@@ -140,7 +125,7 @@ export default function SettingsTab({ settings = {} }) {
                 {rules.departmentCodes.length ? (
                   rules.departmentCodes.map((code, index) => (
                     <span
-                      key={`${code}-${index}`}
+                      key={`${index}`}
                       className="inline-flex items-center gap-2 rounded-full border border-sky-200 bg-sky-50 px-3 py-1.5 text-sm font-medium text-sky-700 dark:border-sky-900/60 dark:bg-sky-950/30 dark:text-sky-300"
                     >
                       {code}
@@ -195,7 +180,7 @@ export default function SettingsTab({ settings = {} }) {
               <label className="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
                 School
               </label>
-              <div className="mt-2 flex items-center gap-2 text-sm font-semibold text-slate-900 dark:text-slate-100">
+              <div className="mt-2 flex items-center gap-2 text-sm font-semibold capitalize text-slate-900 dark:text-slate-100">
                 <School className="size-4 text-sky-600 dark:text-sky-300" />
                 {schoolName}
               </div>
@@ -214,11 +199,11 @@ export default function SettingsTab({ settings = {} }) {
                 <ShieldAlert className="mt-0.5 size-5 text-rose-600 dark:text-rose-300" />
                 <div className="min-w-0">
                   <p className="font-semibold text-rose-800 dark:text-rose-200">
-                    Reset or delete access rules
+                    Class management
                   </p>
                   <p className="mt-1 text-sm text-rose-700/90 dark:text-rose-200/90">
-                    Reset restores template rules. Delete clears all access
-                    restrictions.
+                    Deleting the class will remove it permanently from the
+                    system.
                   </p>
                 </div>
               </div>
@@ -226,21 +211,12 @@ export default function SettingsTab({ settings = {} }) {
               <div className="flex flex-col gap-2 sm:flex-row">
                 <Button
                   type="button"
-                  variant="outline"
-                  className="h-10 rounded-xl border-rose-200 text-rose-700 hover:bg-rose-50 dark:border-rose-900/60 dark:text-rose-200 dark:hover:bg-rose-950/40"
-                  onClick={() => setConfirmAction("reset")}
-                >
-                  <RotateCcw className="size-4" />
-                  Reset Class Settings
-                </Button>
-                <Button
-                  type="button"
                   variant="destructive"
                   className="h-10 rounded-xl px-4"
                   onClick={() => setConfirmAction("delete")}
                 >
                   <AlertTriangle className="size-4" />
-                  Delete Class Access Rules
+                  Delete Class
                 </Button>
               </div>
             </div>
@@ -271,9 +247,14 @@ export default function SettingsTab({ settings = {} }) {
                 </p>
                 <h3 className="mt-1 text-xl font-semibold text-slate-900 dark:text-slate-100">
                   {confirmAction === "reset"
-                    ? "Reset Class Settings"
-                    : "Delete Class Access Rules"}
+                    ? "Reset Class Rules"
+                    : "Delete Class"}
                 </h3>
+                <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">
+                  {confirmAction === "reset"
+                    ? "This will restore default rules for this class. Students will need to meet the new requirements."
+                    : "This will permanently delete the class. This action cannot be undone."}
+                </p>
               </div>
             </div>
 

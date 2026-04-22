@@ -5,26 +5,19 @@ import {
   AlertTriangle,
   CalendarClock,
   CheckCircle2,
-  ChevronRight,
   PencilLine,
-  Plus,
-  RotateCcw,
-  Save,
   School,
-  ShieldAlert,
   Sparkles,
-  Upload,
-  X,
 } from "lucide-react";
 import { toast } from "sonner";
 
 import AttendanceTable from "@/app/(dashboard)/dashboard/teachers/components/AttendanceTable";
-import StudentList from "@/app/(dashboard)/dashboard/teachers/components/StudentList";
 import TakeAttendanceModal from "@/app/(dashboard)/dashboard/teachers/components/TakeAttendanceModal";
 import { Button } from "@/components/ui/button";
 import Card from "@/components/ui/card";
 import Tabs from "./tabs";
 import SettingsTab from "./settingsTab";
+import StudentsTab from "./studentsTab";
 
 const tabs = ["Overview", "Students", "Attendance", "Settings"];
 
@@ -233,105 +226,10 @@ export default function ClassIdBody({
 
   const historyRows = useMemo(() => staticAttendanceHistory, []);
 
-  const previewMatches = useMemo(() => {
-    const suffix = rules.emailSuffix.trim().toLowerCase();
-    const allowedDepartments = rules.departmentCodes;
-
-    return previewCandidates.filter((candidate) => {
-      const suffixOk =
-        !suffix || candidate.email.toLowerCase().endsWith(suffix);
-      const departmentOk =
-        !allowedDepartments.length ||
-        allowedDepartments.includes(candidate.department);
-
-      return suffixOk && departmentOk;
-    });
-  }, [rules.emailSuffix, rules.departmentCodes]);
-
-  const clearError = (name) => {
-    setFieldErrors((current) => ({ ...current, [name]: "" }));
-  };
-
   const handleRemoveStudent = (studentId) => {
     setClassStudents((current) =>
       current.filter((student) => (student.id || student._id) !== studentId),
     );
-  };
-
-  const handleAddDepartmentCode = () => {
-    const nextCode = normalizeDepartmentCode(departmentInput);
-
-    if (!nextCode) {
-      setFieldErrors((current) => ({
-        ...current,
-        departmentCode: "Enter a department code before adding it.",
-      }));
-      return;
-    }
-
-    if (!/^[A-Z0-9]{2,10}$/.test(nextCode)) {
-      setFieldErrors((current) => ({
-        ...current,
-        departmentCode: "Use 2-10 letters or numbers for a valid code.",
-      }));
-      return;
-    }
-
-    if (rules.departmentCodes.includes(nextCode)) {
-      setFieldErrors((current) => ({
-        ...current,
-        departmentCode: "This department code already exists.",
-      }));
-      return;
-    }
-
-    setRules((current) => ({
-      ...current,
-      departmentCodes: [...current.departmentCodes, nextCode],
-    }));
-    setDepartmentInput("");
-    clearError("departmentCode");
-  };
-
-  const handleDepartmentKeyDown = (event) => {
-    if (event.key === "Enter") {
-      event.preventDefault();
-      handleAddDepartmentCode();
-    }
-  };
-
-  const handleSaveRules = (event) => {
-    event.preventDefault();
-
-    const nextEmailSuffix = rules.emailSuffix.trim();
-    const nextDepartmentCodes = dedupeCodes(rules.departmentCodes);
-
-    if (!nextEmailSuffix) {
-      setFieldErrors((current) => ({
-        ...current,
-        emailSuffix: "Allowed email domain is required.",
-      }));
-      toast.error("Enter an allowed email domain before saving.");
-      return;
-    }
-
-    if (!isValidEmailSuffix(nextEmailSuffix)) {
-      setFieldErrors((current) => ({
-        ...current,
-        emailSuffix: "Use a valid suffix like @oauife.edu.ng.",
-      }));
-      toast.error("The email suffix is not valid.");
-      return;
-    }
-
-    setIsSaving(true);
-    setRules({
-      emailSuffix: nextEmailSuffix,
-      departmentCodes: nextDepartmentCodes,
-    });
-    setLastUpdated(new Date().toISOString());
-    toast.success("Class settings saved locally.");
-    setIsSaving(false);
   };
 
   const runDangerAction = () => {
@@ -476,33 +374,7 @@ export default function ClassIdBody({
         </div>
       ) : null}
 
-      {activeTab === "Students" ? (
-        <div className="space-y-4">
-          <div className="flex flex-wrap gap-2">
-            <Button
-              className="h-10 rounded-xl px-4"
-              onClick={() => setShowAddModal(true)}
-            >
-              <Plus className="size-4" />
-              Add Student
-            </Button>
-            <Button
-              variant="outline"
-              className="h-10 rounded-xl px-4"
-              onClick={() => setShowImportModal(true)}
-            >
-              <Upload className="size-4" />
-              Import Students
-            </Button>
-          </div>
-
-          <StudentList
-            students={classStudents}
-            mode="class"
-            onRemoveStudent={handleRemoveStudent}
-          />
-        </div>
-      ) : null}
+      {activeTab === "Students" ? <StudentsTab students={students} /> : null}
 
       {activeTab === "Attendance" ? (
         <div className="space-y-4">

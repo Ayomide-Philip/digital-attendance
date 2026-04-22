@@ -71,9 +71,9 @@ export default function StudentList({
                       variant="ghost"
                       size="sm"
                       className="text-rose-600 hover:text-rose-700 dark:text-rose-300 dark:hover:text-rose-200"
-                      onClick={() =>
-                        onRemoveStudent?.(student.id || student._id)
-                      }
+                      // onClick={() =>
+                      //   onRemoveStudent?.(student.id || student._id)
+                      // }
                     >
                       <Trash2 className="size-4" />
                       Remove
