@@ -94,6 +94,40 @@ const infoItems = [
 ];
 
 export default function OverviewTab({ overview }) {
+  const quickStats = [
+    {
+      label: "Total Students",
+      value: overview?.students?.length || "0",
+      icon: Users,
+      tone: "bg-sky-500/10 text-sky-700 dark:text-sky-300",
+    },
+    {
+      label: "Present Today",
+      value: "116",
+      icon: BadgeCheck,
+      tone: "bg-emerald-500/10 text-emerald-700 dark:text-emerald-300",
+    },
+    {
+      label: "Attendance Rate",
+      value: "91%",
+      icon: CheckCircle2,
+      tone: "bg-violet-500/10 text-violet-700 dark:text-violet-300",
+    },
+    {
+      label: "Class Sessions",
+      value: "24",
+      icon: Calendar,
+      tone: "bg-amber-500/10 text-amber-700 dark:text-amber-300",
+    },
+  ];
+
+  const infoItems = [
+    { label: "Class Code", value: overview?.code },
+    { label: "Department", value: overview?.teacher?.department || "" },
+    { label: "Lecturer", value: overview?.teacher?.name || "" },
+    { label: "School", value: overview?.school || "" },
+    { label: "Created", value: formatDate(overview?.createdAt) },
+  ];
   return (
     <div className="space-y-5">
       <Card className="rounded-2xl border border-slate-200/70 bg-white/85 p-6 shadow-sm dark:border-slate-800 dark:bg-slate-950/70">
