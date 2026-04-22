@@ -7,15 +7,15 @@ import Classes from "@/lib/models/classes.model";
 import Attandance from "@/lib/models/attendance.model";
 
 export const POST = auth(async function POST(req, { params }) {
-  // if (!req?.auth || !req?.auth?.user) {
-  //   return NextResponse.json(
-  //     { message: "Unauthorized Access" },
-  //     { status: 401 },
-  //   );
-  // }
-  // const userId = req?.auth?.user?.id;
+  if (!req?.auth || !req?.auth?.user) {
+    return NextResponse.json(
+      { message: "Unauthorized Access" },
+      { status: 401 },
+    );
+  }
+  const userId = req?.auth?.user?.id;
   const { classesId } = await params;
-  const { userId, title, description, startTime, endTime } = await req.json();
+  const { title, description, startTime, endTime } = await req.json();
 
   if (!classesId || !classesId.trim() || !userId || !userId.trim()) {
     return NextResponse.json({ error: "Invalid Parameters" }, { status: 400 });
