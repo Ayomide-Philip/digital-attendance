@@ -130,3 +130,70 @@ export const POST = auth(async function POST(req, { params }) {
     );
   }
 });
+
+export const GET = auth(async function GET(req, { params }) {
+  if (!req?.auth || !req?.auth?.user) {
+    return NextResponse.json({ error: "Unauthorized Access" }, { status: 401 });
+  }
+  const userId = req?.auth?.user?.id;
+  const { classesId } = await params;
+
+  try {
+    await connectDatabase();
+    const user = await User.findById(new mongoose.Types.ObjectId(userId));
+
+    if (!user) {
+      return NextResponse.json(
+        { error: "Unauthorized Access" },
+        { status: 401 },
+      );
+    }
+
+    if (user?.role !== "teacher") {
+      return NextResponse.json(
+        { error: "Unable to perform this action" },
+        { status: 403 },
+      );
+    }
+
+    const classExists = await Classes.findOne({
+      _id: new mongoose.Types.ObjectId(classesId),
+      teacher: new mongoose.Types.ObjectId(userId),
+    });
+
+    if (!classExists) {
+      return NextResponse.json(
+        { error: "Class not found or unauthorized access" },
+        { status: 404 },
+      );
+    }
+
+    const attendanceRecords = await Attandance.find({
+      classesId: new mongoose.Types.ObjectId(classesId),
+      teacherId: new mongoose.Types.ObjectId(userId),
+    })
+      .sort({ createdAt: -1 })
+      .populate("classesId", "name code")
+      .populate("teacherId", "name email");
+
+    return NextResponse.json(
+      {
+        message: "GET attendance for class",
+        attendance: attendanceRecords,
+      },
+      {
+        status: 200,
+      },
+    );
+  } catch (err) {
+    console.log(err);
+    return NextResponse.json(
+      {
+        error: "An error occurred while fetching attendance",
+      },
+      {
+        status: 500,
+      },
+    );
+  }
+});
