@@ -16,6 +16,7 @@ function getStatusVariant(status) {
   if (status === "Present" || status === "Completed") return "success";
   if (status === "Absent") return "destructive";
   if (status === "Flagged") return "warning";
+  if (status === "Ongoing") return "default";
   return "warning";
 }
 
@@ -70,6 +71,8 @@ export default function AttendanceTable({
             const classId = row.classesId?._id || row.classId;
             const className = row.classesId?.name || row.className || "-";
             const date = formatSessionDate(row.startTime);
+            const status =
+              new Date() > new Date(row?.endTime) ? "Completed" : "Ongoing";
             const presentCount = Array.isArray(row.students)
               ? row.students.filter(
                   (s) => String(s?.status || "").toLowerCase() === "present",
@@ -102,9 +105,7 @@ export default function AttendanceTable({
                 <TableCell>{presentCount}</TableCell>
                 <TableCell>{absentCount}</TableCell>
                 <TableCell className="text-right">
-                  <Badge variant={getStatusVariant(row.status || "Completed")}>
-                    {row.status || "Completed"}
-                  </Badge>
+                  <Badge variant={getStatusVariant(status)}>{status}</Badge>
                 </TableCell>
               </TableRow>
             );

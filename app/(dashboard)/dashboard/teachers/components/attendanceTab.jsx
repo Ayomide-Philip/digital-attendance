@@ -17,7 +17,7 @@ const staticAttendanceHistory = [
     title: "class 1 attendance",
     description: "",
     startTime: "2026-04-23T00:00:00.848Z",
-    endTime: "2026-04-23T00:30:00.848Z",
+    endTime: "2026-04-28T00:30:00.848Z",
     students: [
       {
         studentId: "st-001",
@@ -37,7 +37,7 @@ const staticAttendanceHistory = [
     ],
     status: "Completed",
     createdAt: "2026-04-22T11:41:28.916Z",
-    updatedAt: "2026-04-22T11:41:28.916Z",
+    updatedAt: "2026-04-28T11:41:28.916Z",
   },
   {
     _id: "69e8b3e8f8b160457e997734",
@@ -54,7 +54,7 @@ const staticAttendanceHistory = [
     title: "class 2 attendance",
     description: "",
     startTime: "2026-04-22T00:00:00.848Z",
-    endTime: "2026-04-22T00:30:00.848Z",
+    endTime: "2026-04-28T00:30:00.848Z",
     students: [
       {
         studentId: "st-001",
