@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 
 import AttendanceTable from "@/app/(dashboard)/dashboard/teachers/components/AttendanceTable";
 import ClassSwitcher from "@/app/(dashboard)/dashboard/teachers/components/ClassSwitcher";
@@ -29,15 +29,13 @@ export default function AttendancePage() {
         const response = await request.json();
         if (!request.ok || response?.error) {
           setAttendance([]);
-          setLoading(false);
           return toast.error(
             response?.error || "Failed to fetch attendance data",
           );
         }
         setAttendance(response?.attendance || []);
-        setLoading(false);
-      } catch (err) {
-        setLoading(false);
+      } catch {
+        setAttendance([]);
         return toast.error("Failed to fetch attendance data");
       } finally {
         setLoading(false);
@@ -47,17 +45,30 @@ export default function AttendancePage() {
   }, []);
 
   useEffect(() => {
-    // In a real application, you would fetch filtered data from the server
     const rows = attendance.filter((r) => {
-      return r.classesId?._id === selectedClassId;
+      const matchesClass =
+        !selectedClassId || r?.classesId?._id === selectedClassId;
+      const attendanceDate = r?.startTime
+        ? new Date(r.startTime).toISOString().slice(0, 10)
+        : "";
+      const matchesDate = !selectedDate || attendanceDate === selectedDate;
+
+      return matchesClass && matchesDate;
     });
-    console.log(rows);
-    setFilteredAttendance(rows || attendance);
+    setFilteredAttendance(rows);
   }, [selectedClassId, selectedDate, attendance]);
 
-  const teacherClasses = attendance?.map((r) => {
-    return r?.classesId;
-  });
+  const teacherClasses = attendance.reduce((classes, row) => {
+    const currentClass = row?.classesId;
+    if (!currentClass?._id) return classes;
+
+    const classAlreadyExists = classes.some(
+      (classItem) => classItem._id === currentClass._id,
+    );
+
+    if (!classAlreadyExists) classes.push(currentClass);
+    return classes;
+  }, []);
 
   if (loading) {
     return <LoadingComponent />;
@@ -98,7 +109,7 @@ export default function AttendancePage() {
       <AttendanceTable
         title="All Attendance Records"
         description={
-          attendance?.length
+          filteredAttendance?.length
             ? "Click a record to view full attendance details."
             : "No records found for the current filters."
         }
