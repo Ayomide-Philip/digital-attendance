@@ -67,49 +67,60 @@ export default function AttendanceTable({
           </TableRow>
         </TableHeader>
         <TableBody>
-          {rows.map((row, index) => {
-            const classId = row.classesId?._id || row.classId;
-            const className = row.classesId?.name || row.className || "-";
-            const date = formatSessionDate(row.startTime);
-            const status =
-              new Date() > new Date(row?.endTime) ? "Completed" : "Ongoing";
-            const presentCount = Array.isArray(row.students)
-              ? row.students.filter(
-                  (s) => String(s?.status || "").toLowerCase() === "present",
-                ).length
-              : 0;
-            const absentCount = Array.isArray(row.students)
-              ? row.students.filter(
-                  (s) => String(s?.status || "").toLowerCase() === "absent",
-                ).length
-              : 0;
-
-            return (
-              <TableRow
-                key={`${classId || "global"}-${row._id || row.id}-${index}`}
-                className={getRowHref ? "cursor-pointer" : undefined}
-                onClick={
-                  getRowHref
-                    ? () => {
-                        const href = getRowHref(row);
-                        if (href) router.push(href);
-                      }
-                    : undefined
-                }
+          {!rows.length ? (
+            <TableRow>
+              <TableCell
+                colSpan={showClassColumn ? 6 : 5}
+                className="py-8 text-center text-sm text-slate-500 dark:text-slate-400"
               >
-                {showClassColumn ? <TableCell>{className}</TableCell> : null}
-                <TableCell className="font-medium text-slate-700 dark:text-slate-200">
-                  {date}
-                </TableCell>
-                <TableCell>{row.title}</TableCell>
-                <TableCell>{presentCount}</TableCell>
-                <TableCell>{absentCount}</TableCell>
-                <TableCell className="text-right">
-                  <Badge variant={getStatusVariant(status)}>{status}</Badge>
-                </TableCell>
-              </TableRow>
-            );
-          })}
+                No attendance records found.
+              </TableCell>
+            </TableRow>
+          ) : (
+            rows.map((row, index) => {
+              const classId = row.classesId?._id || row.classId;
+              const className = row.classesId?.name || row.className || "-";
+              const date = formatSessionDate(row.startTime);
+              const status =
+                new Date() > new Date(row?.endTime) ? "Completed" : "Ongoing";
+              const presentCount = Array.isArray(row.students)
+                ? row.students.filter(
+                    (s) => String(s?.status || "").toLowerCase() === "present",
+                  ).length
+                : 0;
+              const absentCount = Array.isArray(row.students)
+                ? row.students.filter(
+                    (s) => String(s?.status || "").toLowerCase() === "absent",
+                  ).length
+                : 0;
+
+              return (
+                <TableRow
+                  key={`${classId || "global"}-${row._id || row.id}-${index}`}
+                  className={getRowHref ? "cursor-pointer" : undefined}
+                  onClick={
+                    getRowHref
+                      ? () => {
+                          const href = getRowHref(row);
+                          if (href) router.push(href);
+                        }
+                      : undefined
+                  }
+                >
+                  {showClassColumn ? <TableCell>{className}</TableCell> : null}
+                  <TableCell className="font-medium text-slate-700 dark:text-slate-200">
+                    {date}
+                  </TableCell>
+                  <TableCell>{row.title}</TableCell>
+                  <TableCell>{presentCount}</TableCell>
+                  <TableCell>{absentCount}</TableCell>
+                  <TableCell className="text-right">
+                    <Badge variant={getStatusVariant(status)}>{status}</Badge>
+                  </TableCell>
+                </TableRow>
+              );
+            })
+          )}
         </TableBody>
       </Table>
     </Card>
