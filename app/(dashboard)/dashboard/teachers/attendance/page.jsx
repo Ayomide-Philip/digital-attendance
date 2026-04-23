@@ -4,10 +4,6 @@ import { useEffect, useMemo, useState } from "react";
 
 import AttendanceTable from "@/app/(dashboard)/dashboard/teachers/components/AttendanceTable";
 import ClassSwitcher from "@/app/(dashboard)/dashboard/teachers/components/ClassSwitcher";
-import {
-  getAllAttendanceRecords,
-  teacherClasses,
-} from "@/app/(dashboard)/dashboard/teachers/components/mock-data";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import LoadingComponent from "../components/loading";
@@ -50,16 +46,14 @@ export default function AttendancePage() {
     fetchAttendance();
   }, []);
 
-  const rows = useMemo(() => {
-    const allRecords = getAllAttendanceRecords();
-
-    return allRecords.filter((record) => {
-      const matchesClass =
-        !selectedClassId || record.classId === selectedClassId;
-      const matchesDate = !selectedDate || record.dateISO === selectedDate;
-      return matchesClass && matchesDate;
+  useEffect(() => {
+    // In a real application, you would fetch filtered data from the server
+    const rows = attendance.filter((r) => {
+      return r.classesId?._id === selectedClassId;
     });
-  }, [selectedClassId, selectedDate]);
+    console.log(rows);
+    setFilteredAttendance(rows || attendance);
+  }, [selectedClassId, selectedDate, attendance]);
 
   const teacherClasses = attendance?.map((r) => {
     return r?.classesId;
@@ -108,7 +102,7 @@ export default function AttendancePage() {
             ? "Click a record to view full attendance details."
             : "No records found for the current filters."
         }
-        rows={attendance}
+        rows={filteredAttendance}
         showClassColumn
         getRowHref={(row) =>
           `/dashboard/teachers/classes/${row?.classesId?._id}/attendance/${row?._id}`
