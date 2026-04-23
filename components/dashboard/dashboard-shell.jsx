@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { X } from "lucide-react";
 
 import Navbar from "@/components/dashboard/navbar";
@@ -8,6 +8,7 @@ import Sidebar from "@/components/dashboard/sidebar";
 import { Button } from "@/components/ui/button";
 
 const SIDEBAR_COLLAPSED_STORAGE_KEY = "teacher-sidebar-collapsed";
+
 function isDesktopViewport() {
   return (
     typeof window !== "undefined" &&
@@ -15,35 +16,57 @@ function isDesktopViewport() {
   );
 }
 
-export default function DashboardShell({ children }) {
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
-    if (!isDesktopViewport()) return false;
+function readSidebarCollapsed(key) {
+  if (typeof window === "undefined") return false;
 
-    try {
-      return (
-        window.localStorage.getItem(SIDEBAR_COLLAPSED_STORAGE_KEY) === "true"
-      );
-    } catch {
-      return false;
-    }
-  });
+  try {
+    return window.localStorage.getItem(key) === "true";
+  } catch {
+    return false;
+  }
+}
+
+function subscribeToSidebarPreference(callback) {
+  if (typeof window === "undefined") return () => {};
+
+  const handlePreferenceChange = () => callback();
+  window.addEventListener("storage", handlePreferenceChange);
+  window.addEventListener("sidebar-preference-change", handlePreferenceChange);
+
+  return () => {
+    window.removeEventListener("storage", handlePreferenceChange);
+    window.removeEventListener(
+      "sidebar-preference-change",
+      handlePreferenceChange,
+    );
+  };
+}
+
+export default function DashboardShell({ children }) {
+  const sidebarCollapsed = useSyncExternalStore(
+    subscribeToSidebarPreference,
+    () =>
+      isDesktopViewport()
+        ? readSidebarCollapsed(SIDEBAR_COLLAPSED_STORAGE_KEY)
+        : false,
+    () => false,
+  );
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  useEffect(() => {
+  const handleToggleSidebar = () => {
     if (!isDesktopViewport()) return;
 
     try {
+      const nextValue = !sidebarCollapsed;
       window.localStorage.setItem(
         SIDEBAR_COLLAPSED_STORAGE_KEY,
-        String(sidebarCollapsed),
+        String(nextValue),
       );
-    } catch (err) {
-      console.error(
-        "Error occurred while saving sidebar collapsed state:",
-        err,
-      );
+      window.dispatchEvent(new Event("sidebar-preference-change"));
+    } catch {
+      // Ignore storage access errors.
     }
-  }, [sidebarCollapsed]);
+  };
 
   return (
     <div className="relative min-h-screen overflow-x-hidden bg-slate-50 dark:bg-slate-950">
@@ -86,7 +109,7 @@ export default function DashboardShell({ children }) {
         <main className="min-w-0 flex-1">
           <Navbar
             onMenuClick={() => setMobileOpen(true)}
-            onToggleSidebar={() => setSidebarCollapsed((prev) => !prev)}
+            onToggleSidebar={handleToggleSidebar}
             sidebarCollapsed={sidebarCollapsed}
           />
           <div className="pb-6">{children}</div>
