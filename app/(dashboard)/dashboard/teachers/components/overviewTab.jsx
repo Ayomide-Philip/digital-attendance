@@ -13,44 +13,6 @@ import Card from "@/components/ui/card";
 import { watchLocationWithBounds } from "@/lib/utility/getUserCurrentLocation";
 import { useEffect } from "react";
 
-const classOverview = {
-  name: "Advanced Algebra",
-  subtitle: "CSC Department",
-  status: "Active",
-  code: "ALG-401",
-  department: "Computer Science",
-  lecturer: "Dr. Amaka Nwosu",
-  school: "School of Computing & Engineering",
-  createdAt: "2026-01-18T10:15:00.000Z",
-};
-
-const quickStats = [
-  {
-    label: "Total Students",
-    value: "128",
-    icon: Users,
-    tone: "bg-sky-500/10 text-sky-700 dark:text-sky-300",
-  },
-  {
-    label: "Present Today",
-    value: "116",
-    icon: BadgeCheck,
-    tone: "bg-emerald-500/10 text-emerald-700 dark:text-emerald-300",
-  },
-  {
-    label: "Attendance Rate",
-    value: "91%",
-    icon: CheckCircle2,
-    tone: "bg-violet-500/10 text-violet-700 dark:text-violet-300",
-  },
-  {
-    label: "Class Sessions",
-    value: "24",
-    icon: Calendar,
-    tone: "bg-amber-500/10 text-amber-700 dark:text-amber-300",
-  },
-];
-
 const recentActivity = [
   {
     title: "Attendance marked for Week 3",
@@ -85,14 +47,6 @@ const upcomingSessions = [
     date: "Apr 30, 2026",
     time: "01:00 PM - 02:30 PM",
   },
-];
-
-const infoItems = [
-  { label: "Class Code", value: classOverview.code },
-  { label: "Department", value: classOverview.department },
-  { label: "Lecturer", value: classOverview.lecturer },
-  { label: "School", value: classOverview.school },
-  { label: "Created", value: formatDate(classOverview.createdAt) },
 ];
 
 export default function OverviewTab({ overview }) {
