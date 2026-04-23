@@ -1,15 +1,46 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { X } from "lucide-react";
-
 import StudentNavbar from "@/components/dashboard/students/student-navbar";
 import StudentSidebar from "@/components/dashboard/students/student-sidebar";
 import { Button } from "@/components/ui/button";
 
+const SIDEBAR_COLLAPSED_STORAGE_KEY = "student-sidebar-collapsed";
+
+function isDesktopViewport() {
+  return (
+    typeof window !== "undefined" &&
+    window.matchMedia("(min-width: 768px)").matches
+  );
+}
+
 export default function StudentDashboardShell({ children, session }) {
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
+    if (!isDesktopViewport()) return false;
+
+    try {
+      return (
+        window.localStorage.getItem(SIDEBAR_COLLAPSED_STORAGE_KEY) === "true"
+      );
+    } catch {
+      return false;
+    }
+  });
   const [mobileOpen, setMobileOpen] = useState(false);
+
+  useEffect(() => {
+    if (!isDesktopViewport()) return;
+
+    try {
+      window.localStorage.setItem(
+        SIDEBAR_COLLAPSED_STORAGE_KEY,
+        String(sidebarCollapsed),
+      );
+    } catch {
+      // Ignore storage access errors.
+    }
+  }, [sidebarCollapsed]);
 
   return (
     <div className="relative min-h-screen overflow-x-hidden bg-slate-50 dark:bg-slate-950">

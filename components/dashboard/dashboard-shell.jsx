@@ -1,15 +1,49 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { X } from "lucide-react";
 
 import Navbar from "@/components/dashboard/navbar";
 import Sidebar from "@/components/dashboard/sidebar";
 import { Button } from "@/components/ui/button";
 
+const SIDEBAR_COLLAPSED_STORAGE_KEY = "teacher-sidebar-collapsed";
+function isDesktopViewport() {
+  return (
+    typeof window !== "undefined" &&
+    window.matchMedia("(min-width: 768px)").matches
+  );
+}
+
 export default function DashboardShell({ children }) {
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
+    if (!isDesktopViewport()) return false;
+
+    try {
+      return (
+        window.localStorage.getItem(SIDEBAR_COLLAPSED_STORAGE_KEY) === "true"
+      );
+    } catch {
+      return false;
+    }
+  });
   const [mobileOpen, setMobileOpen] = useState(false);
+
+  useEffect(() => {
+    if (!isDesktopViewport()) return;
+
+    try {
+      window.localStorage.setItem(
+        SIDEBAR_COLLAPSED_STORAGE_KEY,
+        String(sidebarCollapsed),
+      );
+    } catch (err) {
+      console.error(
+        "Error occurred while saving sidebar collapsed state:",
+        err,
+      );
+    }
+  }, [sidebarCollapsed]);
 
   return (
     <div className="relative min-h-screen overflow-x-hidden bg-slate-50 dark:bg-slate-950">
