@@ -115,8 +115,6 @@ export default function ClassIdBody({ students, classId, settings, overview }) {
     studentsCount: classStudents.length,
   };
 
-  const historyRows = useMemo(() => staticAttendanceHistory, []);
-
   return (
     <>
       <Tabs activeTab={activeTab} setActiveTab={setActiveTab} tabs={tabs} />
@@ -125,7 +123,7 @@ export default function ClassIdBody({ students, classId, settings, overview }) {
 
       {activeTab === "Students" ? <StudentsTab students={students} /> : null}
 
-      {activeTab === "Attendance" ? <AttendanceTab /> : null}
+      {activeTab === "Attendance" ? <AttendanceTab classId={classId} /> : null}
 
       {activeTab === "Settings" ? <SettingsTab settings={settings} /> : null}
 
