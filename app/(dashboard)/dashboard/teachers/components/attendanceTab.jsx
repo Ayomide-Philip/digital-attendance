@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import AttendanceTable from "./AttendanceTable";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
+import LoadingComponent from "./loading";
 
 const staticAttendanceHistory = [
   {
@@ -117,15 +118,9 @@ export default function AttendanceTab({ classId }) {
     }
     fetchAttendance();
   }, [classId]);
-
+  
   if (loading) {
-    return (
-      <div className="flex items-center justify-center h-40">
-        <span className="text-sm text-muted-foreground">
-          Loading attendance data...
-        </span>
-      </div>
-    );
+    return <LoadingComponent />;
   }
   return (
     <div className="space-y-4">
