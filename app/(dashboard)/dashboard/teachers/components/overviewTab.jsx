@@ -153,7 +153,7 @@ export default function OverviewTab({ overview }) {
   ];
 
   const infoItems = [
-    { label: "Class Code", value: overview?.code },
+    { label: "Class Code", value: overview?.code.toUpperCase() || "" },
     { label: "Department", value: overview?.teacher?.department || "" },
     { label: "Lecturer", value: overview?.teacher?.name || "" },
     { label: "School", value: overview?.school || "" },
@@ -164,7 +164,7 @@ export default function OverviewTab({ overview }) {
       <Card className="rounded-2xl border border-slate-200/70 bg-white/85 p-6 shadow-sm dark:border-slate-800 dark:bg-slate-950/70">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
-            <h2 className="text-2xl font-semibold tracking-tight text-slate-900 dark:text-slate-100">
+            <h2 className="text-2xl font-semibold capitalize tracking-tight text-slate-900 dark:text-slate-100">
               {overview?.title}
             </h2>
             <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
@@ -217,7 +217,7 @@ export default function OverviewTab({ overview }) {
                 <p className="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
                   {item.label}
                 </p>
-                <p className="mt-2 capitalize text-sm font-semibold text-slate-900 dark:text-slate-100">
+                <p className="mt-2 text-sm font-semibold text-slate-900 dark:text-slate-100">
                   {item.value}
                 </p>
               </div>
