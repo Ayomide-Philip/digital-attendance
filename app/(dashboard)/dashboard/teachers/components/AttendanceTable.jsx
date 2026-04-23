@@ -82,7 +82,11 @@ export default function AttendanceTable({
               const className = row.classesId?.name || row.className || "-";
               const date = formatSessionDate(row.startTime);
               const status =
-                new Date() > new Date(row?.endTime) ? "Completed" : "Ongoing";
+                new Date() > new Date(row?.endTime)
+                  ? "Completed"
+                  : new Date(row?.startTime) > new Date()
+                    ? "Scheduled"
+                    : "Ongoing";
               const presentCount = Array.isArray(row.students)
                 ? row.students.filter(
                     (s) => String(s?.status || "").toLowerCase() === "present",
