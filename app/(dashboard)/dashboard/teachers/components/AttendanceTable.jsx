@@ -15,7 +15,21 @@ import {
 function getStatusVariant(status) {
   if (status === "Present" || status === "Completed") return "success";
   if (status === "Absent") return "destructive";
+  if (status === "Flagged") return "warning";
   return "warning";
+}
+
+function formatSessionDate(value) {
+  if (!value) return "-";
+
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) return value;
+
+  return new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  }).format(parsed);
 }
 
 export default function AttendanceTable({
@@ -52,33 +66,49 @@ export default function AttendanceTable({
           </TableRow>
         </TableHeader>
         <TableBody>
-          {rows.map((row, index) => (
-            <TableRow
-              key={`${row.classId || "global"}-${row.id || row.date}-${row.title}-${index}`}
-              className={getRowHref ? "cursor-pointer" : undefined}
-              onClick={
-                getRowHref
-                  ? () => {
-                      const href = getRowHref(row);
-                      if (href) router.push(href);
-                    }
-                  : undefined
-              }
-            >
-              {showClassColumn ? <TableCell>{row.className}</TableCell> : null}
-              <TableCell className="font-medium text-slate-700 dark:text-slate-200">
-                {row.date}
-              </TableCell>
-              <TableCell>{row.title}</TableCell>
-              <TableCell>{row.present}</TableCell>
-              <TableCell>{row.absent}</TableCell>
-              <TableCell className="text-right">
-                <Badge variant={getStatusVariant(row.status || "Completed")}>
-                  {row.status || "Completed"}
-                </Badge>
-              </TableCell>
-            </TableRow>
-          ))}
+          {rows.map((row, index) => {
+            const classId = row.classesId?._id || row.classId;
+            const className = row.classesId?.name || row.className || "-";
+            const date = formatSessionDate(row.startTime);
+            const presentCount = Array.isArray(row.students)
+              ? row.students.filter(
+                  (s) => String(s?.status || "").toLowerCase() === "present",
+                ).length
+              : 0;
+            const absentCount = Array.isArray(row.students)
+              ? row.students.filter(
+                  (s) => String(s?.status || "").toLowerCase() === "absent",
+                ).length
+              : 0;
+
+            return (
+              <TableRow
+                key={`${classId || "global"}-${row._id || row.id}-${index}`}
+                className={getRowHref ? "cursor-pointer" : undefined}
+                onClick={
+                  getRowHref
+                    ? () => {
+                        const href = getRowHref(row);
+                        if (href) router.push(href);
+                      }
+                    : undefined
+                }
+              >
+                {showClassColumn ? <TableCell>{className}</TableCell> : null}
+                <TableCell className="font-medium text-slate-700 dark:text-slate-200">
+                  {date}
+                </TableCell>
+                <TableCell>{row.title}</TableCell>
+                <TableCell>{presentCount}</TableCell>
+                <TableCell>{absentCount}</TableCell>
+                <TableCell className="text-right">
+                  <Badge variant={getStatusVariant(row.status || "Completed")}>
+                    {row.status || "Completed"}
+                  </Badge>
+                </TableCell>
+              </TableRow>
+            );
+          })}
         </TableBody>
       </Table>
     </Card>

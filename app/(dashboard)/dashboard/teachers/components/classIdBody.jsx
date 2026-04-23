@@ -10,6 +10,7 @@ import Tabs from "./tabs";
 import SettingsTab from "./settingsTab";
 import StudentsTab from "./studentsTab";
 import OverviewTab from "./overviewTab";
+import AttendanceTab from "./attendanceTab";
 
 const tabs = ["Overview", "Students", "Attendance", "Settings"];
 
@@ -96,17 +97,6 @@ const staticAttendanceHistory = [
   },
 ];
 
-const staticSettings = {
-  rules: {
-    emailSuffix: "",
-    departmentCode: [],
-    _id: "69e4b5ecebcf1bfe5ae8ef08",
-  },
-  school: "obafemi awolowo university",
-  createdAt: "2026-04-19T11:01:00.618Z",
-  updatedAt: "2026-04-21T07:44:14.156Z",
-};
-
 export default function ClassIdBody({ students, classId, settings, overview }) {
   const initialStudents = students?.length ? students : staticStudents;
 
@@ -135,24 +125,7 @@ export default function ClassIdBody({ students, classId, settings, overview }) {
 
       {activeTab === "Students" ? <StudentsTab students={students} /> : null}
 
-      {activeTab === "Attendance" ? (
-        <div className="space-y-4">
-          <Button
-            className="h-10 rounded-xl px-4"
-            onClick={() => setShowAttendanceModal(true)}
-          >
-            Take Attendance
-          </Button>
-          <AttendanceTable
-            title="Attendance History"
-            description="Recent attendance sessions for this class."
-            rows={historyRows}
-            getRowHref={(row) =>
-              `/dashboard/teachers/classes/${classId}/attendance/${row.id}`
-            }
-          />
-        </div>
-      ) : null}
+      {activeTab === "Attendance" ? <AttendanceTab /> : null}
 
       {activeTab === "Settings" ? <SettingsTab settings={settings} /> : null}
 
