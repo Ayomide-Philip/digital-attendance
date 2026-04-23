@@ -18,7 +18,7 @@ export default function ClassSwitcher({
       >
         <option value="">{placeholder}</option>
         {classes.map((item) => (
-          <option key={item.id} value={item.id}>
+          <option key={item._id} value={item._id}>
             {item.name}
           </option>
         ))}

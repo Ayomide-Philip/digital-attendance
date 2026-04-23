@@ -17,6 +17,7 @@ export default function AttendancePage() {
   const [selectedDate, setSelectedDate] = useState("");
   const [attendance, setAttendance] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [filteredAttendance, setFilteredAttendance] = useState([]);
 
   useEffect(() => {
     async function fetchAttendance() {
@@ -49,16 +50,6 @@ export default function AttendancePage() {
     fetchAttendance();
   }, []);
 
-  // const selectedClass = useMemo(
-  //   () => teacherClasses.find((item) => item.id === selectedClassId) || null,
-  //   [selectedClassId],
-  // );
-
-  // const selectedStudents = useMemo(
-  //   () => getStudentsByClass(selectedClassId),
-  //   [selectedClassId],
-  // );
-
   const rows = useMemo(() => {
     const allRecords = getAllAttendanceRecords();
 
@@ -69,6 +60,10 @@ export default function AttendancePage() {
       return matchesClass && matchesDate;
     });
   }, [selectedClassId, selectedDate]);
+
+  const teacherClasses = attendance?.map((r) => {
+    return r?.classesId;
+  });
 
   if (loading) {
     return <LoadingComponent />;
