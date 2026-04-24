@@ -1,12 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { CalendarPlus2 } from "lucide-react";
 
 import AttendanceTable from "@/app/(dashboard)/dashboard/teachers/components/AttendanceTable";
 import ClassSwitcher from "@/app/(dashboard)/dashboard/teachers/components/ClassSwitcher";
-import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import LoadingComponent from "../components/loading";
+import Link from "next/link";
 
 export default function AttendancePage() {
   const [selectedClassId, setSelectedClassId] = useState("");
@@ -76,33 +77,47 @@ export default function AttendancePage() {
 
   return (
     <div className="space-y-5">
-      <div className="flex flex-col gap-3 rounded-2xl border border-slate-200/70 bg-white/80 p-5 shadow-sm dark:border-slate-800 dark:bg-slate-950/70 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
-            Attendance Management
-          </h2>
-          <p className="text-sm text-slate-500 dark:text-slate-400">
-            This is the only place where you can pick a class to take
-            attendance.
-          </p>
-        </div>
-        <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
-          <ClassSwitcher
-            classes={teacherClasses}
-            value={selectedClassId}
-            onChange={setSelectedClassId}
-            placeholder="Filter / take attendance class"
-          />
-          <input
-            type="date"
-            value={selectedDate}
-            onChange={(event) => setSelectedDate(event.target.value)}
-            className="h-10 rounded-xl border border-slate-200 bg-white px-3 text-sm outline-none transition focus:border-sky-400 dark:border-slate-700 dark:bg-slate-900"
-            aria-label="Filter by date"
-          />
-          <Button className="h-10 rounded-xl px-4" disabled={!selectedClassId}>
-            Take Attendance
-          </Button>
+      <div className="rounded-2xl border border-slate-200/70 bg-white/85 p-5 shadow-sm dark:border-slate-800 dark:bg-slate-950/70 sm:p-6">
+        <div className="flex flex-col gap-4">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-sky-700 dark:text-sky-300">
+              Teacher Workspace
+            </p>
+            <h2 className="mt-1 text-xl font-semibold text-slate-900 dark:text-slate-100 sm:text-2xl">
+              Attendance Management
+            </h2>
+            <p className="mt-1.5 text-sm text-slate-500 dark:text-slate-400">
+              Filter by class and date, then create a new attendance session in
+              one click.
+            </p>
+          </div>
+
+          <div className="grid w-full grid-cols-1 gap-2 md:grid-cols-[minmax(0,1fr)_auto_auto] md:items-center">
+            <div className="min-w-0 w-full md:max-w-sm lg:max-w-md">
+              <ClassSwitcher
+                classes={teacherClasses}
+                value={selectedClassId}
+                onChange={setSelectedClassId}
+                placeholder="Filter by class"
+              />
+            </div>
+
+            <input
+              type="date"
+              value={selectedDate}
+              onChange={(event) => setSelectedDate(event.target.value)}
+              className="h-10 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm text-slate-700 outline-none transition focus:border-sky-400 focus:ring-2 focus:ring-sky-500/15 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 md:w-44 md:shrink-0"
+              aria-label="Filter by date"
+            />
+
+            <Link
+              href="/dashboard/teachers/attendance/create"
+              className="group inline-flex h-10 w-full items-center justify-center gap-2 rounded-xl bg-linear-to-r from-sky-500 to-cyan-500 px-4 text-sm font-semibold whitespace-nowrap text-white shadow-[0_8px_24px_-14px_rgba(2,132,199,0.9)] transition-all duration-300 hover:-translate-y-0.5 hover:from-sky-600 hover:to-cyan-600 hover:shadow-[0_14px_26px_-14px_rgba(2,132,199,0.95)] md:w-auto md:shrink-0"
+            >
+              <CalendarPlus2 className="size-4 transition-transform duration-300 group-hover:rotate-6" />
+              Take Attendance
+            </Link>
+          </div>
         </div>
       </div>
 
