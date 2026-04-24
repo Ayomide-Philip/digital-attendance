@@ -1,7 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CalendarClock, Clock3, FileText, Menu, School } from "lucide-react";
+import { toast } from "sonner";
+import LoadingComponent from "../../components/loading";
 
 export default function Page() {
   const [className, setClassName] = useState("");
@@ -9,12 +11,36 @@ export default function Page() {
   const [description, setDescription] = useState("");
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
+  const [classes, setClasses] = useState([]);
+  const [loadingClasses, setLoadingClasses] = useState(true);
 
-  const classes = [
-    { id: "cls-1", name: "Software Engineering 401" },
-    { id: "cls-2", name: "Database Systems 302" },
-    { id: "cls-3", name: "Web Development 201" },
-  ];
+  useEffect(() => {
+    async function fetchClasses() {
+      try {
+        const request = await fetch(`/api/teacher/classes`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+        });
+        const response = await request.json();
+        if (!request.ok || response?.error) {
+          setClasses([]);
+          return toast.error(response?.error || "Failed to fetch classes");
+        }
+        setClasses(response?.classes || []);
+        setLoadingClasses(false);
+      } catch (err) {
+        console.log(err);
+        setLoadingClasses(false);
+        return toast.error("Failed to fetch classes. Please try again later.");
+      } finally {
+        setLoadingClasses(false);
+      }
+    }
+    fetchClasses();
+  }, []);
 
   function handleSubmit(event) {
     event.preventDefault();
@@ -25,6 +51,14 @@ export default function Page() {
       startTime,
       endTime,
     });
+    if (
+      !className.trim() ||
+      !title.trim() ||
+      !startTime.trim() ||
+      !endTime.trim()
+    ) {
+      return toast.error("Please fill in all required fields.");
+    }
   }
 
   function handleCancel() {
@@ -33,6 +67,10 @@ export default function Page() {
     setDescription("");
     setStartTime("");
     setEndTime("");
+  }
+
+  if (loadingClasses) {
+    return <LoadingComponent />;
   }
 
   return (
@@ -65,8 +103,8 @@ export default function Page() {
               >
                 <option value="">Select a class</option>
                 {classes.map((item) => (
-                  <option key={item.id} value={item.name}>
-                    {item.name}
+                  <option key={item?._id} value={item?._id}>
+                    {item?.name}
                   </option>
                 ))}
               </select>

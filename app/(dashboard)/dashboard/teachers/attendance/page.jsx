@@ -92,7 +92,7 @@ export default function AttendancePage() {
             </p>
           </div>
 
-          <div className="grid w-full grid-cols-1 gap-2 md:grid-cols-[minmax(0,1fr)_auto_auto] md:items-center">
+          <div className="grid w-full grid-cols-1 gap-2 md:grid-cols-2 lg:grid-cols-[minmax(0,1fr)_11rem_auto] lg:items-center">
             <div className="min-w-0 w-full md:max-w-sm lg:max-w-md">
               <ClassSwitcher
                 classes={teacherClasses}
@@ -106,13 +106,13 @@ export default function AttendancePage() {
               type="date"
               value={selectedDate}
               onChange={(event) => setSelectedDate(event.target.value)}
-              className="h-10 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm text-slate-700 outline-none transition focus:border-sky-400 focus:ring-2 focus:ring-sky-500/15 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 md:w-44 md:shrink-0"
+              className="h-10 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm text-slate-700 outline-none transition focus:border-sky-400 focus:ring-2 focus:ring-sky-500/15 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 lg:shrink-0"
               aria-label="Filter by date"
             />
 
             <Link
               href="/dashboard/teachers/attendance/create"
-              className="group inline-flex h-10 w-full items-center justify-center gap-2 rounded-xl bg-linear-to-r from-sky-500 to-cyan-500 px-4 text-sm font-semibold whitespace-nowrap text-white shadow-[0_8px_24px_-14px_rgba(2,132,199,0.9)] transition-all duration-300 hover:-translate-y-0.5 hover:from-sky-600 hover:to-cyan-600 hover:shadow-[0_14px_26px_-14px_rgba(2,132,199,0.95)] md:w-auto md:shrink-0"
+              className="group inline-flex h-10 w-full items-center justify-center gap-2 rounded-xl bg-linear-to-r from-sky-500 to-cyan-500 px-4 text-sm font-semibold whitespace-nowrap text-white shadow-[0_8px_24px_-14px_rgba(2,132,199,0.9)] transition-all duration-300 hover:-translate-y-0.5 hover:from-sky-600 hover:to-cyan-600 hover:shadow-[0_14px_26px_-14px_rgba(2,132,199,0.95)] md:col-span-2 lg:col-span-1 lg:w-auto lg:shrink-0"
             >
               <CalendarPlus2 className="size-4 transition-transform duration-300 group-hover:rotate-6" />
               Take Attendance
