@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { CalendarClock, Clock3, FileText, Menu, School } from "lucide-react";
+import { CalendarClock, Clock3, FileText, School } from "lucide-react";
 import { toast } from "sonner";
 import LoadingComponent from "../../components/loading";
 
@@ -15,6 +15,7 @@ export default function Page() {
   const [endTime, setEndTime] = useState("");
   const [classes, setClasses] = useState([]);
   const [loadingClasses, setLoadingClasses] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     async function fetchClasses() {
@@ -46,13 +47,7 @@ export default function Page() {
 
   async function handleSubmit(event) {
     event.preventDefault();
-    console.log({
-      className,
-      title,
-      description,
-      startTime,
-      endTime,
-    });
+    if (isSubmitting) return;
     if (
       !className.trim() ||
       !title.trim() ||
@@ -73,6 +68,8 @@ export default function Page() {
     if (new Date(startTime) >= new Date(endTime)) {
       return toast.error("Start time must be before end time.");
     }
+
+    setIsSubmitting(true);
 
     try {
       const request = await fetch(
@@ -102,6 +99,8 @@ export default function Page() {
       return toast.error(
         "Failed to create attendance. Please try again later.",
       );
+    } finally {
+      setIsSubmitting(false);
     }
   }
 
@@ -118,8 +117,8 @@ export default function Page() {
   }
 
   return (
-    <section className="flex flex-1 items-center justify-center px-4 py-8 sm:px-6">
-      <div className="w-full max-w-3xl rounded-2xl border border-slate-200/70 bg-white/90 p-5 shadow-[0_14px_36px_-18px_rgba(15,23,42,0.35)] dark:border-slate-800 dark:bg-slate-900/80 sm:p-7">
+    <section className="flex flex-1 items-start justify-center px-3 py-5 sm:px-6 sm:py-8 md:items-center">
+      <div className="w-full max-w-3xl rounded-2xl border border-slate-200/70 bg-white/90 p-4 shadow-[0_14px_36px_-18px_rgba(15,23,42,0.35)] dark:border-slate-800 dark:bg-slate-900/80 sm:p-6 lg:p-7">
         <div className="mb-6">
           <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100 sm:text-2xl">
             Create Attendance
@@ -129,7 +128,7 @@ export default function Page() {
           </p>
         </div>
 
-        <form className="space-y-5" onSubmit={handleSubmit}>
+        <form className="space-y-4 sm:space-y-5" onSubmit={handleSubmit}>
           <div className="space-y-2">
             <label
               htmlFor="class"
@@ -242,15 +241,24 @@ export default function Page() {
             <button
               type="button"
               onClick={handleCancel}
-              className="inline-flex h-10 items-center justify-center rounded-xl border border-slate-200 bg-white px-4 text-sm font-medium text-slate-700 transition hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
+              disabled={isSubmitting}
+              className="inline-flex h-10 w-full items-center justify-center rounded-xl border border-slate-200 bg-white px-4 text-sm font-medium text-slate-700 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800 sm:w-auto"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="inline-flex h-10 items-center justify-center rounded-xl bg-sky-600 px-4 text-sm font-semibold text-white transition hover:bg-sky-700"
+              disabled={isSubmitting}
+              className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-xl bg-sky-600 px-4 text-sm font-semibold text-white transition hover:bg-sky-700 disabled:cursor-not-allowed disabled:opacity-70 sm:w-auto"
             >
-              Create Attendance
+              {isSubmitting ? (
+                <>
+                  <span className="size-4 animate-spin rounded-full border-2 border-white/40 border-t-white" />
+                  Creating Attendance...
+                </>
+              ) : (
+                "Create Attendance"
+              )}
             </button>
           </div>
         </form>
