@@ -8,7 +8,7 @@ import LoadingComponent from "../../components/loading";
 export default function Page() {
   const [className, setClassName] = useState("");
   const [title, setTitle] = useState(
-    `Attendance_for_${new Date().toLocaleDateString()}`,
+    `Attendance-for-${new Date().toLocaleDateString()}`,
   );
   const [description, setDescription] = useState("");
   const [startTime, setStartTime] = useState("");
