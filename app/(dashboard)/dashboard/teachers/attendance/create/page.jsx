@@ -7,7 +7,9 @@ import LoadingComponent from "../../components/loading";
 
 export default function Page() {
   const [className, setClassName] = useState("");
-  const [title, setTitle] = useState("");
+  const [title, setTitle] = useState(
+    `Attendance_for_${new Date().toLocaleDateString()}`,
+  );
   const [description, setDescription] = useState("");
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
@@ -42,7 +44,7 @@ export default function Page() {
     fetchClasses();
   }, []);
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
     console.log({
       className,
@@ -58,6 +60,48 @@ export default function Page() {
       !endTime.trim()
     ) {
       return toast.error("Please fill in all required fields.");
+    }
+    if (title.trim().length < 5) {
+      return toast.error("Title must be at least 5 characters long.");
+    }
+    if (new Date() > new Date(startTime)) {
+      return toast.error("Start time must be in the future.");
+    }
+    if (new Date() > new Date(endTime)) {
+      return toast.error("End time must be in the future.");
+    }
+    if (new Date(startTime) >= new Date(endTime)) {
+      return toast.error("Start time must be before end time.");
+    }
+
+    try {
+      const request = await fetch(
+        `/api/teacher/classes/${className}/attendance`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify({
+            title: title.trim(),
+            description: description.trim(),
+            startTime,
+            endTime,
+          }),
+        },
+      );
+      const response = await request.json();
+      if (!request.ok || response?.error) {
+        return toast.error(response?.error || "Failed to create attendance.");
+      }
+      toast.success("Attendance created successfully.");
+      window.location.href = "/dashboard/teachers/attendance";
+    } catch (err) {
+      console.log(err);
+      return toast.error(
+        "Failed to create attendance. Please try again later.",
+      );
     }
   }
 
