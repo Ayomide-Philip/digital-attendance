@@ -44,7 +44,7 @@ export const GET = auth(async function GET(req, { params }) {
     const classData = await Classes.findOne({
       _id: new mongoose.Types.ObjectId(classesId),
       teacher: new mongoose.Types.ObjectId(userId),
-    });
+    }).lean();
 
     if (!classData) {
       return NextResponse.json(
@@ -61,7 +61,7 @@ export const GET = auth(async function GET(req, { params }) {
       _id: new mongoose.Types.ObjectId(attendanceId),
       classesId: new mongoose.Types.ObjectId(classesId),
       teacherId: new mongoose.Types.ObjectId(userId),
-    });
+    }).lean();
 
     if (!attendanceData) {
       return NextResponse.json(
@@ -75,7 +75,7 @@ export const GET = auth(async function GET(req, { params }) {
     }
     return NextResponse.json({
       message: "Attendance details fetched successfully",
-      attendance: attendanceData,
+      attendance: { ...attendanceData, studentList: classData.students },
     });
   } catch (err) {
     return NextResponse.json(
