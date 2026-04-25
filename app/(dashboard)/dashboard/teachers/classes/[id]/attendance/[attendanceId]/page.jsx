@@ -23,24 +23,21 @@ const initialStudents = [
   {
     id: "std-2",
     name: "David Eze",
-    status: "Late",
+    status: "Flagged",
     timestamp: "10:14 AM",
-    abnormalDetected: false,
+    flagReason: "Marked outside approved radius",
   },
   {
     id: "std-3",
     name: "Grace Okafor",
     status: "Absent",
     timestamp: "-",
-    abnormalDetected: true,
-    flagReason: "Suspicious location signature detected",
   },
   {
     id: "std-4",
     name: "James Yusuf",
-    status: "Present",
+    status: "Flagged",
     timestamp: "10:06 AM",
-    abnormalDetected: true,
     flagReason: "Multiple rapid check-ins detected",
   },
   {
@@ -52,10 +49,6 @@ const initialStudents = [
   },
 ];
 
-function isFlaggedStudent(student) {
-  return Boolean(student?.abnormalDetected);
-}
-
 function getStudentStatusTone(status) {
   if (status === "Present") {
     return {
@@ -65,7 +58,7 @@ function getStudentStatusTone(status) {
     };
   }
 
-  if (status === "Late") {
+  if (status === "Flagged") {
     return {
       dot: "bg-amber-500",
       badge:
@@ -91,9 +84,7 @@ export default function AttendanceDetailsPage() {
   const visibleStudents =
     selectedTab === "All"
       ? students
-      : selectedTab === "Flagged"
-        ? students.filter((student) => isFlaggedStudent(student))
-        : students.filter((student) => student.status === selectedTab);
+      : students.filter((student) => student.status === selectedTab);
 
   const totalStudents = students.length;
   const presentCount = students.filter(
@@ -101,6 +92,9 @@ export default function AttendanceDetailsPage() {
   ).length;
   const absentCount = students.filter(
     (student) => student.status === "Absent",
+  ).length;
+  const flaggedCount = students.filter(
+    (student) => student.status === "Flagged",
   ).length;
 
   function captureCurrentLocation() {
@@ -168,7 +162,7 @@ export default function AttendanceDetailsPage() {
         </div>
       </Card>
 
-      <div className="grid gap-4 sm:grid-cols-3">
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <Card className="rounded-2xl border border-slate-200/70 bg-white/85 p-4 shadow-sm dark:border-slate-800 dark:bg-slate-950/70">
           <p className="text-xs text-slate-500 dark:text-slate-400">
             Total Students
@@ -187,6 +181,12 @@ export default function AttendanceDetailsPage() {
           <p className="text-xs text-slate-500 dark:text-slate-400">Absent</p>
           <p className="mt-1 text-2xl font-semibold text-rose-700 dark:text-rose-300">
             {absentCount}
+          </p>
+        </Card>
+        <Card className="rounded-2xl border border-slate-200/70 bg-white/85 p-4 shadow-sm dark:border-slate-800 dark:bg-slate-950/70">
+          <p className="text-xs text-slate-500 dark:text-slate-400">Flagged</p>
+          <p className="mt-1 text-2xl font-semibold text-amber-700 dark:text-amber-300">
+            {flaggedCount}
           </p>
         </Card>
       </div>
@@ -218,17 +218,26 @@ export default function AttendanceDetailsPage() {
         <div className="mt-4 space-y-3">
           {visibleStudents.map((student) => {
             const tone = getStudentStatusTone(student.status);
+            const showFlagReason =
+              selectedTab === "Flagged" && Boolean(student?.flagReason?.trim());
 
             return (
               <div
                 key={student.id}
                 className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-200/70 p-3 transition hover:bg-slate-50/80 dark:border-slate-800 dark:hover:bg-slate-900/60"
               >
-                <div className="inline-flex items-center gap-2">
-                  <span className={`size-2 rounded-full ${tone.dot}`} />
-                  <p className="font-medium text-slate-900 dark:text-slate-100">
-                    {student.name}
-                  </p>
+                <div className="min-w-0">
+                  <div className="inline-flex items-center gap-2">
+                    <span className={`size-2 rounded-full ${tone.dot}`} />
+                    <p className="font-medium text-slate-900 dark:text-slate-100">
+                      {student.name}
+                    </p>
+                  </div>
+                  {showFlagReason ? (
+                    <p className="mt-1 text-xs text-amber-700 dark:text-amber-300">
+                      Reason: {student.flagReason}
+                    </p>
+                  ) : null}
                 </div>
 
                 <div className="inline-flex items-center gap-2">
@@ -237,11 +246,6 @@ export default function AttendanceDetailsPage() {
                   >
                     {student.status}
                   </span>
-                  {isFlaggedStudent(student) ? (
-                    <span className="inline-flex rounded-full border border-amber-500/20 bg-amber-500/10 px-2.5 py-1 text-xs font-semibold text-amber-700 dark:text-amber-300">
-                      Flagged
-                    </span>
-                  ) : null}
                   <span className="inline-flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400">
                     <Clock3 className="size-3.5" />
                     {student.timestamp}
