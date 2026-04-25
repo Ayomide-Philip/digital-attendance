@@ -61,7 +61,9 @@ export const GET = auth(async function GET(req, { params }) {
       _id: new mongoose.Types.ObjectId(attendanceId),
       classesId: new mongoose.Types.ObjectId(classesId),
       teacherId: new mongoose.Types.ObjectId(userId),
-    }).lean();
+    })
+      .populate("classesId", "name code students")
+      .lean();
 
     if (!attendanceData) {
       return NextResponse.json(
@@ -75,7 +77,7 @@ export const GET = auth(async function GET(req, { params }) {
     }
     return NextResponse.json({
       message: "Attendance details fetched successfully",
-      attendance: { ...attendanceData, studentList: classData.students },
+      attendance: attendanceData,
     });
   } catch (err) {
     return NextResponse.json(

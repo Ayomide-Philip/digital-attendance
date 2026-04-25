@@ -7,6 +7,8 @@ import CaptureTeachersLocation from "../../../../components/capatureTeachersLoca
 import StartSessionModal from "../../../../components/startSessionModal";
 import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
+import LoadingComponent from "../../../../components/loading";
+import AttendanceStudentStats from "../../../../components/attendanceStudentStats";
 
 const attendanceMeta = {
   title: "Week 4 Attendance",
@@ -87,7 +89,7 @@ export default function AttendanceDetailsPage() {
         setLoading(false);
       } catch (err) {
         console.log(err);
-        s
+        setLoading(false);
         toast.error("Failed to load attendance details. Please try again.");
         return router.push("/dashboard/teachers/attendance");
       }
@@ -106,6 +108,10 @@ export default function AttendanceDetailsPage() {
     (student) => student.status === "Flagged",
   ).length;
 
+  if (loading) {
+    return <LoadingComponent />;
+  }
+
   return (
     <div className="space-y-5">
       <Card className="rounded-2xl border border-slate-200/70 bg-white/85 p-5 shadow-sm dark:border-slate-800 dark:bg-slate-950/70 sm:p-6">
@@ -114,11 +120,11 @@ export default function AttendanceDetailsPage() {
             <p className="text-xs font-semibold uppercase tracking-[0.16em] text-sky-700 dark:text-sky-300">
               View Attendance
             </p>
-            <h1 className="mt-1 text-xl font-semibold text-slate-900 dark:text-slate-100 sm:text-2xl">
-              {attendanceMeta.title}
+            <h1 className="mt-1 capitalize text-xl font-semibold text-slate-900 dark:text-slate-100 sm:text-2xl">
+              {attendanceList?.title}
             </h1>
-            <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-              {attendanceMeta.className}
+            <p className="mt-1 text-sm text-slate-500 dark:text-slate-400 capitalize">
+              {attendanceList?.classesId?.name || "Unknown Class"}
             </p>
           </div>
 
@@ -126,7 +132,8 @@ export default function AttendanceDetailsPage() {
         </div>
 
         <p className="mt-4 text-sm leading-relaxed text-slate-600 dark:text-slate-300">
-          {attendanceMeta.description}
+          {attendanceList?.description ||
+            "No description provided for this attendance session."}
         </p>
 
         <div className="mt-4 grid gap-3 text-sm sm:grid-cols-2">
@@ -135,7 +142,14 @@ export default function AttendanceDetailsPage() {
               Start Time
             </p>
             <p className="mt-1 font-medium text-slate-900 dark:text-slate-100">
-              {attendanceMeta.startTime}
+              {new Date(attendanceList?.startTime).toLocaleString("en-US", {
+                month: "short",
+                day: "numeric",
+                year: "numeric",
+                hour: "numeric",
+                minute: "numeric",
+                hour12: true,
+              })}
             </p>
           </div>
           <div className="rounded-xl border border-slate-200/70 p-3 dark:border-slate-800">
@@ -143,40 +157,23 @@ export default function AttendanceDetailsPage() {
               End Time
             </p>
             <p className="mt-1 font-medium text-slate-900 dark:text-slate-100">
-              {attendanceMeta.endTime}
+              {new Date(attendanceList?.endTime).toLocaleString("en-US", {
+                month: "short",
+                day: "numeric",
+                year: "numeric",
+                hour: "numeric",
+                minute: "numeric",
+                hour12: true,
+              })}
             </p>
           </div>
         </div>
       </Card>
 
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <Card className="rounded-2xl border border-slate-200/70 bg-white/85 p-4 shadow-sm dark:border-slate-800 dark:bg-slate-950/70">
-          <p className="text-xs text-slate-500 dark:text-slate-400">
-            Total Students
-          </p>
-          <p className="mt-1 text-2xl font-semibold text-slate-900 dark:text-slate-100">
-            {totalStudents}
-          </p>
-        </Card>
-        <Card className="rounded-2xl border border-slate-200/70 bg-white/85 p-4 shadow-sm dark:border-slate-800 dark:bg-slate-950/70">
-          <p className="text-xs text-slate-500 dark:text-slate-400">Present</p>
-          <p className="mt-1 text-2xl font-semibold text-emerald-700 dark:text-emerald-300">
-            {presentCount}
-          </p>
-        </Card>
-        <Card className="rounded-2xl border border-slate-200/70 bg-white/85 p-4 shadow-sm dark:border-slate-800 dark:bg-slate-950/70">
-          <p className="text-xs text-slate-500 dark:text-slate-400">Absent</p>
-          <p className="mt-1 text-2xl font-semibold text-rose-700 dark:text-rose-300">
-            {absentCount}
-          </p>
-        </Card>
-        <Card className="rounded-2xl border border-slate-200/70 bg-white/85 p-4 shadow-sm dark:border-slate-800 dark:bg-slate-950/70">
-          <p className="text-xs text-slate-500 dark:text-slate-400">Flagged</p>
-          <p className="mt-1 text-2xl font-semibold text-amber-700 dark:text-amber-300">
-            {flaggedCount}
-          </p>
-        </Card>
-      </div>
+      <AttendanceStudentStats
+        studentList={attendanceList?.classesId?.students || []}
+        attendanceStudentList={attendanceList?.students || []}
+      />
 
       <AttendanceIdBody students={initialStudents} />
       {isStartModalOpen ? (
