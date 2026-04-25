@@ -3,6 +3,7 @@ import Card from "@/components/ui/card";
 export default function AttendanceStudentStats({
   studentList = [],
   attendanceStudentList = [],
+  endTime,
 }) {
   const presentCount = attendanceStudentList.filter(
     (s) => s.status === "Present",
@@ -10,14 +11,17 @@ export default function AttendanceStudentStats({
   let absentStudent = attendanceStudentList.filter(
     (s) => s.status === "Absent",
   );
-  absentStudent = absentStudent.concat(
-    studentList.filter((s) => {
-      return !attendanceStudentList.some((as) => as.studentId === s._id);
-    }),
-  );
+  if (new Date() > new Date(endTime)) {
+    absentStudent = absentStudent.concat(
+      studentList.filter((s) => {
+        return !attendanceStudentList.some((as) => as.studentId === s._id);
+      }),
+    );
+  }
   const flaggedCount = attendanceStudentList.filter(
     (s) => s.status === "Flagged",
   ).length;
+
   return (
     <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
       <Card className="rounded-2xl border border-slate-200/70 bg-white/85 p-4 shadow-sm dark:border-slate-800 dark:bg-slate-950/70">

@@ -173,6 +173,7 @@ export default function AttendanceDetailsPage() {
       <AttendanceStudentStats
         studentList={attendanceList?.classesId?.students || []}
         attendanceStudentList={attendanceList?.students || []}
+        endTime={attendanceList?.endTime}
       />
 
       <AttendanceIdBody students={initialStudents} />
