@@ -25,30 +25,36 @@ const initialStudents = [
     name: "David Eze",
     status: "Late",
     timestamp: "10:14 AM",
-    flagged: true,
-    flagReason: "Marked outside approved radius",
+    abnormalDetected: false,
   },
   {
     id: "std-3",
     name: "Grace Okafor",
     status: "Absent",
     timestamp: "-",
-    flagged: true,
-    flagReason: "No geolocation match found",
+    abnormalDetected: true,
+    flagReason: "Suspicious location signature detected",
   },
   {
     id: "std-4",
     name: "James Yusuf",
     status: "Present",
     timestamp: "10:06 AM",
+    abnormalDetected: true,
+    flagReason: "Multiple rapid check-ins detected",
   },
   {
     id: "std-5",
     name: "Mariam Sani",
     status: "Absent",
     timestamp: "-",
+    abnormalDetected: false,
   },
 ];
+
+function isFlaggedStudent(student) {
+  return Boolean(student?.abnormalDetected);
+}
 
 function getStudentStatusTone(status) {
   if (status === "Present") {
@@ -86,7 +92,7 @@ export default function AttendanceDetailsPage() {
     selectedTab === "All"
       ? students
       : selectedTab === "Flagged"
-        ? students.filter((student) => student.flagged)
+        ? students.filter((student) => isFlaggedStudent(student))
         : students.filter((student) => student.status === selectedTab);
 
   const totalStudents = students.length;
@@ -231,7 +237,7 @@ export default function AttendanceDetailsPage() {
                   >
                     {student.status}
                   </span>
-                  {student.flagged ? (
+                  {isFlaggedStudent(student) ? (
                     <span className="inline-flex rounded-full border border-amber-500/20 bg-amber-500/10 px-2.5 py-1 text-xs font-semibold text-amber-700 dark:text-amber-300">
                       Flagged
                     </span>
