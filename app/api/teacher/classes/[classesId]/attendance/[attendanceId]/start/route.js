@@ -177,6 +177,17 @@ export const PUT = async function PUT(req, { params }) {
       approvedTeacherCords.reduce((sum, c) => sum + c.coords.accuracy, 0) /
       approvedTeacherCords.length;
 
+    if (averageAccuracy > Number(MAX_ALLOWED_TEACHER_ACCURACY)) {
+      return NextResponse.json(
+        {
+          error: `Unable to start attendance session. Average GPS accuracy of ${averageAccuracy.toFixed(2)} meters exceeds the allowed threshold of ${MAX_ALLOWED_TEACHER_ACCURACY} meters.`,
+        },
+        {
+          status: 400,
+        },
+      );
+    }
+
     return NextResponse.json({
       message: "Attendance session started successfully",
       avgLatitude,
