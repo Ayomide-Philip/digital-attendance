@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { CalendarPlus2 } from "lucide-react";
-
 import AttendanceTable from "@/app/(dashboard)/dashboard/teachers/components/AttendanceTable";
 import ClassSwitcher from "@/app/(dashboard)/dashboard/teachers/components/ClassSwitcher";
 import { toast } from "sonner";

@@ -92,11 +92,19 @@ export default function AttendanceTable({
                     (s) => String(s?.status || "").toLowerCase() === "present",
                   ).length
                 : 0;
-              const absentCount = Array.isArray(row.students)
+              let absentStudent = Array.isArray(row.students)
                 ? row.students.filter(
                     (s) => String(s?.status || "").toLowerCase() === "absent",
-                  ).length
-                : 0;
+                  )
+                : [];
+              if (new Date() > new Date(row?.endTime)) {
+                absentStudent = absentStudent.concat(
+                  row.classesId?.students?.filter((s) => {
+                    return !row.students.some((as) => as.studentId === s._id);
+                  }) || [],
+                );
+              }
+              const absentCount = absentStudent.length;
 
               return (
                 <TableRow
