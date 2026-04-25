@@ -1,10 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Card from "@/components/ui/card";
 import AttendanceIdBody from "../../../../components/attendanceIdBody";
 import CaptureTeachersLocation from "../../../../components/capatureTeachersLocation";
 import StartSessionModal from "../../../../components/startSessionModal";
+import { useParams, useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 const attendanceMeta = {
   title: "Week 4 Attendance",
@@ -52,7 +54,47 @@ const initialStudents = [
 ];
 
 export default function AttendanceDetailsPage() {
+  const { id, attendanceId } = useParams();
+  const router = useRouter();
   const [isStartModalOpen, setIsStartModalOpen] = useState(false);
+  const [attendanceList, setAttendanceList] = useState({});
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!id || !attendanceId) {
+      return router.push("/dashboard/teachers/attendance");
+    }
+    async function fetchAttendanceDetails() {
+      try {
+        const request = await fetch(
+          `/api/teacher/classes/${id}/attendance/${attendanceId}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            credentials: "include",
+            cache: "no-store",
+          },
+        );
+        const response = await request.json();
+        if (!request.ok || response?.error) {
+          setLoading(false);
+          toast.error(response?.error || "Failed to load attendance details");
+          return router.push("/dashboard/teachers/attendance");
+        }
+        setAttendanceList(response?.attendance || {});
+        setLoading(false);
+      } catch (err) {
+        console.log(err);
+        s
+        toast.error("Failed to load attendance details. Please try again.");
+        return router.push("/dashboard/teachers/attendance");
+      }
+    }
+    fetchAttendanceDetails();
+  }, [id, attendanceId, router]);
+
   const totalStudents = initialStudents.length;
   const presentCount = initialStudents.filter(
     (student) => student.status === "Present",
