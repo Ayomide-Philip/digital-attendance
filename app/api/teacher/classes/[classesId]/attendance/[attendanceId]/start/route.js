@@ -166,9 +166,22 @@ export const PUT = async function PUT(req, { params }) {
       );
     }
 
+    // calculate average coordinates
+    const avgLatitude =
+      approvedTeacherCords.reduce((sum, c) => sum + c.coords.latitude, 0) /
+      approvedTeacherCords.length;
+    const avgLongitude =
+      approvedTeacherCords.reduce((sum, c) => sum + c.coords.longitude, 0) /
+      approvedTeacherCords.length;
+    const averageAccuracy =
+      approvedTeacherCords.reduce((sum, c) => sum + c.coords.accuracy, 0) /
+      approvedTeacherCords.length;
+
     return NextResponse.json({
       message: "Attendance session started successfully",
-      approvedTeacherCords,
+      avgLatitude,
+      avgLongitude,
+      averageAccuracy,
     });
   } catch (err) {
     console.log(err);
