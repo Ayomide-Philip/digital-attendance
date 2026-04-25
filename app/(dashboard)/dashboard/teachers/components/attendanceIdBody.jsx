@@ -4,7 +4,6 @@ import { useState } from "react";
 import Card from "@/components/ui/card";
 import { Clock3 } from "lucide-react";
 export default function AttendanceIdBody({
-  students = [],
   studentList = [],
   totalStudents = [],
   endTime,

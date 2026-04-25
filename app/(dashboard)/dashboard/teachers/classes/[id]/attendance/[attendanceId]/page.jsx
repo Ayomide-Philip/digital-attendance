@@ -10,42 +10,6 @@ import { toast } from "sonner";
 import LoadingComponent from "../../../../components/loading";
 import AttendanceStudentStats from "../../../../components/attendanceStudentStats";
 
-const initialStudents = [
-  {
-    id: "std-1",
-    name: "Aisha Bello",
-    status: "Present",
-    timestamp: "10:03 AM",
-  },
-  {
-    id: "std-2",
-    name: "David Eze",
-    status: "Flagged",
-    timestamp: "10:14 AM",
-    flagReason: "Marked outside approved radius",
-  },
-  {
-    id: "std-3",
-    name: "Grace Okafor",
-    status: "Absent",
-    timestamp: "-",
-  },
-  {
-    id: "std-4",
-    name: "James Yusuf",
-    status: "Flagged",
-    timestamp: "10:06 AM",
-    flagReason: "Multiple rapid check-ins detected",
-  },
-  {
-    id: "std-5",
-    name: "Mariam Sani",
-    status: "Absent",
-    timestamp: "-",
-    abnormalDetected: false,
-  },
-];
-
 export default function AttendanceDetailsPage() {
   const { id, attendanceId } = useParams();
   const router = useRouter();
@@ -157,7 +121,6 @@ export default function AttendanceDetailsPage() {
       />
 
       <AttendanceIdBody
-        students={initialStudents}
         studentList={attendanceList?.students || []}
         totalStudents={attendanceList?.classesId?.students || []}
         endTime={attendanceList?.endTime}
