@@ -10,15 +10,6 @@ import { toast } from "sonner";
 import LoadingComponent from "../../../../components/loading";
 import AttendanceStudentStats from "../../../../components/attendanceStudentStats";
 
-const attendanceMeta = {
-  title: "Week 4 Attendance",
-  className: "Software Engineering 401",
-  description:
-    "In-class attendance for the Week 4 lecture on software architecture and design patterns.",
-  startTime: "Apr 24, 2026 - 10:00 AM",
-  endTime: "Apr 24, 2026 - 11:30 AM",
-};
-
 const initialStudents = [
   {
     id: "std-1",
@@ -97,17 +88,6 @@ export default function AttendanceDetailsPage() {
     fetchAttendanceDetails();
   }, [id, attendanceId, router]);
 
-  const totalStudents = initialStudents.length;
-  const presentCount = initialStudents.filter(
-    (student) => student.status === "Present",
-  ).length;
-  const absentCount = initialStudents.filter(
-    (student) => student.status === "Absent",
-  ).length;
-  const flaggedCount = initialStudents.filter(
-    (student) => student.status === "Flagged",
-  ).length;
-
   if (loading) {
     return <LoadingComponent />;
   }
@@ -176,7 +156,12 @@ export default function AttendanceDetailsPage() {
         endTime={attendanceList?.endTime}
       />
 
-      <AttendanceIdBody students={initialStudents} />
+      <AttendanceIdBody
+        students={initialStudents}
+        studentList={attendanceList?.students || []}
+        totalStudents={attendanceList?.classesId?.students || []}
+        endTime={attendanceList?.endTime}
+      />
       {isStartModalOpen ? (
         <StartSessionModal setIsStartModalOpen={setIsStartModalOpen} />
       ) : null}

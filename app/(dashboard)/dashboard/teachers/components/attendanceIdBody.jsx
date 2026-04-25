@@ -3,12 +3,39 @@
 import { useState } from "react";
 import Card from "@/components/ui/card";
 import { Clock3 } from "lucide-react";
-export default function AttendanceIdBody({ students = [] }) {
+export default function AttendanceIdBody({
+  students = [],
+  studentList = [],
+  totalStudents = [],
+  endTime,
+}) {
   const [selectedTab, setSelectedTab] = useState("All");
+  let TotalVisableStudents = studentList.concat(
+    totalStudents.filter(
+      (s) => !studentList.some((sl) => sl?.studentId._id === s._id),
+    ),
+  );
+  if (new Date() > new Date(endTime)) {
+    TotalVisableStudents = TotalVisableStudents.map((student) => {
+      if (!student?.status) {
+        return { ...student, status: "Absent" };
+      }
+      return student;
+    });
+  } else {
+    TotalVisableStudents = TotalVisableStudents.map((student) => {
+      if (!student?.status) {
+        return { ...student, status: "Pending" };
+      }
+      return student;
+    });
+  }
   const visibleStudents =
     selectedTab === "All"
-      ? students
-      : students.filter((student) => student.status === selectedTab);
+      ? TotalVisableStudents
+      : TotalVisableStudents.filter(
+          (student) => student.status === selectedTab,
+        );
   return (
     <Card className="rounded-2xl border border-slate-200/70 bg-white/85 p-5 shadow-sm dark:border-slate-800 dark:bg-slate-950/70">
       <div className="flex flex-wrap items-center justify-between gap-3">
@@ -17,7 +44,7 @@ export default function AttendanceIdBody({ students = [] }) {
         </h2>
 
         <div className="inline-flex rounded-xl border border-slate-200 p-1 dark:border-slate-700">
-          {["All", "Present", "Absent", "Flagged"].map((tab) => (
+          {["All", "Present", "Absent", "Flagged", "Pending"].map((tab) => (
             <button
               key={tab}
               type="button"
@@ -38,23 +65,23 @@ export default function AttendanceIdBody({ students = [] }) {
         {visibleStudents.map((student) => {
           const tone = getStudentStatusTone(student.status);
           const showFlagReason =
-            selectedTab === "Flagged" && Boolean(student?.flagReason?.trim());
+            selectedTab === "Flagged" && Boolean(student?.reason?.trim());
 
           return (
             <div
-              key={student.id}
+              key={student._id}
               className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-200/70 p-3 transition hover:bg-slate-50/80 dark:border-slate-800 dark:hover:bg-slate-900/60"
             >
               <div className="min-w-0">
                 <div className="inline-flex items-center gap-2">
                   <span className={`size-2 rounded-full ${tone.dot}`} />
                   <p className="font-medium text-slate-900 dark:text-slate-100">
-                    {student.name}
+                    {student?.name}
                   </p>
                 </div>
                 {showFlagReason ? (
                   <p className="mt-1 text-xs text-amber-700 dark:text-amber-300">
-                    Reason: {student.flagReason}
+                    Reason: {student?.reason}
                   </p>
                 ) : null}
               </div>
@@ -63,11 +90,16 @@ export default function AttendanceIdBody({ students = [] }) {
                 <span
                   className={`inline-flex rounded-full border px-2.5 py-1 text-xs font-semibold ${tone.badge}`}
                 >
-                  {student.status}
+                  {student?.status}
                 </span>
                 <span className="inline-flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400">
                   <Clock3 className="size-3.5" />
-                  {student.timestamp}
+                  {student?.timestamp
+                    ? new Date(student.timestamp).toLocaleString("en-US", {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })
+                    : "N/A"}
                 </span>
               </div>
             </div>
@@ -94,6 +126,14 @@ function getStudentStatusTone(status) {
   }
 
   if (status === "Flagged") {
+    return {
+      dot: "bg-amber-500",
+      badge:
+        "border-amber-500/20 bg-amber-500/10 text-amber-700 dark:text-amber-300",
+    };
+  }
+
+  if (status === "Pending") {
     return {
       dot: "bg-amber-500",
       badge:

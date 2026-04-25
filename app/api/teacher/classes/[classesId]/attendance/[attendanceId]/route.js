@@ -62,7 +62,15 @@ export const GET = auth(async function GET(req, { params }) {
       classesId: new mongoose.Types.ObjectId(classesId),
       teacherId: new mongoose.Types.ObjectId(userId),
     })
-      .populate("classesId", "name code students")
+      .populate({
+        path: "classesId",
+        select: "name code students",
+        populate: {
+          path: "students",
+          select: "name",
+        },
+      })
+      .populate("students.studentId", "name")
       .lean();
 
     if (!attendanceData) {

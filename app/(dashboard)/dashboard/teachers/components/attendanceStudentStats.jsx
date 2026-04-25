@@ -14,7 +14,9 @@ export default function AttendanceStudentStats({
   if (new Date() > new Date(endTime)) {
     absentStudent = absentStudent.concat(
       studentList.filter((s) => {
-        return !attendanceStudentList.some((as) => as.studentId === s._id);
+        return !attendanceStudentList.some(
+          (as) => as?.studentId?._id === s?._id,
+        );
       }),
     );
   }
