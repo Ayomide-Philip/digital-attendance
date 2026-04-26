@@ -102,26 +102,26 @@ export default function AttendanceDetailsPage() {
   return (
     <div className="space-y-5">
       <Card className="rounded-2xl border border-slate-200/70 bg-white/85 p-5 shadow-sm dark:border-slate-800 dark:bg-slate-950/70 sm:p-6">
-        <div className="flex flex-wrap items-start justify-between gap-3">
-          <div>
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+          <div className="min-w-0 flex-1">
             <p className="text-xs font-semibold uppercase tracking-[0.16em] text-sky-700 dark:text-sky-300">
               View Attendance
             </p>
-            <h1 className="mt-1 capitalize text-xl font-semibold text-slate-900 dark:text-slate-100 sm:text-2xl">
+            <h1 className="mt-1 wrap-break-word text-xl font-semibold capitalize text-slate-900 dark:text-slate-100 sm:text-2xl">
               {attendanceList?.title}
             </h1>
-            <p className="mt-1 text-sm text-slate-500 dark:text-slate-400 capitalize">
+            <p className="mt-1 wrap-break-word text-sm capitalize text-slate-500 dark:text-slate-400">
               {attendanceList?.classesId?.name || "Unknown Class"}
             </p>
           </div>
 
-          <div className="flex flex-col items-start gap-2 sm:items-end">
+          <div className="flex min-w-0 flex-col items-start gap-2 lg:max-w-65 lg:items-end">
             {!hasStarted && !hasEnded ? (
               <CaptureTeachersLocation
                 setIsStartModalOpen={setIsStartModalOpen}
               />
             ) : null}
-            <p className="text-xs font-medium text-slate-500 dark:text-slate-400">
+            <p className="wrap-break-word text-xs font-medium text-slate-500 dark:text-slate-400 lg:text-right">
               {sessionTimingStatus}
             </p>
           </div>
@@ -169,7 +169,9 @@ export default function AttendanceDetailsPage() {
       <AttendanceStudentStats
         studentList={attendanceList?.classesId?.students || []}
         attendanceStudentList={attendanceList?.students || []}
+        startTime={attendanceList?.startTime}
         endTime={attendanceList?.endTime}
+        currentTime={currentTime}
       />
 
       <AttendanceIdBody
