@@ -11,6 +11,42 @@ import Classes from "@/lib/models/classes.model";
 import Attandance from "@/lib/models/attendance.model";
 import haversineDistanceCalculation from "@/lib/utility/haversineDistanceCalculation";
 
+function parseAndValidateSample(sample) {
+  const latitude = Number(sample?.coords?.latitude);
+  const longitude = Number(sample?.coords?.longitude);
+  const accuracy = Number(sample?.coords?.accuracy);
+  const timestamp = new Date(sample?.timestamp).getTime();
+
+  if (
+    !Number.isFinite(latitude) ||
+    !Number.isFinite(longitude) ||
+    !Number.isFinite(accuracy) ||
+    !Number.isFinite(timestamp)
+  ) {
+    return null;
+  }
+
+  if (latitude < -90 || latitude > 90 || longitude < -180 || longitude > 180) {
+    return null;
+  }
+
+  if (accuracy < 0) {
+    return null;
+  }
+
+  return {
+    coords: {
+      latitude,
+      longitude,
+      accuracy,
+      speed: Number(sample?.coords?.speed) || null,
+      altitude: Number(sample?.coords?.altitude) || null,
+      heading: Number(sample?.coords?.heading) || null,
+    },
+    timestamp,
+  };
+}
+
 export const PUT = async function PUT(req, { params }) {
   const { classesId, attendanceId } = await params;
   const { teacherId, allowedRadius, teacherCords } = await req.json();
@@ -42,6 +78,17 @@ export const PUT = async function PUT(req, { params }) {
     );
   }
 
+  if (isNaN(allowedRadius)) {
+    return NextResponse.json(
+      {
+        error: "Allowed radius must be a number",
+      },
+      {
+        status: 400,
+      },
+    );
+  }
+
   if (Number(allowedRadius) < 0) {
     return NextResponse.json(
       {
@@ -53,10 +100,40 @@ export const PUT = async function PUT(req, { params }) {
     );
   }
 
+  if (
+    !mongoose.Types.ObjectId.isValid(attendanceId) ||
+    !mongoose.Types.ObjectId.isValid(classesId) ||
+    !mongoose.Types.ObjectId.isValid(teacherId)
+  ) {
+    return NextResponse.json(
+      {
+        error: "Invalid Parameters",
+      },
+      {
+        status: 400,
+      },
+    );
+  }
+
   if (Number(allowedRadius) > Number(MAX_ALLOWED_DISTANCE)) {
     return NextResponse.json(
       {
         error: `Allowed radius cannot exceed ${MAX_ALLOWED_DISTANCE} meters`,
+      },
+      {
+        status: 400,
+      },
+    );
+  }
+
+  const validatedTeacherCords = teacherCords
+    .map((sample) => parseAndValidateSample(sample))
+    .filter(Boolean);
+
+  if (validatedTeacherCords.length === 0) {
+    return NextResponse.json(
+      {
+        error: "Unable to gather valid location data.",
       },
       {
         status: 400,
@@ -158,7 +235,7 @@ export const PUT = async function PUT(req, { params }) {
     }
 
     //  make some logic about the teacher location passed
-    let approvedTeacherCords = teacherCords.filter(
+    let approvedTeacherCords = validatedTeacherCords.filter(
       (c) => c?.coords?.accuracy <= Number(MAX_ALLOWED_TEACHER_ACCURACY),
     );
 
