@@ -210,6 +210,7 @@ export const PUT = async function PUT(req, { params }) {
       filteredApprovedTeachersCords,
       averageLatitude,
       averageLongitude,
+      averageAccuracy,
     });
   } catch (err) {
     console.log(err);
