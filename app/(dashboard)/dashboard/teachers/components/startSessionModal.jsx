@@ -162,7 +162,29 @@ export default function StartSessionModal({
       return toast.error(`Please enter a valid allowed radius.`);
     }
     try {
-      const response = await fetch(``);
+      const request = await fetch(
+        `/api/teacher/classes/${classId}/attendance/${attendanceId}/start`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            allowedRadius,
+            teacherCords: capturedSamples,
+          }),
+          credentials: "include",
+        },
+      );
+      const response = await request.json();
+      if (!request.ok || response?.error) {
+        return toast.error(
+          response?.error || "Failed to start attendance session",
+        );
+      }
+      toast.success("Attendance session started successfully!");
+      setIsStartModalOpen(false);
+      wind
     } catch (err) {
       console.log(err);
       return toast.error(
