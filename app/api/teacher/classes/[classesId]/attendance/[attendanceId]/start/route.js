@@ -177,57 +177,21 @@ export const PUT = async function PUT(req, { params }) {
       );
     }
 
-    const filteredApprovedTeachersCords = [approvedTeacherCords[0]];
-    const maxDistanceDifference = 20;
-    for (let i = 1; i < approvedTeacherCords.length; i++) {
-      const prevCords =
-        filteredApprovedTeachersCords[
-          filteredApprovedTeachersCords?.length - 1
-        ];
-      const currentCords = approvedTeacherCords[i];
-      const nextCords = approvedTeacherCords[i + 1] ?? null;
+    const anchoredTeacherCords = approvedTeacherCords[0];
 
-      const distOfPrevCords = haversineDistanceCalculation(
-        prevCords?.coords?.latitude,
-        currentCords?.coords?.latitude,
-        prevCords?.coords?.longitude,
-        currentCords?.coords?.longitude,
+    const filteredApprovedTeachersCords = approvedTeacherCords.filter((c) => {
+      const distance = haversineDistanceCalculation(
+        anchoredTeacherCords?.coords?.latitude,
+        c?.coords?.latitude,
+        anchoredTeacherCords?.coords?.longitude,
+        c?.coords?.longitude,
       );
-
-      if (nextCords) {
-        const distOfNextCords = haversineDistanceCalculation(
-          currentCords?.coords?.latitude,
-          nextCords?.coords?.latitude,
-          currentCords?.coords?.longitude,
-          nextCords?.coords?.longitude,
-        );
-        const haversineSpeed =
-          distOfNextCords /
-          ((currentCords?.timestamp - prevCords?.timestamp) / 1000);
-
-        const isOutsideDistance =
-          distOfPrevCords > maxDistanceDifference &&
-          distOfNextCords > maxDistanceDifference;
-
-        const speedMisMatch =
-          Math.abs(haversineSpeed - (nextCords?.coords?.speed || 0)) > 10;
-         if (isOutsideDistance || speedMisMatch) continue;
-      } else {
-        const isOutsideDistance = distOfPrevCords > maxDistanceDifference;
-        if (isOutsideDistance || prevCords?.coords?.speed > 10) continue;
-      }
-      filteredApprovedTeachersCords.push(currentCords);
-    }
+      return distance <= Number(allowedRadius);
+    });
 
     return NextResponse.json({
       message: "Attendance session started successfully",
       filteredApprovedTeachersCords,
-      // haversineDistance: haversineDistanceCalculation(
-      //   7.517389,
-      //   7.517478,
-      //   4.516826,
-      //   4.516746,
-      // ),
     });
   } catch (err) {
     console.log(err);
