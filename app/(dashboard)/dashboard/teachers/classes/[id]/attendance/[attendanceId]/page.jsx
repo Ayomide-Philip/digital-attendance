@@ -16,6 +16,15 @@ export default function AttendanceDetailsPage() {
   const [isStartModalOpen, setIsStartModalOpen] = useState(false);
   const [attendanceList, setAttendanceList] = useState({});
   const [loading, setLoading] = useState(true);
+  const [currentTime, setCurrentTime] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(Date.now());
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
 
   useEffect(() => {
     if (!id || !attendanceId) {
@@ -56,6 +65,40 @@ export default function AttendanceDetailsPage() {
     return <LoadingComponent />;
   }
 
+  const startTimeMs = attendanceList?.startTime
+    ? new Date(attendanceList.startTime).getTime()
+    : null;
+  const endTimeMs = attendanceList?.endTime
+    ? new Date(attendanceList.endTime).getTime()
+    : null;
+
+  const hasStarted =
+    Array.isArray(attendanceList?.location?.coordinates) &&
+    attendanceList.location.coordinates.length >= 2;
+  const hasEnded = Number.isFinite(endTimeMs) && currentTime >= endTimeMs;
+
+  let sessionTimingStatus = "";
+
+  if (currentTime === 0) {
+    sessionTimingStatus = "Checking session timing...";
+  } else if (hasEnded) {
+    sessionTimingStatus = "Session has ended.";
+  } else if (hasStarted) {
+    const minutesToEnd = Math.max(
+      0,
+      Math.ceil((endTimeMs - currentTime) / 60000),
+    );
+    sessionTimingStatus = `Session is active. Ends in ${minutesToEnd} minute${minutesToEnd === 1 ? "" : "s"}.`;
+  } else if (Number.isFinite(startTimeMs) && currentTime < startTimeMs) {
+    const minutesToStart = Math.max(
+      0,
+      Math.ceil((startTimeMs - currentTime) / 60000),
+    );
+    sessionTimingStatus = `Session starts in ${minutesToStart} minute${minutesToStart === 1 ? "" : "s"}.`;
+  } else {
+    sessionTimingStatus = "Session is ready to start.";
+  }
+
   return (
     <div className="space-y-5">
       <Card className="rounded-2xl border border-slate-200/70 bg-white/85 p-5 shadow-sm dark:border-slate-800 dark:bg-slate-950/70 sm:p-6">
@@ -72,7 +115,16 @@ export default function AttendanceDetailsPage() {
             </p>
           </div>
 
-          <CaptureTeachersLocation setIsStartModalOpen={setIsStartModalOpen} />
+          <div className="flex flex-col items-start gap-2 sm:items-end">
+            {!hasStarted && !hasEnded ? (
+              <CaptureTeachersLocation
+                setIsStartModalOpen={setIsStartModalOpen}
+              />
+            ) : null}
+            <p className="text-xs font-medium text-slate-500 dark:text-slate-400">
+              {sessionTimingStatus}
+            </p>
+          </div>
         </div>
 
         <p className="mt-4 text-sm leading-relaxed text-slate-600 dark:text-slate-300">

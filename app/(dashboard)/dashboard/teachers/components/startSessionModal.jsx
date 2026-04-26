@@ -2,9 +2,15 @@ import { Play, X, MapPinned, LocateFixed, Loader } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { watchLocationWithBounds } from "@/lib/utility/getUserCurrentLocation";
-import { CAPTURE_DURATION_MS } from "@/lib/database/config";
 
-const CAPTURE_DURATION_SECONDS = CAPTURE_DURATION_MS / 1000;
+const captureDurationFromEnv = Number(
+  process.env.NEXT_PUBLIC_CAPTURE_DURATION_MS,
+);
+const CAPTURE_DURATION_MS =
+  Number.isFinite(captureDurationFromEnv) && captureDurationFromEnv > 0
+    ? captureDurationFromEnv
+    : 60000;
+const CAPTURE_DURATION_SECONDS = Math.floor(CAPTURE_DURATION_MS / 1000);
 
 export default function StartSessionModal({
   setIsStartModalOpen,
@@ -158,7 +164,7 @@ export default function StartSessionModal({
         `Please capture the teacher's location again to ensure accuracy before starting the session.`,
       );
     }
-    if (!allowedRadius || Number(allowedRadius) <= 0) {
+    if (!radius || Number(radius) <= 0) {
       return toast.error(`Please enter a valid allowed radius.`);
     }
     try {
@@ -170,7 +176,7 @@ export default function StartSessionModal({
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            allowedRadius,
+            allowedRadius: Number(radius),
             teacherCords: capturedSamples,
           }),
           credentials: "include",
@@ -184,7 +190,7 @@ export default function StartSessionModal({
       }
       toast.success("Attendance session started successfully!");
       setIsStartModalOpen(false);
-      wind
+      window.location.reload();
     } catch (err) {
       console.log(err);
       return toast.error(
