@@ -1,6 +1,7 @@
 import {
   MAX_ALLOWED_DISTANCE,
   MAX_ALLOWED_TEACHER_ACCURACY,
+  RADIUS_OF_THE_EARTH,
 } from "@/lib/database/config";
 import { connectDatabase } from "@/lib/database/connectdb";
 import User from "@/lib/models/user.model";
@@ -24,7 +25,12 @@ export const PUT = async function PUT(req, { params }) {
     );
   }
 
-  if (!teacherId || !allowedRadius || teacherCords.length == 0) {
+  if (
+    !teacherId ||
+    !allowedRadius ||
+    !Array.isArray(teacherCords) ||
+    teacherCords?.length === 0
+  ) {
     return NextResponse.json(
       {
         error: "Invalid Parameters",
@@ -110,7 +116,7 @@ export const PUT = async function PUT(req, { params }) {
       );
     }
 
-    const attendance = Attandance.findOne({
+    const attendance = await Attandance.findOne({
       _id: new mongoose.Types.ObjectId(attendanceId),
       teacherId: new mongoose.Types.ObjectId(teacherId),
       classesId: new mongoose.Types.ObjectId(classesId),
@@ -167,32 +173,56 @@ export const PUT = async function PUT(req, { params }) {
     }
 
     // calculate average coordinates
-    const avgLatitude =
-      approvedTeacherCords.reduce((sum, c) => sum + c.coords.latitude, 0) /
-      approvedTeacherCords.length;
-    const avgLongitude =
-      approvedTeacherCords.reduce((sum, c) => sum + c.coords.longitude, 0) /
-      approvedTeacherCords.length;
-    const averageAccuracy =
-      approvedTeacherCords.reduce((sum, c) => sum + c.coords.accuracy, 0) /
-      approvedTeacherCords.length;
+    const approvedLatitude = approvedTeacherCords.map(
+      (c) => c?.coords?.latitude,
+    );
+    const approvedLongitude = approvedTeacherCords.map(
+      (c) => c?.coords?.longitude,
+    );
+    const approvedAccuracy = approvedTeacherCords.map(
+      (c) => c?.coords?.accuracy,
+    );
 
-    if (averageAccuracy > Number(MAX_ALLOWED_TEACHER_ACCURACY)) {
-      return NextResponse.json(
-        {
-          error: `Unable to start attendance session. Average GPS accuracy of ${averageAccuracy.toFixed(2)} meters exceeds the allowed threshold of ${MAX_ALLOWED_TEACHER_ACCURACY} meters.`,
-        },
-        {
-          status: 400,
-        },
+    // if (averageAccuracy > Number(MAX_ALLOWED_TEACHER_ACCURACY)) {
+    //   return NextResponse.json(
+    //     {
+    //       error: `Average GPS accuracy of ${averageAccuracy.toFixed(2)} meters exceeds the allowed threshold of ${MAX_ALLOWED_TEACHER_ACCURACY} meters.`,
+    //     },
+    //     {
+    //       status: 400,
+    //     },
+    //   );
+    // }
+
+    function haversineDistanceCalculation(lat1, lat2, long1, long2) {
+      const radOfLat1 = (Math.PI / 180) * Number(lat1);
+      const radOfLat2 = (Math.PI / 180) * Number(lat2);
+      const radOfLong1 = (Math.PI / 180) * Number(long1);
+      const radOfLong2 = (Math.PI / 180) * Number(long2);
+
+      const changeInLat = radOfLat2 - radOfLat1;
+      const changeInLong = radOfLong2 - radOfLong1;
+
+      const a =
+        Math.sin(changeInLat / 2) ** 2 +
+        Math.cos(radOfLat1) *
+          Math.cos(radOfLat2) *
+          Math.sin(changeInLong / 2) ** 2;
+
+      return (
+        Number(RADIUS_OF_THE_EARTH) *
+        2 *
+        Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
       );
     }
 
     return NextResponse.json({
       message: "Attendance session started successfully",
-      avgLatitude,
-      avgLongitude,
-      averageAccuracy,
+      // approvedLatitude,
+      // approvedLongitude,
+      // approvedAccuracy,
+      haversineDistance:
+        haversineDistanceCalculation(7.51738, 7.517389, 4.516834, 4.516826) / 6,
     });
   } catch (err) {
     console.log(err);
