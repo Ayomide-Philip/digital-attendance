@@ -42,13 +42,13 @@ export default function AttendanceIdBody({
           Student Attendance
         </h2>
 
-        <div className="inline-flex rounded-xl border border-slate-200 p-1 dark:border-slate-700">
+        <div className="flex flex-wrap gap-2 rounded-xl border border-slate-200 p-1 dark:border-slate-700">
           {["All", "Present", "Absent", "Flagged", "Pending"].map((tab) => (
             <button
               key={tab}
               type="button"
               onClick={() => setSelectedTab(tab)}
-              className={`rounded-lg px-3 py-1.5 text-xs font-medium transition ${
+              className={`rounded-lg px-3 py-1.5 text-xs font-medium transition whitespace-nowrap ${
                 selectedTab === tab
                   ? "bg-sky-500 text-white"
                   : "text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800"
