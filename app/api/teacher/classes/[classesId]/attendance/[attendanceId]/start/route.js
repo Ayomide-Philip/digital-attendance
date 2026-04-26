@@ -9,6 +9,7 @@ import { NextResponse } from "next/server";
 import mongoose from "mongoose";
 import Classes from "@/lib/models/classes.model";
 import Attandance from "@/lib/models/attendance.model";
+import haversineDistanceCalculation from "@/lib/utility/haversineDistanceCalculation";
 
 export const PUT = async function PUT(req, { params }) {
   const { classesId, attendanceId } = await params;
@@ -194,35 +195,19 @@ export const PUT = async function PUT(req, { params }) {
     //   );
     // }
 
-    function haversineDistanceCalculation(lat1, lat2, long1, long2) {
-      const radOfLat1 = (Math.PI / 180) * Number(lat1);
-      const radOfLat2 = (Math.PI / 180) * Number(lat2);
-      const radOfLong1 = (Math.PI / 180) * Number(long1);
-      const radOfLong2 = (Math.PI / 180) * Number(long2);
-
-      const changeInLat = radOfLat2 - radOfLat1;
-      const changeInLong = radOfLong2 - radOfLong1;
-
-      const a =
-        Math.sin(changeInLat / 2) ** 2 +
-        Math.cos(radOfLat1) *
-          Math.cos(radOfLat2) *
-          Math.sin(changeInLong / 2) ** 2;
-
-      return (
-        Number(RADIUS_OF_THE_EARTH) *
-        2 *
-        Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
-      );
-    }
-
     return NextResponse.json({
       message: "Attendance session started successfully",
       // approvedLatitude,
       // approvedLongitude,
       // approvedAccuracy,
       haversineDistance:
-        haversineDistanceCalculation(7.51738, 7.517389, 4.516834, 4.516826) / 6,
+        haversineDistanceCalculation(
+          7.517420286368072,
+          7.517389,
+          4.516858847800235,
+          4.516826,
+        ) /
+        ((1776849700958 - 1776849679467) / 1000),
     });
   } catch (err) {
     console.log(err);
