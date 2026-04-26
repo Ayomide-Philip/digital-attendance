@@ -126,7 +126,11 @@ export default function AttendanceDetailsPage() {
         endTime={attendanceList?.endTime}
       />
       {isStartModalOpen ? (
-        <StartSessionModal setIsStartModalOpen={setIsStartModalOpen} />
+        <StartSessionModal
+          setIsStartModalOpen={setIsStartModalOpen}
+          classId={id}
+          attendanceId={attendanceId}
+        />
       ) : null}
     </div>
   );

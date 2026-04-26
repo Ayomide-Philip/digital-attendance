@@ -6,7 +6,11 @@ import { CAPTURE_DURATION_MS } from "@/lib/database/config";
 
 const CAPTURE_DURATION_SECONDS = CAPTURE_DURATION_MS / 1000;
 
-export default function StartSessionModal({ setIsStartModalOpen }) {
+export default function StartSessionModal({
+  setIsStartModalOpen,
+  classId,
+  attendanceId,
+}) {
   const [radius, setRadius] = useState("20");
   const [teacherLocation, setTeacherLocation] = useState(
     "Lat: 0.000, Lng: 0.000",
@@ -156,6 +160,14 @@ export default function StartSessionModal({ setIsStartModalOpen }) {
     }
     if (!allowedRadius || Number(allowedRadius) <= 0) {
       return toast.error(`Please enter a valid allowed radius.`);
+    }
+    try {
+      const response = await fetch(``);
+    } catch (err) {
+      console.log(err);
+      return toast.error(
+        "An error occurred while starting the attendance session. Please try again.",
+      );
     }
   }
   return (
