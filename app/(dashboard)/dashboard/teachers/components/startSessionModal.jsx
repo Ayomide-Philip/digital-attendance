@@ -23,6 +23,7 @@ export default function StartSessionModal({
   );
   const [capturedSamples, setCapturedSamples] = useState([]);
   const [isCapturingLocation, setIsCapturingLocation] = useState(false);
+  const [isStartingSession, setIsStartingSession] = useState(false);
   const [secondsRemaining, setSecondsRemaining] = useState(0);
   const watcherRef = useRef(null);
   const countdownRef = useRef(null);
@@ -158,13 +159,20 @@ export default function StartSessionModal({
   }
 
   async function startSession() {
+    if (isStartingSession) {
+      return;
+    }
+
+    setIsStartingSession(true);
     console.log("Captured location samples:", capturedSamples);
     if (capturedSamples.length < 5) {
+      setIsStartingSession(false);
       return toast.error(
         `Please capture the teacher's location again to ensure accuracy before starting the session.`,
       );
     }
     if (!radius || Number(radius) <= 0) {
+      setIsStartingSession(false);
       return toast.error(`Please enter a valid allowed radius.`);
     }
     try {
@@ -184,6 +192,7 @@ export default function StartSessionModal({
       );
       const response = await request.json();
       if (!request.ok || response?.error) {
+        setIsStartingSession(false);
         return toast.error(
           response?.error || "Failed to start attendance session",
         );
@@ -193,6 +202,7 @@ export default function StartSessionModal({
       window.location.reload();
     } catch (err) {
       console.log(err);
+      setIsStartingSession(false);
       return toast.error(
         "An error occurred while starting the attendance session. Please try again.",
       );
@@ -280,10 +290,20 @@ export default function StartSessionModal({
           <button
             type="button"
             onClick={startSession}
+            disabled={isStartingSession}
             className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-sky-600 px-4 text-sm font-semibold text-white transition hover:bg-sky-700"
           >
-            <Play className="size-4" />
-            Start Session
+            {isStartingSession ? (
+              <>
+                <Loader className="size-4 animate-spin" />
+                Starting Session...
+              </>
+            ) : (
+              <>
+                <Play className="size-4" />
+                Start Session
+              </>
+            )}
           </button>
         </div>
       </div>
