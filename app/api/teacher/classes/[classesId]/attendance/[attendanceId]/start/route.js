@@ -1,7 +1,7 @@
 import {
   MAX_ALLOWED_DISTANCE,
   MAX_ALLOWED_TEACHER_ACCURACY,
-  RADIUS_OF_THE_EARTH,
+  TEACHER_CLUSTER_RADIUS,
 } from "@/lib/database/config";
 import { connectDatabase } from "@/lib/database/connectdb";
 import User from "@/lib/models/user.model";
@@ -177,8 +177,6 @@ export const PUT = async function PUT(req, { params }) {
       );
     }
 
-    const anchoredTeacherCords = approvedTeacherCords[0];
-
     const filteredApprovedTeachersCords = approvedTeacherCords.filter((c) => {
       const distance = haversineDistanceCalculation(
         anchoredTeacherCords?.coords?.latitude,
@@ -186,8 +184,19 @@ export const PUT = async function PUT(req, { params }) {
         c?.coords?.latitude,
         c?.coords?.longitude,
       );
-      return distance <= Number(MAX_ALLOWED_TEACHER_ACCURACY);
+      return distance <= Number(TEACHER_CLUSTER_RADIUS);
     });
+
+    if (filteredApprovedTeachersCords?.length < 3) {
+      return NextResponse.json(
+        {
+          error: `Please ensure you have a stable GPS signal and try again.`,
+        },
+        {
+          status: 400,
+        },
+      );
+    }
 
     const averageLatitude =
       filteredApprovedTeachersCords.reduce(
