@@ -1,11 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { AlertTriangle } from "lucide-react";
-import AttendanceTable from "@/app/(dashboard)/dashboard/teachers/components/AttendanceTable";
-import TakeAttendanceModal from "@/app/(dashboard)/dashboard/teachers/components/TakeAttendanceModal";
-import { Button } from "@/components/ui/button";
-import Card from "@/components/ui/card";
+import { useState } from "react";
 import Tabs from "./tabs";
 import SettingsTab from "./settingsTab";
 import StudentsTab from "./studentsTab";

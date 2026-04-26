@@ -177,6 +177,8 @@ export const PUT = async function PUT(req, { params }) {
       );
     }
 
+    const anchoredTeacherCords = [...approvedTeacherCords][0];
+
     const filteredApprovedTeachersCords = approvedTeacherCords.filter((c) => {
       const distance = haversineDistanceCalculation(
         anchoredTeacherCords?.coords?.latitude,

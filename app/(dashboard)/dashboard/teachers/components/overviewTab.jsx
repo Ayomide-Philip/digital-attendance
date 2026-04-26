@@ -65,11 +65,10 @@ export default function OverviewTab({ overview }) {
           console.log("Error watching location:", error);
         },
       );
-
       const timer = setTimeout(() => {
         watcher.stop();
-        console.log("Tracking stopped after 30s");
-      }, 30000);
+        console.log("Tracking stopped after 60s");
+      }, 60000);
 
       return () => {
         clearTimeout(timer);
