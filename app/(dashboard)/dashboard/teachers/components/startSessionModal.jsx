@@ -2,8 +2,8 @@ import { Play, X, MapPinned, LocateFixed, Loader } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { watchLocationWithBounds } from "@/lib/utility/getUserCurrentLocation";
+import { CAPTURE_DURATION_MS } from "@/lib/database/config";
 
-const CAPTURE_DURATION_MS = 60000;
 const CAPTURE_DURATION_SECONDS = CAPTURE_DURATION_MS / 1000;
 
 export default function StartSessionModal({ setIsStartModalOpen }) {
@@ -147,14 +147,16 @@ export default function StartSessionModal({ setIsStartModalOpen }) {
     );
   }
 
-  function startSession() {
+  async function startSession() {
     console.log("Captured location samples:", capturedSamples);
     if (capturedSamples.length < 5) {
       return toast.error(
         `Please capture the teacher's location again to ensure accuracy before starting the session.`,
       );
     }
-    // setIsStartModalOpen(false);
+    if (!allowedRadius || Number(allowedRadius) <= 0) {
+      return toast.error(`Please enter a valid allowed radius.`);
+    }
   }
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/55 p-4 backdrop-blur-sm">

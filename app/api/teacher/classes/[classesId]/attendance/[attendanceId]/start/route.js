@@ -10,6 +10,7 @@ import mongoose from "mongoose";
 import Classes from "@/lib/models/classes.model";
 import Attandance from "@/lib/models/attendance.model";
 import haversineDistanceCalculation from "@/lib/utility/haversineDistanceCalculation";
+import { auth } from "@/auth";
 
 function parseAndValidateSample(sample) {
   const latitude = Number(sample?.coords?.latitude);
@@ -47,9 +48,20 @@ function parseAndValidateSample(sample) {
   };
 }
 
-export const PUT = async function PUT(req, { params }) {
+export const PUT = auth(async function PUT(req, { params }) {
+  if (!req?.auth || !req?.auth?.userId) {
+    return NextResponse.json(
+      {
+        error: "Unauthorized Access",
+      },
+      {
+        status: 401,
+      },
+    );
+  }
+  const teacherId = req?.auth?.user?.id;
   const { classesId, attendanceId } = await params;
-  const { teacherId, allowedRadius, teacherCords } = await req.json();
+  const { allowedRadius, teacherCords } = await req.json();
 
   if (!classesId || !attendanceId) {
     return NextResponse.json(
@@ -343,4 +355,4 @@ export const PUT = async function PUT(req, { params }) {
       },
     );
   }
-};
+});
