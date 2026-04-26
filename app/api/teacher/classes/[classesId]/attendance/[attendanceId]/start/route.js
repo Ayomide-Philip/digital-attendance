@@ -182,16 +182,34 @@ export const PUT = async function PUT(req, { params }) {
     const filteredApprovedTeachersCords = approvedTeacherCords.filter((c) => {
       const distance = haversineDistanceCalculation(
         anchoredTeacherCords?.coords?.latitude,
-        c?.coords?.latitude,
         anchoredTeacherCords?.coords?.longitude,
+        c?.coords?.latitude,
         c?.coords?.longitude,
       );
-      return distance <= Number(allowedRadius);
+      return distance <= Number(MAX_ALLOWED_TEACHER_ACCURACY);
     });
+
+    const averageLatitude =
+      filteredApprovedTeachersCords.reduce(
+        (sum, c) => sum + c?.coords?.latitude,
+        0,
+      ) / filteredApprovedTeachersCords.length;
+    const averageLongitude =
+      filteredApprovedTeachersCords.reduce(
+        (sum, c) => sum + c?.coords?.longitude,
+        0,
+      ) / filteredApprovedTeachersCords.length;
+    const averageAccuracy =
+      filteredApprovedTeachersCords.reduce(
+        (sum, c) => sum + c?.coords?.accuracy,
+        0,
+      ) / filteredApprovedTeachersCords.length;
 
     return NextResponse.json({
       message: "Attendance session started successfully",
       filteredApprovedTeachersCords,
+      averageLatitude,
+      averageLongitude,
     });
   } catch (err) {
     console.log(err);
