@@ -1,23 +1,77 @@
-import { Play, X, MapPinned, LocateFixed } from "lucide-react";
+import { Play, X, MapPinned, LocateFixed, Loader } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
+import { watchLocationWithBounds } from "@/lib/utility/getUserCurrentLocation";
 export default function StartSessionModal({ setIsStartModalOpen }) {
-  const [radius, setRadius] = useState("120");
+  const [radius, setRadius] = useState("20");
   const [teacherLocation, setTeacherLocation] = useState(
-    "Lat: 6.5244, Lng: 3.3792",
+    "Lat: 0.000, Lng: 0.000",
   );
+  const [capturedSamples, setCapturedSamples] = useState([]);
+  const [isCapturingLocation, setIsCapturingLocation] = useState(false);
   function captureCurrentLocation() {
-    const mockLocations = [
-      "Lat: 6.5239, Lng: 3.3784",
-      "Lat: 6.5241, Lng: 3.3790",
-      "Lat: 6.5247, Lng: 3.3798",
-    ];
-    const randomLocation =
-      mockLocations[Math.floor(Math.random() * mockLocations.length)];
-    setTeacherLocation(randomLocation);
+    setIsCapturingLocation(true);
+
+    watchLocationWithBounds(
+      (bounds) => {
+        console.log("Location capture bounds:", bounds);
+        if (bounds.reason === "timeout" && !bounds.hasEnoughSamples) {
+          toast.error(
+            `Location capture timed out before getting ${bounds.minSamplesRequired} good samples. Please try again.`,
+          );
+          setIsCapturingLocation(false);
+          return;
+        }
+
+        if (!bounds.hasEnoughSamples) {
+          toast.error(
+            `Only ${bounds.count}/${bounds.minSamplesRequired} accurate samples collected. Please try again.`,
+          );
+          setIsCapturingLocation(false);
+          return;
+        }
+
+        if (
+          bounds.bestSample?.coords?.accuracy != null &&
+          bounds.bestSample.coords.accuracy > 30
+        ) {
+          toast.error(
+            `Location accuracy is too low (${Math.round(bounds.bestSample.coords.accuracy)}m). Try moving to a clearer area.`,
+          );
+          setIsCapturingLocation(false);
+          return;
+        }
+
+        setCapturedSamples(bounds.samples || []);
+        const lat = bounds.bestSample.coords.latitude;
+        const lng = bounds.bestSample.coords.longitude;
+        setTeacherLocation(`Lat: ${lat.toFixed(4)}, Lng: ${lng.toFixed(4)}`);
+        toast.success("Teacher location captured successfully.");
+        setIsCapturingLocation(false);
+      },
+      (error) => {
+        toast.error(
+          error?.message || "Unable to capture location. Please try again.",
+        );
+        setIsCapturingLocation(false);
+      },
+      {
+        minSamples: 5,
+        maxSamples: 20,
+        requiredAccuracy: 30,
+        maxDurationMs: 60000,
+      },
+    );
   }
 
   function startSession() {
-    setIsStartModalOpen(false);
+    console.log("Captured location samples:", capturedSamples);
+    if (capturedSamples.length < 5) {
+      return toast.error(
+        `Please capture the teacher's location again to ensure accuracy before starting the session.`,
+      );
+    }
+    // setIsStartModalOpen(false);
   }
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/55 p-4 backdrop-blur-sm">
@@ -73,10 +127,20 @@ export default function StartSessionModal({ setIsStartModalOpen }) {
           <button
             type="button"
             onClick={captureCurrentLocation}
-            className="inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
+            disabled={isCapturingLocation}
+            className="inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 disabled:opacity-50 disabled:cursor-not-allowed dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
           >
-            <LocateFixed className="size-4" />
-            Capture Current Location
+            {isCapturingLocation ? (
+              <>
+                <Loader className="size-4 animate-spin" />
+                Capturing Location...
+              </>
+            ) : (
+              <>
+                <LocateFixed className="size-4" />
+                Capture Current Location
+              </>
+            )}
           </button>
         </div>
 

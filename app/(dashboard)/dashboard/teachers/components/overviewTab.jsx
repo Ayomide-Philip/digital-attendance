@@ -10,7 +10,7 @@ import {
   Users,
 } from "lucide-react";
 import Card from "@/components/ui/card";
-import { watchLocationWithBounds } from "@/lib/utility/getUserCurrentLocation";
+// import { watchLocationWithBounds } from "@/lib/utility/getUserCurrentLocation";
 import { useEffect } from "react";
 
 const recentActivity = [
@@ -50,34 +50,31 @@ const upcomingSessions = [
 ];
 
 export default function OverviewTab({ overview }) {
-  useEffect(() => {
-    const connection =
-      navigator.connection ||
-      navigator.mozConnection ||
-      navigator.webkitConnection;
-    console.log(connection);
-    function startTracking() {
-      const watcher = watchLocationWithBounds(
-        (bounds) => {
-          console.log("Location Bounds:", bounds);
-        },
-        (error) => {
-          console.log("Error watching location:", error);
-        },
-      );
-      const timer = setTimeout(() => {
-        watcher.stop();
-        console.log("Tracking stopped after 60s");
-      }, 60000);
+  // useEffect(() => {
+  //   const connection =
+  //     navigator.connection ||
+  //     navigator.mozConnection ||
+  //     navigator.webkitConnection;
+  //   console.log(connection);
 
-      return () => {
-        clearTimeout(timer);
-        watcher.stop();
-      };
-    }
+  //   const watcher = watchLocationWithBounds(
+  //     (bounds) => {
+  //       console.log("Location Bounds:", bounds);
+  //     },
+  //     (error) => {
+  //       console.log("Error watching location:", error);
+  //     },
+  //     {
+  //       minSamples: 5,
+  //       requiredAccuracy: 30,
+  //       maxDurationMs: 60000,
+  //     },
+  //   );
 
-    startTracking();
-  }, []);
+  //   return () => {
+  //     watcher.stop("component_unmount");
+  //   };
+  // }, []);
   const quickStats = [
     {
       label: "Total Students",
