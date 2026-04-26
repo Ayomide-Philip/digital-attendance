@@ -158,8 +158,12 @@ export const PUT = async function PUT(req, { params }) {
     }
 
     //  make some logic about the teacher location passed
-    const approvedTeacherCords = teacherCords.filter(
+    let approvedTeacherCords = teacherCords.filter(
       (c) => c?.coords?.accuracy <= Number(MAX_ALLOWED_TEACHER_ACCURACY),
+    );
+
+    approvedTeacherCords = [...approvedTeacherCords].sort(
+      (a, b) => b?.timestamp - a?.timestamp,
     );
 
     if (approvedTeacherCords?.length < 3) {
@@ -173,41 +177,57 @@ export const PUT = async function PUT(req, { params }) {
       );
     }
 
-    // calculate average coordinates
-    const approvedLatitude = approvedTeacherCords.map(
-      (c) => c?.coords?.latitude,
-    );
-    const approvedLongitude = approvedTeacherCords.map(
-      (c) => c?.coords?.longitude,
-    );
-    const approvedAccuracy = approvedTeacherCords.map(
-      (c) => c?.coords?.accuracy,
-    );
+    const filteredApprovedTeachersCords = [approvedTeacherCords[0]];
+    const maxDistanceDifference = 20;
+    for (let i = 1; i < approvedTeacherCords.length; i++) {
+      const prevCords =
+        filteredApprovedTeachersCords[
+          filteredApprovedTeachersCords?.length - 1
+        ];
+      const currentCords = approvedTeacherCords[i];
+      const nextCords = approvedTeacherCords[i + 1] ?? null;
 
-    // if (averageAccuracy > Number(MAX_ALLOWED_TEACHER_ACCURACY)) {
-    //   return NextResponse.json(
-    //     {
-    //       error: `Average GPS accuracy of ${averageAccuracy.toFixed(2)} meters exceeds the allowed threshold of ${MAX_ALLOWED_TEACHER_ACCURACY} meters.`,
-    //     },
-    //     {
-    //       status: 400,
-    //     },
-    //   );
-    // }
+      const distOfPrevCords = haversineDistanceCalculation(
+        prevCords?.coords?.latitude,
+        currentCords?.coords?.latitude,
+        prevCords?.coords?.longitude,
+        currentCords?.coords?.longitude,
+      );
+
+      if (nextCords) {
+        const distOfNextCords = haversineDistanceCalculation(
+          currentCords?.coords?.latitude,
+          nextCords?.coords?.latitude,
+          currentCords?.coords?.longitude,
+          nextCords?.coords?.longitude,
+        );
+        const haversineSpeed =
+          distOfNextCords /
+          ((currentCords?.timestamp - prevCords?.timestamp) / 1000);
+
+        const isOutsideDistance =
+          distOfPrevCords > maxDistanceDifference &&
+          distOfNextCords > maxDistanceDifference;
+
+        const speedMisMatch =
+          Math.abs(haversineSpeed - (nextCords?.coords?.speed || 0)) > 10;
+         if (isOutsideDistance || speedMisMatch) continue;
+      } else {
+        const isOutsideDistance = distOfPrevCords > maxDistanceDifference;
+        if (isOutsideDistance || prevCords?.coords?.speed > 10) continue;
+      }
+      filteredApprovedTeachersCords.push(currentCords);
+    }
 
     return NextResponse.json({
       message: "Attendance session started successfully",
-      // approvedLatitude,
-      // approvedLongitude,
-      // approvedAccuracy,
-      haversineDistance:
-        haversineDistanceCalculation(
-          7.517420286368072,
-          7.517389,
-          4.516858847800235,
-          4.516826,
-        ) /
-        ((1776849700958 - 1776849679467) / 1000),
+      filteredApprovedTeachersCords,
+      // haversineDistance: haversineDistanceCalculation(
+      //   7.517389,
+      //   7.517478,
+      //   4.516826,
+      //   4.516746,
+      // ),
     });
   } catch (err) {
     console.log(err);
