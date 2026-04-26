@@ -141,16 +141,16 @@ export const PUT = async function PUT(req, { params }) {
     );
   }
 
-  //   if (teacherCords.length < 5) {
-  //     return NextResponse.json(
-  //       {
-  //         error: "Unable to gather enough location data.",
-  //       },
-  //       {
-  //         status: 400,
-  //       },
-  //     );
-  //   }
+  if (teacherCords.length < 5) {
+    return NextResponse.json(
+      {
+        error: "Unable to gather enough location data.",
+      },
+      {
+        status: 400,
+      },
+    );
+  }
 
   try {
     await connectDatabase();
@@ -293,12 +293,44 @@ export const PUT = async function PUT(req, { params }) {
         0,
       ) / filteredApprovedTeachersCords.length;
 
+    const savedAttendance = await Attandance.findOneAndUpdate(
+      {
+        _id: new mongoose.Types.ObjectId(attendanceId),
+        teacherId: new mongoose.Types.ObjectId(teacherId),
+        classesId: new mongoose.Types.ObjectId(classesId),
+        "location.coordinates.0": { $exists: false },
+      },
+      {
+        $set: {
+          location: {
+            type: "Point",
+            coordinates: [averageLongitude, averageLatitude],
+            accuracy: averageAccuracy,
+          },
+          allowedRadius: Number(allowedRadius),
+        },
+      },
+      { new: true, runValidators: true },
+    );
+
+    if (!savedAttendance) {
+      return NextResponse.json(
+        {
+          error: "Unable to start attendance session. Please try again.",
+        },
+        {
+          status: 409,
+        },
+      );
+    }
+
     return NextResponse.json({
       message: "Attendance session started successfully",
-      filteredApprovedTeachersCords,
-      averageLatitude,
-      averageLongitude,
-      averageAccuracy,
+      attendance: {
+        id: savedAttendance._id,
+        location: savedAttendance.location,
+        allowedRadius: savedAttendance.allowedRadius,
+      },
     });
   } catch (err) {
     console.log(err);
