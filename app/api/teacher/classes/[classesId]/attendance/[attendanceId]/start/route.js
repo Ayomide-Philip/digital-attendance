@@ -49,7 +49,7 @@ function parseAndValidateSample(sample) {
 }
 
 export const PUT = auth(async function PUT(req, { params }) {
-  if (!req?.auth || !req?.auth?.userId) {
+  if (!req?.auth || !req?.auth?.user) {
     return NextResponse.json(
       {
         error: "Unauthorized Access",
