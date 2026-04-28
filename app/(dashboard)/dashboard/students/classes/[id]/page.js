@@ -17,6 +17,7 @@ import {
 import StudentTabs from "../../components/studentsTabs";
 import StudentOverview from "../../components/studentOverview";
 import StudentClassAttendance from "../../components/studentClassAttendance";
+import StudentClassStudDetails from "../../components/studentClassStudDetails";
 
 const mockClassData = {
   id: "class-001",
@@ -160,38 +161,7 @@ export default function ClassDetailsPage() {
 
       {selectedTab === "Attendance" && <StudentClassAttendance />}
 
-      {selectedTab === "Students" && (
-        <div className="space-y-3">
-          {mockStudents.map((student) => {
-            const { className: badgeClass, icon: BadgeIcon } = getStatusBadge(
-              student.status,
-            );
-            const initials = getInitials(student.name);
-
-            return (
-              <Card
-                key={student.id}
-                className="rounded-2xl border border-slate-200/70 bg-white/85 p-4 shadow-sm transition hover:shadow-md dark:border-slate-800 dark:bg-slate-950/70"
-              >
-                <div className="flex items-center justify-between gap-3">
-                  <div className="flex items-center gap-3">
-                    <div className="flex size-10 items-center justify-center rounded-full bg-linear-to-br from-sky-500 to-blue-500 text-xs font-bold text-white">
-                      {initials}
-                    </div>
-                    <p className="font-semibold text-slate-900 dark:text-slate-100">
-                      {student.name}
-                    </p>
-                  </div>
-                  <div className={badgeClass}>
-                    <BadgeIcon className="size-3.5" />
-                    {student.status}
-                  </div>
-                </div>
-              </Card>
-            );
-          })}
-        </div>
-      )}
+      {selectedTab === "Students" && <StudentClassStudDetails />}
 
       {selectedTab === "Materials" && (
         <div className="space-y-3">
