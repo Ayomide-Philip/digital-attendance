@@ -84,7 +84,7 @@ export default function StudentClassAttendance({ attendanceHeading, classId }) {
                     Total sessions
                   </p>
                   <p className="mt-1 text-2xl font-semibold text-slate-900 dark:text-slate-100 text-center sm:text-right">
-                    {sessions.length}
+                    {sessions?.length}
                   </p>
                 </div>
               </div>
@@ -99,8 +99,8 @@ export default function StudentClassAttendance({ attendanceHeading, classId }) {
                 label,
               } = getStatusBadge(session.status);
               const windowState = getAttendanceWindowState(
-                session.startTime,
-                session.endTime,
+                session?.startTime,
+                session?.endTime,
               );
 
               return (
@@ -110,11 +110,11 @@ export default function StudentClassAttendance({ attendanceHeading, classId }) {
                 >
                   <div className="flex flex-col sm:flex-row sm:items-center gap-4">
                     <div
-                      className={`mx-auto sm:mx-0 flex h-12 w-12 items-center justify-center rounded-lg ${windowState.dotClass}`}
+                      className={`mx-auto sm:mx-0 flex h-12 w-12 items-center justify-center rounded-lg ${windowState?.dotClass}`}
                     >
-                      {windowState.icon === "check" ? (
+                      {windowState?.icon === "check" ? (
                         <CheckCircle className="text-white" />
-                      ) : windowState.icon === "clock" ? (
+                      ) : windowState?.icon === "clock" ? (
                         <Clock className="text-white" />
                       ) : (
                         <XCircle className="text-white" />
@@ -124,7 +124,7 @@ export default function StudentClassAttendance({ attendanceHeading, classId }) {
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-3">
                         <p className="truncate text-lg font-semibold text-slate-900 dark:text-slate-100">
-                          {session.title || "Attendance session"}
+                          {session?.title || "Attendance session"}
                         </p>
                         <span className={badgeClass}>
                           <BadgeIcon className="size-3.5" />
@@ -135,7 +135,7 @@ export default function StudentClassAttendance({ attendanceHeading, classId }) {
                       <div className="mt-2 flex flex-col sm:flex-row sm:flex-wrap items-start sm:items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
                         <span className="inline-flex items-center gap-2">
                           <Calendar className="size-4" />
-                          {formatShortDate(session.createdAt)}
+                          {formatShortDate(session?.createdAt)}
                         </span>
                         <span className="inline-flex items-center gap-2">
                           <User className="size-4" />
