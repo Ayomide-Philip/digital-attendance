@@ -1,5 +1,5 @@
 export default function StudentTabs({ selectedTab, setSelectedTab }) {
-  const tabs = ["Overview", "Attendance", "Students", "Materials"];
+  const tabs = ["Overview", "Attendance", "Students", "Settings"];
 
   return (
     <div className="flex flex-wrap gap-2 rounded-2xl border border-slate-200/70 bg-white/80 p-2 dark:border-slate-800 dark:bg-slate-950/70">

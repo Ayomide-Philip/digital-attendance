@@ -1,4 +1,5 @@
 import Card from "@/components/ui/card";
+import { CheckCircle, Clock, XCircle } from "lucide-react";
 
 const mockStudents = [
   { id: 1, name: "Alice Chen", status: "Present" },

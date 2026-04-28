@@ -19,65 +19,6 @@ import StudentOverview from "../../components/studentOverview";
 import StudentClassAttendance from "../../components/studentClassAttendance";
 import StudentClassStudDetails from "../../components/studentClassStudDetails";
 
-const mockClassData = {
-  id: "class-001",
-  name: "Introduction to Web Development",
-  code: "CS101",
-  description:
-    "Learn the fundamentals of web development with HTML, CSS, and JavaScript.",
-  teacher: {
-    name: "Dr. Sarah Johnson",
-    email: "sarah.johnson@school.edu",
-    bio: "Experienced web developer with 10+ years in the industry.",
-  },
-  totalStudents: 32,
-  attendancePercentage: 92,
-};
-
-const mockAttendanceSessions = [
-  {
-    id: 1,
-    title: "Week 1: HTML Basics",
-    date: "2026-04-20",
-    status: "Present",
-  },
-  {
-    id: 2,
-    title: "Week 2: CSS Styling",
-    date: "2026-04-22",
-    status: "Present",
-  },
-  {
-    id: 3,
-    title: "Week 3: JavaScript Intro",
-    date: "2026-04-24",
-    status: "Late",
-  },
-  {
-    id: 4,
-    title: "Week 4: DOM Manipulation",
-    date: "2026-04-26",
-    status: "Present",
-  },
-  {
-    id: 5,
-    title: "Week 5: Async Programming",
-    date: "2026-04-28",
-    status: "Absent",
-  },
-];
-
-const mockStudents = [
-  { id: 1, name: "Alice Chen", status: "Present" },
-  { id: 2, name: "Bob Smith", status: "Present" },
-  { id: 3, name: "Charlie Brown", status: "Absent" },
-  { id: 4, name: "Diana Ross", status: "Present" },
-  { id: 5, name: "Evan White", status: "Late" },
-  { id: 6, name: "Fiona Green", status: "Present" },
-  { id: 7, name: "George Liu", status: "Present" },
-  { id: 8, name: "Hannah Kim", status: "Present" },
-];
-
 const mockMaterials = [
   {
     id: 1,
@@ -163,40 +104,45 @@ export default function ClassDetailsPage() {
 
       {selectedTab === "Students" && <StudentClassStudDetails />}
 
-      {selectedTab === "Materials" && (
+      {selectedTab === "Settings" && (
         <div className="space-y-3">
-          {mockMaterials.map((material) => {
-            const Icon = getMaterialIcon(material.type);
+          <Card className="rounded-2xl border border-slate-200/70 bg-white/85 p-6 shadow-sm dark:border-slate-800 dark:bg-slate-950/70">
+            <div className="flex items-start justify-between gap-4">
+              <div className="min-w-0 flex-1">
+                <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
+                  Class Settings
+                </h3>
 
-            return (
-              <Card
-                key={material.id}
-                className="rounded-2xl border border-slate-200/70 bg-white/85 p-4 shadow-sm transition hover:shadow-md dark:border-slate-800 dark:bg-slate-950/70"
-              >
-                <div className="flex items-center justify-between gap-3">
-                  <div className="flex items-center gap-3">
-                    <div className="flex size-10 items-center justify-center rounded-full bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400">
-                      <Icon className="size-5" />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <p className="font-semibold text-slate-900 dark:text-slate-100">
-                        {material.title}
-                      </p>
-                      <p className="text-xs text-slate-500 dark:text-slate-400">
-                        {new Date(material.date).toLocaleDateString("en-US", {
-                          month: "short",
-                          day: "numeric",
-                        })}
-                      </p>
-                    </div>
-                  </div>
-                  <span className="inline-flex rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-medium capitalize text-slate-600 dark:border-slate-700 dark:bg-slate-900/50 dark:text-slate-300">
-                    {material.type}
+                <p className="mt-4 text-sm font-semibold text-slate-700 dark:text-slate-300">
+                  Rules
+                </p>
+                <ul className="mt-2 list-disc pl-5 text-sm text-slate-600 dark:text-slate-400">
+                  <li>Attendance required for in-person sessions</li>
+                  <li>No recordings without instructor consent</li>
+                  <li>Respect class schedule and deadlines</li>
+                </ul>
+
+                <p className="mt-4 text-sm font-semibold text-slate-700 dark:text-slate-300">
+                  Allowed Departments
+                </p>
+                <div className="mt-2 flex flex-wrap gap-2">
+                  <span className="inline-flex items-center rounded-full border px-3 py-1 text-xs font-medium bg-slate-50 text-slate-700 dark:bg-slate-800 dark:text-slate-300">
+                    Computer Science
+                  </span>
+                  <span className="inline-flex items-center rounded-full border px-3 py-1 text-xs font-medium bg-slate-50 text-slate-700 dark:bg-slate-800 dark:text-slate-300">
+                    Information Systems
                   </span>
                 </div>
-              </Card>
-            );
-          })}
+
+                <p className="mt-4 text-xs text-slate-500 dark:text-slate-400">
+                  You have view-only access to these settings. Administrative
+                  actions (delete class, change owner, or other management
+                  controls) are restricted and not shown here. Contact your
+                  administrator to request changes.
+                </p>
+              </div>
+            </div>
+          </Card>
         </div>
       )}
     </div>
