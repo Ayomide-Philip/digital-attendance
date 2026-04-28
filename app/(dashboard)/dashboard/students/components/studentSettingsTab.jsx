@@ -1,12 +1,10 @@
 import Card from "@/components/ui/card";
 
-export default function StudentSettingsTab({ settings = {} }) {
+export default function StudentSettingsTab({ settings = {}, school }) {
   const rules = {
-    emailSuffix: settings?.rules?.emailSuffix || "@oauife.edu.ng",
+    emailSuffix: settings?.rules?.emailSuffix || "",
     departmentCodes: settings?.rules?.departmentCode || [],
   };
-
-  const schoolName = settings?.school || "OAUIFE";
   return (
     <div className="space-y-5">
       <div className="grid gap-5 xl:grid-cols-[1.2fr_.8fr]">
@@ -98,7 +96,7 @@ export default function StudentSettingsTab({ settings = {} }) {
               </label>
               <div className="mt-2 flex items-center gap-2 text-sm font-semibold capitalize text-slate-900 dark:text-slate-100">
                 <span className="inline-flex items-center text-sky-600">
-                  {schoolName}
+                  {school}
                 </span>
                 <span className="text-sm text-slate-500 dark:text-slate-400">
                   (read-only)
