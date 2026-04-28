@@ -1,5 +1,6 @@
 import { auth } from "@/auth";
 import { connectDatabase } from "@/lib/database/connectdb";
+import Attandance from "@/lib/models/attendance.model";
 import Classes from "@/lib/models/classes.model";
 import User from "@/lib/models/user.model";
 import mongoose from "mongoose";
@@ -47,7 +48,7 @@ export const GET = auth(async function GET(req, { params }) {
     if (user?.role !== "student") {
       return NextResponse.json(
         {
-          error: "User dosent have priviledges to perform action",
+          error: "User does not have privileges to perform this action",
         },
         {
           status: 403,
@@ -60,11 +61,58 @@ export const GET = auth(async function GET(req, { params }) {
       students: new mongoose.Types.ObjectId(userId),
     });
 
-    return NextResponse.json({
-      message: "Successfully fetch class",
-      classesId,
-      classes,
-    });
+    if (!classes) {
+      return NextResponse.json(
+        {
+          error: "Class not found or you don't have access to it",
+        },
+        {
+          status: 404,
+        },
+      );
+    }
+
+    const attendance = await Attandance.find({
+      classesId: new mongoose.Types.ObjectId(classesId),
+    })
+      .populate("teacherId", "name displayName")
+      .populate("classesId", "name code");
+
+    return NextResponse.json(
+      {
+        message: "Successfully fetch class",
+        attendance: attendance.map((c) => {
+          let studentStatus = c?.students?.find(
+            (s) => s.studentId.toString() === userId,
+          );
+          if (!studentStatus) {
+            if (new Date() > new Date(c?.endTime)) {
+              studentStatus = {
+                status: "Absent",
+              };
+            } else {
+              studentStatus = {
+                status: "Pending",
+              };
+            }
+          }
+          return {
+            _id: c?._id,
+            title: c?.title,
+            description: c?.description,
+            createdAt: c?.createdAt,
+            startTime: c?.startTime,
+            endTime: c?.endTime,
+            classesId: c?.classesId,
+            teacherId: c?.teacherId,
+            status: studentStatus?.status || "Pending",
+          };
+        }),
+      },
+      {
+        status: 200,
+      },
+    );
   } catch (err) {
     console.log(err);
     return NextResponse.json(
