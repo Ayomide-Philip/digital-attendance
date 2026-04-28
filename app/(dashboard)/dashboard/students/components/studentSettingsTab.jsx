@@ -1,6 +1,6 @@
 import Card from "@/components/ui/card";
 
-export default function StudentSettingsTab() {
+export default function StudentSettingsTab({ settings = {} }) {
   const rules = {
     emailSuffix: settings?.rules?.emailSuffix || "@oauife.edu.ng",
     departmentCodes: settings?.rules?.departmentCode || [],

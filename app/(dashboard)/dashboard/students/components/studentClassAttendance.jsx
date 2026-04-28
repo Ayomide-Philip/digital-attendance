@@ -1,5 +1,5 @@
 import Card from "@/components/ui/card";
-import { Calendar } from "lucide-react";
+import { Calendar, CheckCircle, Clock, XCircle } from "lucide-react";
 
 const mockAttendanceSessions = [
   {
