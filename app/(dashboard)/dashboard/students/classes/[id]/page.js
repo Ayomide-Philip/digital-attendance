@@ -46,13 +46,23 @@ export default function ClassDetailsPage() {
   }, [id]);
 
   if (loading) return <LoadingComponent />;
+
+  const attedanceHeadingDetails = {
+    teacherId: classDetails?.teacher,
+    className: classDetails?.name,
+  };
   return (
     <div className="space-y-5">
       <StudentTabs selectedTab={selectedTab} setSelectedTab={setSelectedTab} />
 
       {selectedTab === "Overview" && <StudentOverview />}
 
-      {selectedTab === "Attendance" && <StudentClassAttendance />}
+      {selectedTab === "Attendance" && (
+        <StudentClassAttendance
+          attendanceHeading={attedanceHeadingDetails}
+          classId={id}
+        />
+      )}
 
       {selectedTab === "Students" && <StudentClassStudDetails />}
 
