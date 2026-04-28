@@ -57,8 +57,9 @@ export const GET = auth(async function GET(req, { params }) {
     })
       .populate("teacher", "name displayName")
       .select(
-        "name teacher school attendance code createdAt description rules",
-      );
+        "name teacher students school attendance code createdAt description rules",
+      )
+      .populate("students", "name displayName");
 
     if (!classes) {
       return NextResponse.json(

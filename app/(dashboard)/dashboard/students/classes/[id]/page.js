@@ -13,8 +13,8 @@ import {
   FileText,
   Zap,
   TrendingUp,
-  BarChart3,
 } from "lucide-react";
+import StudentTabs from "../../components/studentsTabs";
 
 const mockClassData = {
   id: "class-001",
@@ -151,8 +151,6 @@ export default function ClassDetailsPage() {
   const [selectedTab, setSelectedTab] = useState("Overview");
   const [attendanceFilter, setAttendanceFilter] = useState("All");
 
-  const tabs = ["Overview", "Attendance", "Students", "Materials"];
-
   const filteredSessions =
     attendanceFilter === "All"
       ? mockAttendanceSessions
@@ -162,7 +160,8 @@ export default function ClassDetailsPage() {
 
   return (
     <div className="space-y-5">
-      {/* Header Card with Class Overview */}
+      <StudentTabs selectedTab={selectedTab} setSelectedTab={setSelectedTab} />
+
       <Card className="rounded-2xl border border-slate-200/70 bg-white/85 p-6 shadow-sm dark:border-slate-800 dark:bg-slate-950/70">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
@@ -179,7 +178,6 @@ export default function ClassDetailsPage() {
         </div>
       </Card>
 
-      {/* Quick Stats */}
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {[
           {
@@ -228,27 +226,8 @@ export default function ClassDetailsPage() {
         ))}
       </div>
 
-      {/* Tabs */}
-      <div className="flex flex-wrap gap-2 rounded-2xl border border-slate-200/70 bg-white/80 p-2 dark:border-slate-800 dark:bg-slate-950/70">
-        {tabs.map((tab) => (
-          <button
-            key={tab}
-            className={`rounded-xl px-4 py-2 text-sm font-medium transition ${
-              selectedTab === tab
-                ? "bg-sky-500/15 text-sky-700 dark:bg-sky-400/15 dark:text-sky-300"
-                : "text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-900"
-            }`}
-            onClick={() => setSelectedTab(tab)}
-          >
-            {tab}
-          </button>
-        ))}
-      </div>
-
-      {/* Overview Tab */}
       {selectedTab === "Overview" && (
         <div className="space-y-5">
-          {/* Instructor Info */}
           <Card className="rounded-2xl border border-slate-200/70 bg-white/85 p-6 shadow-sm dark:border-slate-800 dark:bg-slate-950/70">
             <div className="flex items-start justify-between gap-4">
               <div className="min-w-0 flex-1">
@@ -274,32 +253,9 @@ export default function ClassDetailsPage() {
               </div>
             </div>
           </Card>
-
-          {/* Class Info Grid */}
-          <div className="grid gap-4 md:grid-cols-2">
-            {[
-              { label: "Total Sessions", value: "24" },
-              { label: "Class Start Date", value: "Apr 15, 2026" },
-              { label: "Room", value: "Building A, Room 201" },
-              { label: "Schedule", value: "MWF 10:00 AM - 11:30 AM" },
-            ].map((info) => (
-              <Card
-                key={info.label}
-                className="rounded-2xl border border-slate-200/70 bg-white/85 p-4 shadow-sm dark:border-slate-800 dark:bg-slate-950/70"
-              >
-                <p className="text-sm text-slate-500 dark:text-slate-400">
-                  {info.label}
-                </p>
-                <p className="mt-2 text-lg font-semibold text-slate-900 dark:text-slate-100">
-                  {info.value}
-                </p>
-              </Card>
-            ))}
-          </div>
         </div>
       )}
 
-      {/* Attendance Tab */}
       {selectedTab === "Attendance" && (
         <div className="space-y-5">
           <div className="flex flex-wrap gap-2 rounded-2xl border border-slate-200 bg-slate-50 p-2 dark:border-slate-700 dark:bg-slate-900/70">
@@ -329,6 +285,7 @@ export default function ClassDetailsPage() {
               filteredSessions.map((session) => {
                 const { className: badgeClass, icon: BadgeIcon } =
                   getStatusBadge(session.status);
+
                 return (
                   <Card
                     key={session.id}
@@ -361,7 +318,6 @@ export default function ClassDetailsPage() {
         </div>
       )}
 
-      {/* Students Tab */}
       {selectedTab === "Students" && (
         <div className="space-y-3">
           {mockStudents.map((student) => {
@@ -395,7 +351,6 @@ export default function ClassDetailsPage() {
         </div>
       )}
 
-      {/* Materials Tab */}
       {selectedTab === "Materials" && (
         <div className="space-y-3">
           {mockMaterials.map((material) => {
