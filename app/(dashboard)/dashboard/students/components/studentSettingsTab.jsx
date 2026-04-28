@@ -2,8 +2,8 @@ import Card from "@/components/ui/card";
 
 export default function StudentSettingsTab({ settings = {}, school }) {
   const rules = {
-    emailSuffix: settings?.rules?.emailSuffix || "",
-    departmentCodes: settings?.rules?.departmentCode || [],
+    emailSuffix: settings?.emailSuffix || "",
+    departmentCodes: settings?.departmentCode || [],
   };
   return (
     <div className="space-y-5">
@@ -31,7 +31,7 @@ export default function StudentSettingsTab({ settings = {}, school }) {
                   value={rules.emailSuffix}
                   readOnly
                   className="h-11 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm text-slate-900 outline-none transition dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
-                  placeholder="@oauife.edu.ng"
+                  placeholder="@gmail.com"
                 />
                 <p className="text-xs text-slate-500 dark:text-slate-400">
                   Only students with this email suffix can join.
@@ -66,23 +66,6 @@ export default function StudentSettingsTab({ settings = {}, school }) {
                     </span>
                   )}
                 </div>
-              </div>
-
-              <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-200/70 bg-slate-50/80 p-4 dark:border-slate-800 dark:bg-slate-900/50">
-                <div>
-                  <p className="text-sm font-medium text-slate-900 dark:text-slate-100">
-                    View-only
-                  </p>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">
-                    You cannot change these settings from this view.
-                  </p>
-                </div>
-                <button
-                  disabled
-                  className="h-10 rounded-xl px-4 bg-slate-200 text-slate-500 dark:bg-slate-800 dark:text-slate-400"
-                >
-                  Save Settings
-                </button>
               </div>
             </form>
           </div>
