@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import StudentTabs from "../../components/studentsTabs";
 import StudentOverview from "../../components/studentOverview";
+import StudentClassAttendance from "../../components/studentClassAttendance";
 
 const mockClassData = {
   id: "class-001",
@@ -150,14 +151,6 @@ function getMaterialIcon(type) {
 
 export default function ClassDetailsPage() {
   const [selectedTab, setSelectedTab] = useState("Overview");
-  const [attendanceFilter, setAttendanceFilter] = useState("All");
-
-  const filteredSessions =
-    attendanceFilter === "All"
-      ? mockAttendanceSessions
-      : mockAttendanceSessions.filter(
-          (session) => session.status === attendanceFilter,
-        );
 
   return (
     <div className="space-y-5">
@@ -165,67 +158,7 @@ export default function ClassDetailsPage() {
 
       {selectedTab === "Overview" && <StudentOverview />}
 
-      {selectedTab === "Attendance" && (
-        <div className="space-y-5">
-          <div className="flex flex-wrap gap-2 rounded-2xl border border-slate-200 bg-slate-50 p-2 dark:border-slate-700 dark:bg-slate-900/70">
-            {["All", "Present", "Late", "Absent"].map((filter) => (
-              <button
-                key={filter}
-                onClick={() => setAttendanceFilter(filter)}
-                className={`cursor-pointer rounded-xl px-3 py-1.5 text-xs font-medium transition ${
-                  attendanceFilter === filter
-                    ? "bg-slate-950 text-white dark:bg-white dark:text-slate-950"
-                    : "text-slate-600 hover:bg-white dark:text-slate-300 dark:hover:bg-slate-800"
-                }`}
-              >
-                {filter}
-              </button>
-            ))}
-          </div>
-
-          <div className="space-y-3">
-            {filteredSessions.length === 0 ? (
-              <Card className="rounded-2xl border border-dashed border-slate-300 py-10 text-center dark:border-slate-700">
-                <p className="text-sm text-slate-500 dark:text-slate-400">
-                  No sessions found in this filter.
-                </p>
-              </Card>
-            ) : (
-              filteredSessions.map((session) => {
-                const { className: badgeClass, icon: BadgeIcon } =
-                  getStatusBadge(session.status);
-
-                return (
-                  <Card
-                    key={session.id}
-                    className="rounded-2xl border border-slate-200/70 bg-white/85 p-4 shadow-sm transition hover:shadow-md dark:border-slate-800 dark:bg-slate-950/70"
-                  >
-                    <div className="flex flex-wrap items-center justify-between gap-3">
-                      <div className="min-w-0 flex-1">
-                        <p className="font-semibold text-slate-900 dark:text-slate-100">
-                          {session.title}
-                        </p>
-                        <p className="mt-1 flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400">
-                          <Calendar className="size-3.5" />
-                          {new Date(session.date).toLocaleDateString("en-US", {
-                            month: "short",
-                            day: "numeric",
-                            year: "numeric",
-                          })}
-                        </p>
-                      </div>
-                      <div className={badgeClass}>
-                        <BadgeIcon className="size-3.5" />
-                        {session.status}
-                      </div>
-                    </div>
-                  </Card>
-                );
-              })
-            )}
-          </div>
-        </div>
-      )}
+      {selectedTab === "Attendance" && <StudentClassAttendance />}
 
       {selectedTab === "Students" && (
         <div className="space-y-3">
