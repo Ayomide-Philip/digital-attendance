@@ -71,11 +71,15 @@ export const GET = auth(async function GET(req, { params }) {
         },
       );
     }
-    return NextResponse.json({
-      message: "Successfully fetch class",
-      classesId,
-      classes,
-    });
+    return NextResponse.json(
+      {
+        message: "Successfully fetch class",
+        classes,
+      },
+      {
+        status: 200,
+      },
+    );
   } catch (err) {
     console.log(err);
     return NextResponse.json(
