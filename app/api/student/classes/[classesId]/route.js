@@ -55,7 +55,7 @@ export const GET = auth(async function GET(req, { params }) {
       _id: new mongoose.Types.ObjectId(classesId),
       students: new mongoose.Types.ObjectId(userId),
     })
-      .populate("teacher", "name displayName")
+      .populate("teacher", "name displayName email bio -_id")
       .select(
         "name teacher students school attendance code createdAt description rules",
       )
