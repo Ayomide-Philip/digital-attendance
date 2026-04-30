@@ -1,10 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import {
-  studentAttendanceRecords,
-  studentClasses,
-} from "@/app/(dashboard)/dashboard/students/components/mock-data";
+import { useMemo, useState } from "react";
 import Card from "@/components/ui/card";
 import {
   Calendar,
@@ -18,36 +14,103 @@ import {
   XCircle,
 } from "lucide-react";
 
-const classMeta = {
-  "csc-101": {
-    code: "CSC101",
-    teacher: "Dr. Ahmed",
-    title: "Core Programming Lab",
-    description:
-      "Weekly lab sessions focused on practical problem solving and code review.",
+const attendance = [
+  {
+    _id: "69ebe46f783515a2af88c242",
+    title: "attendance_for_4/24/2026",
+    description: "",
+    createdAt: "2026-04-24T21:45:19.466Z",
+    startTime: "2026-04-24T23:00:00.000Z",
+    endTime: "2026-04-29T23:00:00.000Z",
+    classesId: {
+      _id: "69e4b5ecebcf1bfe5ae8ef07",
+      name: "Advance Algebra",
+      code: "mth205",
+    },
+    teacherId: {
+      _id: "69e4afa455516dc69b4ecdf1",
+      name: "John Doe",
+      displayName: "Prof. John Doe",
+    },
+    status: "Absent",
   },
-  "mth-102": {
-    code: "MTH102",
-    teacher: "Prof. Grace",
-    title: "Mathematics Workshop",
-    description:
-      "Problem-solving practice and guided examples for weekly class concepts.",
+  {
+    _id: "69ebe46f783515a2af88c243",
+    title: "attendance_for_4/23/2026",
+    description: "Short in-class check-in and attendance capture.",
+    createdAt: "2026-04-23T21:05:19.466Z",
+    startTime: "2026-04-23T09:00:00.000Z",
+    endTime: "2026-04-23T10:15:00.000Z",
+    classesId: {
+      _id: "69e4d1a1ebcf1bfe5ae8ef11",
+      name: "Computer Fundamentals",
+      code: "csc101",
+    },
+    teacherId: {
+      _id: "69e4afa455516dc69b4ecdab",
+      name: "Amina Bello",
+      displayName: "Dr. Amina Bello",
+    },
+    status: "Present",
   },
-  "eng-110": {
-    code: "ENG110",
-    teacher: "Ms. Rivera",
-    title: "English Communication",
-    description:
-      "Reading, writing, and discussion sessions for communication improvement.",
+  {
+    _id: "69ebe46f783515a2af88c244",
+    title: "attendance_for_4/22/2026",
+    description: "Late arrival recorded after the session started.",
+    createdAt: "2026-04-22T21:25:19.466Z",
+    startTime: "2026-04-22T13:00:00.000Z",
+    endTime: "2026-04-22T14:30:00.000Z",
+    classesId: {
+      _id: "69e4d1a1ebcf1bfe5ae8ef12",
+      name: "English Communication",
+      code: "eng110",
+    },
+    teacherId: {
+      _id: "69e4afa455516dc69b4ecdac",
+      name: "Grace Rivera",
+      displayName: "Ms. Grace Rivera",
+    },
+    status: "Late",
   },
-  "gst-120": {
-    code: "GST120",
-    teacher: "Mr. Lewis",
-    title: "General Studies Seminar",
-    description:
-      "Course-wide attendance with short seminar discussions and class check-ins.",
+  {
+    _id: "69ebe46f783515a2af88c245",
+    title: "attendance_for_4/21/2026",
+    description: "Weekly lecture attendance for general studies.",
+    createdAt: "2026-04-21T20:15:19.466Z",
+    startTime: "2026-04-21T08:30:00.000Z",
+    endTime: "2026-04-21T09:45:00.000Z",
+    classesId: {
+      _id: "69e4d1a1ebcf1bfe5ae8ef13",
+      name: "General Studies",
+      code: "gst120",
+    },
+    teacherId: {
+      _id: "69e4afa455516dc69b4ecdad",
+      name: "Lewis Morgan",
+      displayName: "Mr. Lewis Morgan",
+    },
+    status: "Present",
   },
-};
+  {
+    _id: "69ebe46f783515a2af88c246",
+    title: "attendance_for_4/19/2026",
+    description: "Attendance captured for the weekend revision session.",
+    createdAt: "2026-04-19T18:05:19.466Z",
+    startTime: "2026-04-19T16:00:00.000Z",
+    endTime: "2026-04-19T17:15:00.000Z",
+    classesId: {
+      _id: "69e4d1a1ebcf1bfe5ae8ef14",
+      name: "Advance Algebra",
+      code: "mth205",
+    },
+    teacherId: {
+      _id: "69e4afa455516dc69b4ecdf1",
+      name: "John Doe",
+      displayName: "Prof. John Doe",
+    },
+    status: "Present",
+  },
+];
 
 function getStatusMeta(status) {
   if (status === "Present") {
@@ -99,27 +162,6 @@ function formatTime(value) {
   });
 }
 
-function buildDateTime(dateISO, timeValue) {
-  const baseDate = new Date(dateISO);
-  if (Number.isNaN(baseDate.getTime())) return null;
-
-  const nextTime = String(timeValue || "").trim();
-  if (!nextTime || nextTime === "-") return baseDate;
-
-  const match = nextTime.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i);
-  if (!match) return baseDate;
-
-  let hours = Number(match[1]);
-  const minutes = Number(match[2]);
-  const meridiem = match[3].toUpperCase();
-
-  if (meridiem === "PM" && hours !== 12) hours += 12;
-  if (meridiem === "AM" && hours === 12) hours = 0;
-
-  baseDate.setHours(hours, minutes, 0, 0);
-  return baseDate;
-}
-
 function buildDateLabel(dateISO) {
   if (!dateISO) return "Older";
 
@@ -139,53 +181,56 @@ export default function StudentAttendancePage() {
   const [statusFilter, setStatusFilter] = useState("All");
   const [selectedClassId, setSelectedClassId] = useState("all");
 
-  const attendanceFeed = studentAttendanceRecords
-    .map((record) => {
-      const meta = classMeta[record.classId] || {};
-      const classInfo = studentClasses.find(
-        (item) => item.id === record.classId,
-      );
-      const startTime = buildDateTime(record.dateISO, record.timeMarked);
-      const endTime = startTime
-        ? new Date(startTime.getTime() + 75 * 60000)
-        : null;
+  const classOptions = useMemo(() => {
+    return attendance.reduce((options, record) => {
+      const classKey = record.classesId?._id || record.classesId?.code;
+      if (!classKey) return options;
 
-      return {
+      if (!options.some((option) => option.value === classKey)) {
+        options.push({
+          value: classKey,
+          label: `${record.classesId?.name || "Class"} • ${
+            record.classesId?.code || "--"
+          }`,
+        });
+      }
+
+      return options;
+    }, []);
+  }, []);
+
+  const attendanceFeed = useMemo(() => {
+    return attendance
+      .map((record) => ({
         ...record,
-        title: meta.title || `${record.className} Attendance`,
-        description:
-          meta.description ||
-          "Attendance marked for the scheduled class session.",
-        classCode:
-          meta.code ||
-          classInfo?.id?.toUpperCase() ||
-          record.classId.toUpperCase(),
-        className: classInfo?.name || record.className,
-        teacherName: meta.teacher || classInfo?.teacherName || "Teacher",
-        startTime,
-        endTime,
-        dateGroup: buildDateLabel(record.dateISO),
-      };
-    })
-    .filter((record) => {
-      const matchesStatus =
-        statusFilter === "All" || record.status === statusFilter;
-      const matchesClass =
-        selectedClassId === "all" || record.classId === selectedClassId;
-      return matchesStatus && matchesClass;
-    })
-    .sort((left, right) => new Date(right.dateISO) - new Date(left.dateISO));
+        className: record.classesId?.name || "Class",
+        classCode: record.classesId?.code || "--",
+        teacherName:
+          record.teacherId?.displayName || record.teacherId?.name || "Teacher",
+        dateGroup: buildDateLabel(record.createdAt),
+      }))
+      .filter((record) => {
+        const matchesStatus =
+          statusFilter === "All" || record.status === statusFilter;
+        const matchesClass =
+          selectedClassId === "all" ||
+          record.classesId?._id === selectedClassId ||
+          record.classesId?.code === selectedClassId;
+        return matchesStatus && matchesClass;
+      })
+      .sort(
+        (left, right) => new Date(right.createdAt) - new Date(left.createdAt),
+      );
+  }, [selectedClassId, statusFilter]);
 
-  const totalSessions = studentAttendanceRecords.length;
-  const presentCount = studentAttendanceRecords.filter(
+  const totalSessions = attendance.length;
+  const presentCount = attendance.filter(
     (row) => row.status === "Present",
   ).length;
-  const absentCount = studentAttendanceRecords.filter(
+  const absentCount = attendance.filter(
     (row) => row.status === "Absent",
   ).length;
-  const lateCount = studentAttendanceRecords.filter(
-    (row) => row.status === "Late",
-  ).length;
+  const lateCount = attendance.filter((row) => row.status === "Late").length;
   const attendanceRate = totalSessions
     ? Math.round((presentCount / totalSessions) * 100)
     : 0;
@@ -330,9 +375,9 @@ export default function StudentAttendancePage() {
               onChange={(event) => setSelectedClassId(event.target.value)}
             >
               <option value="all">All classes</option>
-              {studentClasses.map((item) => (
-                <option key={item.id} value={item.id}>
-                  {item.name}
+              {classOptions.map((item) => (
+                <option key={item.value} value={item.value}>
+                  {item.label}
                 </option>
               ))}
             </select>
@@ -370,7 +415,7 @@ export default function StudentAttendancePage() {
 
                   return (
                     <Card
-                      key={record.id}
+                      key={record._id}
                       className="group relative overflow-hidden rounded-2xl border border-slate-200/70 bg-white/90 p-5 shadow-sm transition-all duration-200 hover:-translate-y-1 hover:border-slate-300 hover:shadow-lg dark:border-slate-800/70 dark:bg-slate-950/60 dark:hover:border-slate-700"
                     >
                       <div
@@ -380,14 +425,16 @@ export default function StudentAttendancePage() {
                         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                           <div className="min-w-0 space-y-1">
                             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">
-                              {record.className} • {record.classCode}
+                              {record.classesId?.name} •{" "}
+                              {record.classesId?.code}
                             </p>
                             <h3 className="truncate text-lg font-bold text-slate-900 dark:text-slate-100">
                               {record.title}
                             </h3>
                             <p className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
                               <GraduationCap className="size-4" />
-                              {record.teacherName}
+                              {record.teacherId?.displayName ||
+                                record.teacherId?.name}
                             </p>
                           </div>
 
@@ -414,10 +461,7 @@ export default function StudentAttendancePage() {
                               {formatTime(record.endTime)}
                             </p>
                             <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-                              Marked on {formatDate(record.dateISO)} at{" "}
-                              {record.timeMarked === "-"
-                                ? "N/A"
-                                : record.timeMarked}
+                              Created on {formatDate(record.createdAt)}
                             </p>
                           </div>
 
@@ -426,7 +470,9 @@ export default function StudentAttendancePage() {
                               Session note
                             </p>
                             <p className="mt-2 line-clamp-2 text-sm text-slate-600 dark:text-slate-300">
-                              {record.description}
+                              {record.description?.trim()
+                                ? record.description
+                                : "No description available for this session."}
                             </p>
                           </div>
                         </div>
