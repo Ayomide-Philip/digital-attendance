@@ -12,7 +12,25 @@ import LoadingComponent from "../../../teachers/components/loading";
 
 export default function ClassDetailsPage() {
   const { id } = useParams();
-  const [selectedTab, setSelectedTab] = useState("Overview");
+  const [selectedTab, setSelectedTab] = useState(() => {
+    if (typeof window === "undefined") return "Overview";
+
+    const hashValue = window.location.hash.replace(/^#/, "").toLowerCase();
+    const matchedTab = ["overview", "attendance", "students", "settings"].find(
+      (tab) => tab === hashValue,
+    );
+
+    switch (matchedTab) {
+      case "attendance":
+        return "Attendance";
+      case "students":
+        return "Students";
+      case "settings":
+        return "Settings";
+      default:
+        return "Overview";
+    }
+  });
   const [classDetails, setClassDetails] = useState(null);
   const [loading, setLoading] = useState(true);
 
