@@ -84,7 +84,7 @@ export const GET = auth(async function GET(req, { params }) {
     console.log(err);
     return NextResponse.json(
       {
-        error: "Unable to process request",
+        error: "Unable to fetch all student classes",
       },
       {
         status: 400,
