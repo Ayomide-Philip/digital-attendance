@@ -59,7 +59,7 @@ export const GET = auth(async function GET(req, { params }) {
       .select(
         "name teacher students school attendance code createdAt description rules",
       )
-      .populate("students", "name displayName");
+      .populate("students", "name displayName department -_id");
 
     if (!classes) {
       return NextResponse.json(

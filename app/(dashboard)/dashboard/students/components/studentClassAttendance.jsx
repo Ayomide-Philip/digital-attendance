@@ -1,5 +1,12 @@
 import Card from "@/components/ui/card";
-import { Calendar, CheckCircle, Clock, User, XCircle } from "lucide-react";
+import {
+  Calendar,
+  CheckCircle,
+  Clock,
+  User,
+  XCircle,
+  Filter,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import LoadingComponent from "../../teachers/components/loading";
@@ -7,6 +14,7 @@ import LoadingComponent from "../../teachers/components/loading";
 export default function StudentClassAttendance({ attendanceHeading, classId }) {
   const [attendanceData, setAttendanceData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [statusFilter, setStatusFilter] = useState("All");
 
   useEffect(() => {
     async function fetchAttendanceData() {
@@ -52,188 +60,235 @@ export default function StudentClassAttendance({ attendanceHeading, classId }) {
     ? attendanceData
     : [attendanceData].filter(Boolean);
 
+  // Filter sessions based on selected status
+  const filteredSessions = sessions.filter((session) => {
+    if (statusFilter === "All") return true;
+    return session.status === statusFilter;
+  });
+
+  // Filter button data
+  const filters = [
+    { label: "All", value: "All", count: sessions.length },
+    {
+      label: "Present",
+      value: "Present",
+      count: sessions.filter((s) => s.status === "Present").length,
+    },
+    {
+      label: "Absent",
+      value: "Absent",
+      count: sessions.filter((s) => s.status === "Absent").length,
+    },
+    {
+      label: "Flagged",
+      value: "Flagged",
+      count: sessions.filter((s) => s.status === "Flagged").length,
+    },
+  ];
+
   return (
-    <div className="space-y-5">
-      {sessions.length === 0 ? (
-        <Card className="rounded-2xl border border-dashed border-slate-300 py-10 text-center dark:border-slate-700">
-          <p className="text-sm text-slate-500 dark:text-slate-400">
-            No attendance record available yet.
+    <div className="w-full space-y-6">
+      {/* Header Section */}
+      <div>
+        <div className="flex items-center gap-3 mb-4">
+          <div className="p-2 rounded-lg bg-blue-100 dark:bg-blue-900/40">
+            <Calendar className="size-5 text-blue-600 dark:text-blue-400" />
+          </div>
+          <div>
+            <h2 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-slate-100">
+              {attendanceHeading?.className || "Class Attendance"}
+            </h2>
+            <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+              Taught by{" "}
+              <span className="font-semibold text-slate-700 dark:text-slate-300">
+                {attendanceHeading?.teacherId?.displayName ||
+                  attendanceHeading?.teacherId?.name ||
+                  "Teacher"}
+              </span>
+            </p>
+          </div>
+        </div>
+
+        {/* Filter Bar */}
+        <div className="flex gap-2 overflow-x-auto pb-2">
+          {filters.map((filter) => (
+            <button
+              key={filter.value}
+              onClick={() => setStatusFilter(filter.value)}
+              className={`shrink-0 px-4 py-2 rounded-lg font-medium text-sm transition-all whitespace-nowrap ${
+                statusFilter === filter.value
+                  ? "bg-blue-600 text-white shadow-md hover:shadow-lg hover:bg-blue-700"
+                  : "bg-slate-200/50 text-slate-700 dark:bg-slate-800/50 dark:text-slate-300 hover:bg-slate-300/50 dark:hover:bg-slate-700/50"
+              }`}
+            >
+              <span className="flex items-center gap-2">
+                <span>{filter.label}</span>
+                <span
+                  className={`text-xs px-2 py-0.5 rounded-full ${
+                    statusFilter === filter.value
+                      ? "bg-white/20"
+                      : "bg-slate-300/30 dark:bg-slate-700/30"
+                  }`}
+                >
+                  {filter.count}
+                </span>
+              </span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Content Section */}
+      {filteredSessions.length === 0 ? (
+        <Card className="rounded-2xl border-2 border-dashed border-slate-300/50 bg-linear-to-br from-slate-50/50 to-slate-100/50 py-16 px-4 text-center dark:border-slate-700/50 dark:from-slate-900/30 dark:to-slate-800/30">
+          <div className="flex justify-center mb-4">
+            <div className="p-3 rounded-full bg-slate-200/30 dark:bg-slate-700/30">
+              <Calendar className="size-6 text-slate-400 dark:text-slate-500" />
+            </div>
+          </div>
+          <p className="text-base font-semibold text-slate-600 dark:text-slate-300">
+            No{" "}
+            {statusFilter !== "All" ? statusFilter.toLowerCase() : "attendance"}{" "}
+            records
+          </p>
+          <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
+            {statusFilter !== "All"
+              ? "Try selecting a different filter to see other records."
+              : "Attendance sessions will appear here once they are recorded."}
           </p>
         </Card>
       ) : (
-        <div className="space-y-4">
-          <Card className="rounded-3xl border border-slate-200/70 bg-linear-to-r from-sky-50/60 to-white/40 p-5 shadow-md dark:border-slate-800 dark:bg-linear-to-r dark:from-slate-900/40 dark:to-slate-950/60">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-              <div className="min-w-0 flex-1 text-center sm:text-left">
-                <span className="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-slate-600 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300">
-                  Attendance history
-                </span>
-                <h3 className="mt-3 text-xl font-semibold capitalize text-slate-900 dark:text-slate-100 sm:text-2xl">
-                  {attendanceHeading?.className || "Class attendance"}
-                </h3>
-                <p className="mt-2 text-sm text-slate-500 capitalize dark:text-slate-400">
-                  {attendanceHeading?.teacherId?.displayName ||
-                    attendanceHeading?.teacherId?.name ||
-                    "Teacher details available in the class record"}
-                </p>
-              </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {filteredSessions.map((session) => {
+            const statusInfo = getStatusInfo(session.status);
 
-              <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 dark:border-slate-800 dark:bg-slate-900/60 w-full sm:w-auto flex justify-center sm:justify-end">
-                <div>
-                  <p className="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400 text-center sm:text-right">
-                    Total sessions
-                  </p>
-                  <p className="mt-1 text-2xl font-semibold text-slate-900 dark:text-slate-100 text-center sm:text-right">
-                    {sessions?.length}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </Card>
+            return (
+              <Card
+                key={session._id}
+                className="group relative rounded-xl border border-slate-200/60 bg-white/70 backdrop-blur-sm hover:shadow-lg hover:border-slate-300/80 transition-all duration-200 dark:border-slate-800/60 dark:bg-slate-950/40 dark:hover:border-slate-700/80 overflow-hidden"
+              >
+                {/* Accent bar top */}
+                <div className={`h-1 w-full ${statusInfo.accentClass}`} />
 
-          <div className="space-y-3">
-            {sessions.map((session) => {
-              const {
-                className: badgeClass,
-                icon: BadgeIcon,
-                label,
-              } = getStatusBadge(session.status);
-              const windowState = getAttendanceWindowState(
-                session?.startTime,
-                session?.endTime,
-              );
-
-              return (
-                <Card
-                  key={session._id}
-                  className="rounded-2xl border border-slate-200/70 bg-white/95 p-4 shadow-sm transition hover:shadow-lg dark:border-slate-800 dark:bg-slate-950/60"
-                >
-                  <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-                    <div
-                      className={`mx-auto sm:mx-0 flex h-12 w-12 items-center justify-center rounded-lg ${windowState?.dotClass}`}
+                <div className="p-5 space-y-4">
+                  {/* Header: Title + Status Badge */}
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0 flex-1">
+                      <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 line-clamp-2">
+                        {session?.title || "Attendance Session"}
+                      </h3>
+                    </div>
+                    <span
+                      className={`shrink-0 inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold whitespace-nowrap ${statusInfo.badgeClass}`}
                     >
-                      {windowState?.icon === "check" ? (
-                        <CheckCircle className="text-white" />
-                      ) : windowState?.icon === "clock" ? (
-                        <Clock className="text-white" />
-                      ) : (
-                        <XCircle className="text-white" />
-                      )}
+                      {statusInfo.icon}
+                      {session.status}
+                    </span>
+                  </div>
+
+                  {/* Divider */}
+                  <div className="h-px bg-slate-200/50 dark:bg-slate-800/50" />
+
+                  {/* Details Grid */}
+                  <div className="space-y-3">
+                    {/* Date */}
+                    <div className="flex items-center gap-3">
+                      <div className="shrink-0 p-2 rounded-lg bg-slate-100/60 dark:bg-slate-800/60">
+                        <Calendar className="size-4 text-slate-600 dark:text-slate-400" />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <p className="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
+                          Date
+                        </p>
+                        <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">
+                          {formatShortDate(session?.createdAt)}
+                        </p>
+                      </div>
                     </div>
 
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-center gap-3">
-                        <p className="truncate text-lg font-semibold text-slate-900 dark:text-slate-100">
-                          {session?.title || "Attendance session"}
-                        </p>
-                        <span className={badgeClass}>
-                          <BadgeIcon className="size-3.5" />
-                          {label}
-                        </span>
+                    {/* Time Range */}
+                    <div className="flex items-center gap-3">
+                      <div className="shrink-0 p-2 rounded-lg bg-slate-100/60 dark:bg-slate-800/60">
+                        <Clock className="size-4 text-slate-600 dark:text-slate-400" />
                       </div>
+                      <div className="min-w-0 flex-1">
+                        <p className="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
+                          Time
+                        </p>
+                        <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">
+                          {formatTime(session?.startTime)} -{" "}
+                          {formatTime(session?.endTime)}
+                        </p>
+                      </div>
+                    </div>
 
-                      <div className="mt-2 flex flex-col sm:flex-row sm:flex-wrap items-start sm:items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
-                        <span className="inline-flex items-center gap-2">
-                          <Calendar className="size-4" />
-                          {formatShortDate(session?.createdAt)}
-                        </span>
-                        <span className="inline-flex items-center gap-2">
-                          <User className="size-4" />
+                    {/* Teacher */}
+                    <div className="flex items-center gap-3">
+                      <div className="shrink-0 p-2 rounded-lg bg-slate-100/60 dark:bg-slate-800/60">
+                        <User className="size-4 text-slate-600 dark:text-slate-400" />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <p className="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
+                          Teacher
+                        </p>
+                        <p className="text-sm font-semibold text-slate-900 dark:text-slate-100 truncate">
                           {session.teacherId?.displayName ||
                             session.teacherId?.name ||
                             "Unknown"}
-                        </span>
-                      </div>
-                    </div>
-
-                    <div
-                      className={`w-full sm:w-auto shrink-0 flex flex-col items-center sm:items-end gap-1 rounded-xl px-4 py-2 ${windowState.containerClass}`}
-                    >
-                      <div className="text-xs font-medium uppercase tracking-wide text-slate-600 dark:text-slate-300">
-                        {windowState.label}
-                      </div>
-                      <div className="text-sm font-semibold text-slate-900 dark:text-slate-100">
-                        {formatTime(session.startTime)}
-                      </div>
-                      <div className="text-xs text-slate-500 dark:text-slate-400">
-                        {formatShortDate(session.startTime)}
+                        </p>
                       </div>
                     </div>
                   </div>
-                </Card>
-              );
-            })}
-          </div>
+
+                  {/* Footer */}
+                  <div className="pt-2 border-t border-slate-200/50 dark:border-slate-800/50">
+                    <p className="text-xs text-slate-500 dark:text-slate-400">
+                      Created on {formatShortDate(session?.createdAt)}
+                    </p>
+                  </div>
+                </div>
+              </Card>
+            );
+          })}
         </div>
       )}
     </div>
   );
 }
 
-function getStatusBadge(status) {
-  const baseClass =
-    "inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-xs font-semibold";
-
-  if (status === "Approved" || status === "Present") {
+function getStatusInfo(status) {
+  if (status === "Present" || status === "Approved") {
     return {
-      className: `${baseClass} border-emerald-500/20 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300`,
-      icon: CheckCircle,
-      label: status,
+      badgeClass:
+        "border border-emerald-500/20 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300",
+      accentClass: "bg-emerald-500",
+      icon: <CheckCircle className="size-4" />,
     };
   }
 
-  if (status === "Pending" || status === "Late") {
+  if (status === "Absent" || status === "Rejected") {
     return {
-      className: `${baseClass} border-amber-500/20 bg-amber-500/10 text-amber-700 dark:text-amber-300`,
-      icon: Clock,
-      label: status,
+      badgeClass:
+        "border border-rose-500/20 bg-rose-500/10 text-rose-700 dark:text-rose-300",
+      accentClass: "bg-rose-500",
+      icon: <XCircle className="size-4" />,
     };
   }
 
-  return {
-    className: `${baseClass} border-rose-500/20 bg-rose-500/10 text-rose-700 dark:text-rose-300`,
-    icon: XCircle,
-    label: status || "Unknown",
-  };
-}
-
-function getAttendanceWindowState(startTime, endTime) {
-  const now = new Date();
-  const start = startTime ? new Date(startTime) : null;
-  const end = endTime ? new Date(endTime) : null;
-
-  const hasStart = start && !Number.isNaN(start.getTime());
-  const hasEnd = end && !Number.isNaN(end.getTime());
-
-  if (hasEnd && now > end) {
+  if (status === "Late" || status === "Pending") {
     return {
-      label: "Closed",
-      containerClass:
-        "border-rose-200 bg-rose-50/70 dark:border-rose-900/60 dark:bg-rose-950/20",
-      labelClass: "text-rose-700 dark:text-rose-300",
-      dotClass: "bg-rose-600",
-      icon: "x",
-    };
-  }
-
-  if (hasStart && now < start) {
-    return {
-      label: "Upcoming",
-      containerClass:
-        "border-amber-200 bg-amber-50/70 dark:border-amber-900/60 dark:bg-amber-950/20",
-      labelClass: "text-amber-700 dark:text-amber-300",
-      dotClass: "bg-amber-500",
-      icon: "clock",
+      badgeClass:
+        "border border-amber-500/20 bg-amber-500/10 text-amber-700 dark:text-amber-300",
+      accentClass: "bg-amber-500",
+      icon: <Clock className="size-4" />,
     };
   }
 
   return {
-    label: "Open",
-    containerClass:
-      "border-emerald-200 bg-emerald-50/70 dark:border-emerald-900/60 dark:bg-emerald-950/20",
-    labelClass: "text-emerald-700 dark:text-emerald-300",
-    dotClass: "bg-emerald-600",
-    icon: "check",
+    badgeClass:
+      "border border-slate-500/20 bg-slate-500/10 text-slate-700 dark:text-slate-300",
+    accentClass: "bg-slate-400",
+    icon: <CheckCircle className="size-4" />,
   };
 }
 
@@ -245,21 +300,6 @@ function formatTime(value) {
     hour: "numeric",
     minute: "2-digit",
   });
-}
-
-function formatDateRange(startTime, endTime) {
-  const start = formatShortDate(startTime);
-  const end = formatShortDate(endTime);
-
-  if (start === "--" && end === "--") {
-    return "No schedule";
-  }
-
-  if (start === end) {
-    return start;
-  }
-
-  return `${start} - ${end}`;
 }
 
 function formatShortDate(value) {
@@ -275,23 +315,5 @@ function formatShortDate(value) {
     month: "short",
     day: "numeric",
     year: "numeric",
-  });
-}
-
-function formatDateTime(value) {
-  if (!value) return "--";
-
-  const date = new Date(value);
-
-  if (Number.isNaN(date.getTime())) {
-    return value;
-  }
-
-  return date.toLocaleString("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-    hour: "numeric",
-    minute: "2-digit",
   });
 }
