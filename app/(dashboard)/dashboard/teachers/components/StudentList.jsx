@@ -9,7 +9,6 @@ import {
   Search,
   Building2,
   Users,
-  Eye,
   ChevronDown,
   User,
 } from "lucide-react";
@@ -132,46 +131,48 @@ export default function StudentList({ students = [] }) {
                 key={student._id || idx}
                 className="group rounded-2xl border border-slate-200/70 bg-white/85 p-5 shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-lg hover:border-slate-300 dark:border-slate-800 dark:bg-slate-950/70 dark:hover:border-slate-700"
               >
-                <div className="flex items-start gap-4">
-                  <div className="flex size-12 shrink-0 items-center justify-center rounded-full bg-linear-to-br from-sky-500 via-blue-500 to-cyan-500 text-sm font-bold text-white shadow-md ring-4 ring-sky-100/60 dark:ring-sky-950/50">
+                <div className="flex flex-col items-center gap-3">
+                  <div className="flex size-12 items-center justify-center rounded-full bg-linear-to-br from-sky-500 via-blue-500 to-cyan-500 text-sm font-bold text-white shadow-md ring-4 ring-sky-100/60 dark:ring-sky-950/50">
                     {initials}
                   </div>
 
-                  <div className="min-w-0 flex-1">
+                  <div className="w-full">
                     <p className="truncate text-base font-bold text-slate-900 dark:text-slate-100">
+                      <span className="font-semibold text-slate-600 dark:text-slate-400">
+                        Name:
+                      </span>{" "}
                       {displayName || realName}
                     </p>
                     <p className="mt-1 truncate text-sm text-slate-500 dark:text-slate-400">
+                      <span className="font-semibold text-slate-600 dark:text-slate-400">
+                        Matric:
+                      </span>{" "}
                       {matric}
                     </p>
                     <p className="mt-2 truncate text-sm text-slate-500 dark:text-slate-400">
+                      <span className="font-semibold text-slate-600 dark:text-slate-400">
+                        Email:
+                      </span>{" "}
                       {email}
                     </p>
 
-                    <div className="mt-4 inline-flex items-center gap-1.5 rounded-full border border-sky-500/15 bg-sky-500/10 px-3 py-1 text-xs font-semibold text-sky-700 dark:border-sky-500/20 dark:bg-sky-500/10 dark:text-sky-300">
-                      <Building2 className="size-3.5" />
-                      {department}
+                    <div className="mt-4 flex items-center gap-1.5 rounded-full border border-sky-500/15 bg-sky-500/10 px-3 py-1 text-xs font-semibold text-sky-700 dark:border-sky-500/20 dark:bg-sky-500/10 dark:text-sky-300">
+                      <Building2 className="size-3.5 shrink-0" />
+                      <span className="truncate">{department}</span>
                     </div>
-                  </div>
 
-                  <div className="flex shrink-0 flex-col items-end gap-2">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="text-slate-600 hover:text-slate-800 dark:text-slate-300"
-                    >
-                      <Eye className="size-4 mr-2" /> View
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="text-rose-600 hover:text-rose-700 dark:text-rose-300"
-                      onClick={() =>
-                        onRemoveStudent?.(student._id || student.id)
-                      }
-                    >
-                      <Trash2 className="size-4 mr-2" /> Remove
-                    </Button>
+                    <div className="mt-4">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="w-full justify-center text-rose-600 hover:text-rose-700 dark:text-rose-300"
+                        onClick={() =>
+                          onRemoveStudent?.(student._id || student.id)
+                        }
+                      >
+                        <Trash2 className="size-4 mr-2" /> Remove
+                      </Button>
+                    </div>
                   </div>
                 </div>
               </Card>
