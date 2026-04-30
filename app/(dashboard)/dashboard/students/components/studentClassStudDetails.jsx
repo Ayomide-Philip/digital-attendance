@@ -66,7 +66,7 @@ export default function StudentClassStudDetails({
     "All",
     ...new Set(
       studentList
-        .map((student) => student?.department.toLowerCase())
+        .map((student) => student?.department?.toLowerCase()?.trim())
         .filter(Boolean),
     ),
   ];
@@ -85,8 +85,6 @@ export default function StudentClassStudDetails({
 
     return matchesSearch && matchesDepartment;
   });
-
-  console.log(filteredStudents);
 
   return (
     <div className="space-y-5">
@@ -128,12 +126,12 @@ export default function StudentClassStudDetails({
             />
           </label>
 
-          <label className="relative flex items-center rounded-2xl border border-slate-200/70 bg-white/80 px-4 py-3 shadow-sm transition focus-within:border-sky-400 dark:border-slate-800 dark:bg-slate-950/60">
-            <Building2 className="size-4 shrink-0 text-slate-400" />
+          <label className="relative w-full">
+            <Building2 className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-slate-500 dark:text-slate-400" />
             <select
               value={selectedDepartment}
               onChange={(event) => setSelectedDepartment(event.target.value)}
-              className="w-full appearance-none bg-transparent pl-3 pr-10 text-sm font-medium text-slate-900 outline-none dark:text-slate-100"
+              className="h-10 w-full appearance-none rounded-xl border border-slate-200 bg-white pr-10 pl-9 text-sm font-medium text-slate-700 outline-none transition focus:border-sky-400 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200"
             >
               {departments.map((department) => (
                 <option key={department} value={department}>
@@ -141,7 +139,7 @@ export default function StudentClassStudDetails({
                 </option>
               ))}
             </select>
-            <ChevronDown className="pointer-events-none absolute right-4 size-4 text-slate-400" />
+            <ChevronDown className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-slate-500 dark:text-slate-400" />
           </label>
         </div>
       </div>
@@ -160,16 +158,16 @@ export default function StudentClassStudDetails({
         </Card>
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
-          {filteredStudents.map((student) => {
+          {filteredStudents.map((student, idx) => {
             const displayName =
-              student?.displayName || student?.name || "Unknown Student";
-            const realName = student?.name || "Unknown";
-            const department = student?.department || "General Studies";
+              student?.displayName || student?.name || "Unknown";
+            const realName = student?.name || "Unknown Student";
+            const department = student?.department || "";
             const initials = getInitials(displayName);
 
             return (
               <Card
-                key={student?.id || `${displayName}-${realName}`}
+                key={idx}
                 className="group rounded-2xl border border-slate-200/70 bg-white/85 p-5 shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-lg hover:border-slate-300 dark:border-slate-800 dark:bg-slate-950/70 dark:hover:border-slate-700"
               >
                 <div className="flex items-start gap-4">
