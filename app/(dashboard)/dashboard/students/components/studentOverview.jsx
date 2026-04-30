@@ -1,6 +1,6 @@
 import Card from "@/components/ui/card";
 import { Calendar, CheckCircle, TrendingUp, User, Users } from "lucide-react";
-export default function StudentOverview() {
+export default function StudentOverview({ classDetails }) {
   const mockClassData = {
     id: "class-001",
     name: "Introduction to Web Development",
@@ -21,14 +21,14 @@ export default function StudentOverview() {
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
             <h2 className="text-2xl font-semibold capitalize tracking-tight text-slate-900 dark:text-slate-100">
-              {mockClassData.name}
+              {classDetails?.name}
             </h2>
             <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-              {mockClassData.description}
+              {classDetails?.description || "No description available."}
             </p>
           </div>
           <span className="inline-flex items-center rounded-full border border-sky-500/20 bg-sky-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-sky-700 dark:text-sky-300">
-            {mockClassData.code}
+            {classDetails?.code}
           </span>
         </div>
       </Card>
@@ -93,14 +93,17 @@ export default function StudentOverview() {
               <div className="mt-4 space-y-2">
                 <div>
                   <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">
-                    {mockClassData.teacher.name}
+                    {classDetails?.teacher?.displayName ||
+                      classDetails?.teacher?.name ||
+                      "Unknown Instructor"}
                   </p>
                   <p className="text-xs text-slate-500 dark:text-slate-400">
-                    {mockClassData.teacher.email}
+                    {classDetails?.teacher?.email || "No email available"}
                   </p>
                 </div>
                 <p className="text-sm text-slate-600 dark:text-slate-300">
-                  {mockClassData.teacher.bio}
+                  {classDetails?.teacher?.bio ||
+                    "No bio available for this instructor."}
                 </p>
               </div>
             </div>

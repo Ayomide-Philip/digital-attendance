@@ -119,7 +119,9 @@ export default function ClassDetailsPage() {
         tabs={tabs}
       />
 
-      {selectedTab === "Overview" && <StudentOverview />}
+      {selectedTab === "Overview" && (
+        <StudentOverview classDetails={classDetails} />
+      )}
 
       {selectedTab === "Attendance" && (
         <StudentClassAttendance
