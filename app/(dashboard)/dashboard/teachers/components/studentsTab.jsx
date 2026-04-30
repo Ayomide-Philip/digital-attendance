@@ -16,11 +16,7 @@ export default function StudentsTab({ students }) {
         </Button>
       </div>
 
-      <StudentList
-        students={students}
-        mode="class"
-        // onRemoveStudent={handleRemoveStudent}
-      />
+      <StudentList students={students} />
     </div>
   );
 }
