@@ -2,65 +2,12 @@ import Card from "@/components/ui/card";
 import { Building2, ChevronDown, Search, UserRound, Users } from "lucide-react";
 import { useState } from "react";
 
-const fallbackStudents = [
-  {
-    id: 1,
-    name: "John Doe",
-    displayName: "Ayomide Philip",
-    department: "Computer Science",
-  },
-  {
-    id: 2,
-    name: "Sarah Williams",
-    displayName: "Sarah Williams",
-    department: "Engineering",
-  },
-  {
-    id: 3,
-    name: "Michael Brown",
-    displayName: "Michael Brown",
-    department: "Computer Science",
-  },
-  {
-    id: 4,
-    name: "Emma Johnson",
-    displayName: "Emma Johnson",
-    department: "Design",
-  },
-  {
-    id: 5,
-    name: "David Lee",
-    displayName: "David Lee",
-    department: "Engineering",
-  },
-  {
-    id: 6,
-    name: "Grace Kim",
-    displayName: "Grace Kim",
-    department: "Computer Science",
-  },
-  {
-    id: 7,
-    name: "Daniel Carter",
-    displayName: "Daniel Carter",
-    department: "Business",
-  },
-  {
-    id: 8,
-    name: "Ava Martin",
-    displayName: "Ava Martin",
-    department: "Design",
-  },
-];
-
-export default function StudentClassStudDetails({
-  students = fallbackStudents,
-}) {
+export default function StudentClassStudDetails({ students }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedDepartment, setSelectedDepartment] = useState("All");
 
   const studentList =
-    Array.isArray(students) && students.length ? students : fallbackStudents;
+    Array.isArray(students) && students.length ? students : [];
 
   const departments = [
     "All",
@@ -134,7 +81,11 @@ export default function StudentClassStudDetails({
               className="h-10 w-full appearance-none rounded-xl border border-slate-200 bg-white pr-10 pl-9 text-sm font-medium text-slate-700 outline-none transition focus:border-sky-400 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200"
             >
               {departments.map((department) => (
-                <option key={department} value={department}>
+                <option
+                  className="capitalize"
+                  key={department}
+                  value={department}
+                >
                   {department}
                 </option>
               ))}
@@ -183,9 +134,9 @@ export default function StudentClassStudDetails({
                       {realName}
                     </p>
 
-                    <div className="mt-4 inline-flex items-center gap-1.5 rounded-full border border-sky-500/15 bg-sky-500/10 px-3 py-1 text-xs font-semibold text-sky-700 dark:border-sky-500/20 dark:bg-sky-500/10 dark:text-sky-300">
-                      <Building2 className="size-3.5" />
-                      {department}
+                    <div className="mt-4 flex items-center gap-1.5 rounded-full border border-sky-500/15 bg-sky-500/10 px-3 py-1 text-xs font-semibold text-sky-700 dark:border-sky-500/20 dark:bg-sky-500/10 dark:text-sky-300">
+                      <Building2 className="size-3.5 shrink-0" />
+                      <span className="truncate">{department}</span>
                     </div>
                   </div>
                 </div>

@@ -64,7 +64,9 @@ export default function ClassDetailsPage() {
         />
       )}
 
-      {selectedTab === "Students" && <StudentClassStudDetails />}
+      {selectedTab === "Students" && (
+        <StudentClassStudDetails students={classDetails?.students} />
+      )}
 
       {selectedTab === "Settings" && (
         <StudentSettingsTab
