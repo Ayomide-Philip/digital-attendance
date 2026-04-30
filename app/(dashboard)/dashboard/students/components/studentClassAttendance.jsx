@@ -1,12 +1,5 @@
 import Card from "@/components/ui/card";
-import {
-  Calendar,
-  CheckCircle,
-  Clock,
-  User,
-  XCircle,
-  Filter,
-} from "lucide-react";
+import { Calendar, CheckCircle, Clock, XCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import LoadingComponent from "../../teachers/components/loading";
@@ -60,13 +53,11 @@ export default function StudentClassAttendance({ attendanceHeading, classId }) {
     ? attendanceData
     : [attendanceData].filter(Boolean);
 
-  // Filter sessions based on selected status
   const filteredSessions = sessions.filter((session) => {
     if (statusFilter === "All") return true;
     return session.status === statusFilter;
   });
 
-  // Filter button data
   const filters = [
     { label: "All", value: "All", count: sessions.length },
     {
@@ -88,7 +79,6 @@ export default function StudentClassAttendance({ attendanceHeading, classId }) {
 
   return (
     <div className="w-full space-y-6">
-      {/* Header Section */}
       <div>
         <div className="flex items-center gap-3 mb-4">
           <div className="p-2 rounded-lg bg-blue-100 dark:bg-blue-900/40">
@@ -109,7 +99,6 @@ export default function StudentClassAttendance({ attendanceHeading, classId }) {
           </div>
         </div>
 
-        {/* Filter Bar */}
         <div className="flex gap-2 overflow-x-auto pb-2">
           {filters.map((filter) => (
             <button
@@ -138,7 +127,6 @@ export default function StudentClassAttendance({ attendanceHeading, classId }) {
         </div>
       </div>
 
-      {/* Content Section */}
       {filteredSessions.length === 0 ? (
         <Card className="rounded-2xl border-2 border-dashed border-slate-300/50 bg-linear-to-br from-slate-50/50 to-slate-100/50 py-16 px-4 text-center dark:border-slate-700/50 dark:from-slate-900/30 dark:to-slate-800/30">
           <div className="flex justify-center mb-4">
@@ -147,9 +135,7 @@ export default function StudentClassAttendance({ attendanceHeading, classId }) {
             </div>
           </div>
           <p className="text-base font-semibold text-slate-600 dark:text-slate-300">
-            No{" "}
-            {statusFilter !== "All" ? statusFilter.toLowerCase() : "attendance"}{" "}
-            records
+            No attendance records available
           </p>
           <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
             {statusFilter !== "All"
@@ -158,90 +144,72 @@ export default function StudentClassAttendance({ attendanceHeading, classId }) {
           </p>
         </Card>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
           {filteredSessions.map((session) => {
             const statusInfo = getStatusInfo(session.status);
 
             return (
               <Card
                 key={session._id}
-                className="group relative rounded-xl border border-slate-200/60 bg-white/70 backdrop-blur-sm hover:shadow-lg hover:border-slate-300/80 transition-all duration-200 dark:border-slate-800/60 dark:bg-slate-950/40 dark:hover:border-slate-700/80 overflow-hidden"
+                className="group relative overflow-hidden rounded-2xl border border-slate-200/70 bg-white/90 p-5 shadow-sm transition-all duration-200 hover:-translate-y-1 hover:border-slate-300 hover:shadow-xl dark:border-slate-800/70 dark:bg-slate-950/60 dark:hover:border-slate-700"
               >
-                {/* Accent bar top */}
-                <div className={`h-1 w-full ${statusInfo.accentClass}`} />
+                <div
+                  className={`absolute inset-y-0 left-0 w-1 ${statusInfo.accentClass}`}
+                />
 
-                <div className="p-5 space-y-4">
-                  {/* Header: Title + Status Badge */}
+                <div className="ml-1 space-y-4">
                   <div className="flex items-start justify-between gap-3">
-                    <div className="min-w-0 flex-1">
-                      <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 line-clamp-2">
-                        {session?.title || "Attendance Session"}
-                      </h3>
-                    </div>
+                    <h3 className="min-w-0 flex-1 text-lg font-bold leading-snug text-slate-900 line-clamp-2 dark:text-slate-100">
+                      {session?.title || "Attendance Session"}
+                    </h3>
                     <span
-                      className={`shrink-0 inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold whitespace-nowrap ${statusInfo.badgeClass}`}
+                      className={`shrink-0 inline-flex items-center gap-1.5 whitespace-nowrap rounded-full px-3 py-1 text-xs font-semibold ${statusInfo.badgeClass}`}
                     >
                       {statusInfo.icon}
                       {session.status}
                     </span>
                   </div>
 
-                  {/* Divider */}
-                  <div className="h-px bg-slate-200/50 dark:bg-slate-800/50" />
-
-                  {/* Details Grid */}
-                  <div className="space-y-3">
-                    {/* Date */}
-                    <div className="flex items-center gap-3">
-                      <div className="shrink-0 p-2 rounded-lg bg-slate-100/60 dark:bg-slate-800/60">
-                        <Calendar className="size-4 text-slate-600 dark:text-slate-400" />
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <p className="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
-                          Date
-                        </p>
-                        <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">
-                          {formatShortDate(session?.createdAt)}
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* Time Range */}
-                    <div className="flex items-center gap-3">
-                      <div className="shrink-0 p-2 rounded-lg bg-slate-100/60 dark:bg-slate-800/60">
-                        <Clock className="size-4 text-slate-600 dark:text-slate-400" />
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <p className="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
-                          Time
-                        </p>
-                        <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">
-                          {formatTime(session?.startTime)} -{" "}
-                          {formatTime(session?.endTime)}
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* Teacher */}
-                    <div className="flex items-center gap-3">
-                      <div className="shrink-0 p-2 rounded-lg bg-slate-100/60 dark:bg-slate-800/60">
-                        <User className="size-4 text-slate-600 dark:text-slate-400" />
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <p className="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
-                          Teacher
-                        </p>
-                        <p className="text-sm font-semibold text-slate-900 dark:text-slate-100 truncate">
-                          {session.teacherId?.displayName ||
-                            session.teacherId?.name ||
-                            "Unknown"}
-                        </p>
-                      </div>
-                    </div>
+                  <div className="space-y-1">
+                    <p className="truncate text-sm font-semibold text-slate-800 dark:text-slate-200">
+                      {session?.classesId?.name ||
+                        attendanceHeading?.className ||
+                        "Class"}
+                      {session?.classesId?.code
+                        ? ` • ${session.classesId.code}`
+                        : ""}
+                    </p>
+                    <p className="truncate text-sm text-slate-500 dark:text-slate-400">
+                      {session?.teacherId?.displayName ||
+                        session?.teacherId?.name ||
+                        attendanceHeading?.teacherId?.displayName ||
+                        attendanceHeading?.teacherId?.name ||
+                        "Teacher"}
+                    </p>
                   </div>
 
-                  {/* Footer */}
-                  <div className="pt-2 border-t border-slate-200/50 dark:border-slate-800/50">
+                  <div className="h-px bg-slate-200/60 dark:bg-slate-800/60" />
+
+                  <div className="rounded-xl border border-slate-200/70 bg-slate-50/70 p-3 dark:border-slate-800/70 dark:bg-slate-900/50">
+                    <div className="mb-1.5 flex items-center gap-2 text-slate-500 dark:text-slate-400">
+                      <Clock className="size-4" />
+                      <span className="text-xs font-semibold uppercase tracking-wide">
+                        Time
+                      </span>
+                    </div>
+                    <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">
+                      {formatDateTime(session?.startTime)} →{" "}
+                      {formatDateTime(session?.endTime)}
+                    </p>
+                  </div>
+
+                  {session?.description ? (
+                    <p className="line-clamp-2 text-sm text-slate-500 dark:text-slate-400">
+                      {session.description}
+                    </p>
+                  ) : null}
+
+                  <div className="border-t border-slate-200/60 pt-3 dark:border-slate-800/60">
                     <p className="text-xs text-slate-500 dark:text-slate-400">
                       Created on {formatShortDate(session?.createdAt)}
                     </p>
@@ -269,8 +237,8 @@ function getStatusInfo(status) {
   if (status === "Absent" || status === "Rejected") {
     return {
       badgeClass:
-        "border border-rose-500/20 bg-rose-500/10 text-rose-700 dark:text-rose-300",
-      accentClass: "bg-rose-500",
+        "border border-red-500/20 bg-red-500/10 text-red-700 dark:text-red-300",
+      accentClass: "bg-red-500",
       icon: <XCircle className="size-4" />,
     };
   }
@@ -292,11 +260,15 @@ function getStatusInfo(status) {
   };
 }
 
-function formatTime(value) {
+function formatDateTime(value) {
   if (!value) return "--";
+
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return value;
-  return date.toLocaleTimeString("en-US", {
+
+  return date.toLocaleString("en-US", {
+    day: "numeric",
+    month: "short",
     hour: "numeric",
     minute: "2-digit",
   });
