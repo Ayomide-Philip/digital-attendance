@@ -76,25 +76,24 @@ export const GET = auth(async function GET(req, { params }) {
       classesId: new mongoose.Types.ObjectId(classesId),
     })
       .populate("teacherId", "name displayName")
-      .populate("classesId", "name code");
+      .populate("classesId", "name code")
+      .lean();
 
     return NextResponse.json(
       {
-        message: "Successfully fetch class",
+        message: "Successfully fetched attendance",
         attendance: attendance.map((c) => {
-          let studentStatus = c?.students?.find(
-            (s) => s.studentId.toString() === userId,
+          const studentRecord = c?.students?.find(
+            (s) => s?.studentId?.toString() === userId,
           );
-          if (!studentStatus) {
-            if (new Date() > new Date(c?.endTime)) {
-              studentStatus = {
-                status: "Absent",
-              };
-            } else {
-              studentStatus = {
-                status: "Pending",
-              };
-            }
+
+          let status;
+
+          if (studentRecord) {
+            status = studentRecord.status;
+          } else {
+            status =
+              Date.now() > new Date(c.endTime).getTime() ? "Absent" : "Pending";
           }
           return {
             _id: c?._id,
@@ -105,7 +104,7 @@ export const GET = auth(async function GET(req, { params }) {
             endTime: c?.endTime,
             classesId: c?.classesId,
             teacherId: c?.teacherId,
-            status: studentStatus?.status || "Pending",
+            status: status || "Pending",
           };
         }),
       },
