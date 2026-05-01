@@ -56,7 +56,7 @@ export const GET = auth(async function GET(req) {
       classesId: { $in: classesId },
     })
       .populate("teacherId", "name displayName -_id")
-      .populate("classesId", "name code -_id")
+      .populate("classesId", "name code")
       .lean();
 
     const attendanceData = attendance.map((a) => {

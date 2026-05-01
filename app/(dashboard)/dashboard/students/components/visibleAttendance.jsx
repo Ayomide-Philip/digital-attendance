@@ -1,3 +1,6 @@
+"use client";
+
+import { useRouter } from "next/navigation";
 import {
   CalendarCheck2,
   Clock3,
@@ -9,6 +12,10 @@ import {
 } from "lucide-react";
 
 export default function VisibleAttendance({ visibleAttendance }) {
+  const router = useRouter();
+  const isSessionExpired = (endTime) => {
+    return new Date() > new Date(endTime);
+  };
   return (
     <>
       {visibleAttendance.length === 0 ? (
@@ -31,11 +38,11 @@ export default function VisibleAttendance({ visibleAttendance }) {
       ) : (
         <section className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
           {visibleAttendance.map((record, index) => {
-            console.log(record);
             const statusStyles = getStatusStyles(record.status);
             const StatusIcon = statusStyles.icon;
             const isPending = record.status === "Pending";
             const isMarked = record.status !== "Pending";
+            const isExpired = isSessionExpired(record.endTime);
 
             return (
               <article
@@ -113,23 +120,32 @@ export default function VisibleAttendance({ visibleAttendance }) {
 
                   <button
                     type="button"
-                    onClick={() => handleMarkAttendance(record._id)}
-                    disabled={isMarked}
+                    onClick={() => {
+                      router.push(
+                        `/dashboard/students/classes/${record?.classesId?._id}/attendance/${record?._id}`,
+                      );
+                    }}
+                    disabled={isMarked || isExpired}
                     className={`inline-flex w-full items-center justify-center gap-2 rounded-xl border px-4 py-2.5 text-sm font-semibold transition-all duration-200 sm:w-auto ${
-                      isPending
-                        ? `${statusStyles.button} hover:-translate-y-0.5 hover:shadow-sm`
-                        : "cursor-not-allowed border-slate-200 bg-slate-100 text-slate-400 dark:border-slate-800 dark:bg-slate-900/70 dark:text-slate-500"
+                      isMarked || isExpired
+                        ? "cursor-not-allowed border-slate-200 bg-slate-100 text-slate-400 dark:border-slate-800 dark:bg-slate-900/70 dark:text-slate-500"
+                        : `${statusStyles.button} hover:-translate-y-0.5 hover:shadow-sm`
                     }`}
                   >
-                    {isPending ? (
-                      <>
-                        <StatusIcon className="size-4" />
-                        Mark Attendance
-                      </>
-                    ) : (
+                    {isMarked ? (
                       <>
                         <ShieldCheck className="size-4" />
                         Marked
+                      </>
+                    ) : isExpired ? (
+                      <>
+                        <Clock3 className="size-4" />
+                        Session Expired
+                      </>
+                    ) : (
+                      <>
+                        <StatusIcon className="size-4" />
+                        Mark Attendance
                       </>
                     )}
                   </button>
