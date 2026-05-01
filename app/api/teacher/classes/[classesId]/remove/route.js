@@ -1,15 +1,25 @@
+import { auth } from "@/auth";
 import { connectDatabase } from "@/lib/database/connectdb";
 import Classes from "@/lib/models/classes.model";
 import User from "@/lib/models/user.model";
 import mongoose from "mongoose";
 import { NextResponse } from "next/server";
 
-export async function PUT(req, { params }) {
+export const PUT = auth(async function PUT(req, { params }) {
   const searchParams = await req.nextUrl.searchParams;
   const studentId = searchParams.get("studentId");
   const { classesId } = await params;
-  const { userId } = await req.json();
-
+  if (!req?.auth || !req?.auth?.user) {
+    return NextResponse.json(
+      {
+        error: "Unauthorized Access",
+      },
+      {
+        status: 401,
+      },
+    );
+  }
+  const userId = req?.auth?.user?.id;
   if (!studentId?.trim() || !classesId?.trim() || !userId?.trim()) {
     return NextResponse.json({ error: "Invalid parameters" }, { status: 400 });
   }
@@ -120,4 +130,4 @@ export async function PUT(req, { params }) {
       { status: 500 },
     );
   }
-}
+});

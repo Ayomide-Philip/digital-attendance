@@ -44,7 +44,26 @@ export default function StudentList({ students = [], classId }) {
     if (!studentId) return;
 
     try {
-      const request = await fetch(``);
+      const request = await fetch(
+        `/api/teacher/classes/${classId}/remove?studentId=${studentId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+        },
+      );
+      const response = await request.json();
+      if (!request.ok || response?.error) {
+        return toast.error(
+          response?.error || "Failed to remove student. Please try again.",
+        );
+      }
+      toast.success(response?.message || "Student removed successfully");
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
     } catch (err) {
       console.log(err);
       return toast.error("Failed to remove student. Please try again.");
