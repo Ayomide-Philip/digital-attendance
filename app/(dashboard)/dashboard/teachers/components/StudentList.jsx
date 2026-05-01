@@ -196,7 +196,7 @@ export default function StudentList({ students = [], classId }) {
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="w-full justify-center text-rose-600 hover:text-rose-700 dark:text-rose-300"
+                        className="w-full justify-center cursor-pointer text-rose-600 hover:text-rose-700 dark:text-rose-300"
                         onClick={() => {
                           handleRemoveStudent(student._id);
                         }}
