@@ -31,6 +31,7 @@ export default function VisibleAttendance({ visibleAttendance }) {
       ) : (
         <section className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
           {visibleAttendance.map((record, index) => {
+            console.log(record);
             const statusStyles = getStatusStyles(record.status);
             const StatusIcon = statusStyles.icon;
             const isPending = record.status === "Pending";
@@ -45,9 +46,9 @@ export default function VisibleAttendance({ visibleAttendance }) {
                 <div className="flex items-start justify-between gap-4">
                   <div className="min-w-0 space-y-3">
                     <div className="flex flex-wrap items-center gap-2">
-                      <span className="inline-flex items-center gap-1.5 rounded-full border border-slate-200/70 bg-slate-50 px-3 py-1 text-xs font-semibold text-slate-600 dark:border-slate-800 dark:bg-slate-900/60 dark:text-slate-300">
+                      <span className="inline-flex uppercase items-center gap-1.5 rounded-full border border-slate-200/70 bg-slate-50 px-3 py-1 text-xs font-semibold text-slate-600 dark:border-slate-800 dark:bg-slate-900/60 dark:text-slate-300">
                         <Users className="size-3.5" />
-                        {record.classesId.code}
+                        {record?.classesId?.code}
                       </span>
                       <span
                         className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold ${statusStyles.badge}`}
@@ -61,10 +62,10 @@ export default function VisibleAttendance({ visibleAttendance }) {
 
                     <div className="min-w-0 space-y-1">
                       <h2 className="truncate text-lg font-semibold text-slate-900 transition-colors group-hover:text-sky-700 dark:text-slate-100 dark:group-hover:text-sky-300">
-                        {record.classesId.name}
+                        {record?.classesId?.name}
                       </h2>
                       <p className="text-sm text-slate-500 dark:text-slate-400">
-                        {record.title}
+                        {record?.title}
                       </p>
                     </div>
                   </div>
@@ -72,7 +73,7 @@ export default function VisibleAttendance({ visibleAttendance }) {
 
                 <div className="mt-4 space-y-3">
                   <p className="line-clamp-2 min-h-10 text-sm leading-6 text-slate-600 dark:text-slate-300">
-                    {record.description || "No description provided."}
+                    {record?.description || "No description provided."}
                   </p>
 
                   <div className="grid gap-3 rounded-2xl border border-slate-200/70 bg-slate-50/70 p-3 text-sm dark:border-slate-800 dark:bg-slate-900/50 sm:grid-cols-2 sm:p-4">
@@ -81,7 +82,7 @@ export default function VisibleAttendance({ visibleAttendance }) {
                         Teacher
                       </p>
                       <p className="font-medium text-slate-900 dark:text-slate-100">
-                        {record.teacherId.displayName}
+                        {record?.teacherId?.displayName}
                       </p>
                     </div>
                     <div className="space-y-1">
@@ -89,7 +90,7 @@ export default function VisibleAttendance({ visibleAttendance }) {
                         Created
                       </p>
                       <p className="font-medium text-slate-900 dark:text-slate-100">
-                        {formatCreatedAt(record.createdAt)}
+                        {formatCreatedAt(record?.createdAt)}
                       </p>
                     </div>
                     <div className="space-y-1 sm:col-span-2">
@@ -98,7 +99,7 @@ export default function VisibleAttendance({ visibleAttendance }) {
                       </p>
                       <p className="flex flex-wrap items-center gap-2 font-medium text-slate-900 dark:text-slate-100">
                         <Clock3 className="size-4 text-slate-400" />
-                        {formatRange(record.startTime, record.endTime)}
+                        {formatRange(record?.startTime, record?.endTime)}
                       </p>
                     </div>
                   </div>
@@ -107,7 +108,7 @@ export default function VisibleAttendance({ visibleAttendance }) {
                 <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                   <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
                     <MapPin className="size-4" />
-                    {record.teacherId.name}
+                    {record?.teacherId?.displayName || record?.teacherId?.name}
                   </div>
 
                   <button
