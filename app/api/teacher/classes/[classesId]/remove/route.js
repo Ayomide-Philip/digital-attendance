@@ -1,4 +1,5 @@
 import { connectDatabase } from "@/lib/database/connectdb";
+import Classes from "@/lib/models/classes.model";
 import User from "@/lib/models/user.model";
 import mongoose from "mongoose";
 import { NextResponse } from "next/server";
@@ -52,6 +53,23 @@ export async function PUT(req, { params }) {
         },
         {
           status: 404,
+        },
+      );
+    }
+
+    const classes = await Classes.findOne({
+      _id: new mongoose.Types.ObjectId(classesId),
+      teacher: new mongoose.Types.ObjectId(userId),
+    });
+
+    if (!classes) {
+      return NextResponse.json(
+        {
+          error:
+            "Class not found or you do not have permission to modify this class",
+        },
+        {
+          status: 400,
         },
       );
     }
