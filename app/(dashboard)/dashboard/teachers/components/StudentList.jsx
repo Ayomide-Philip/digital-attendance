@@ -12,8 +12,9 @@ import {
   ChevronDown,
   User,
 } from "lucide-react";
+import { toast } from "sonner";
 
-export default function StudentList({ students = [] }) {
+export default function StudentList({ students = [], classId }) {
   const [query, setQuery] = useState("");
   const [deptFilter, setDeptFilter] = useState("All");
 
@@ -38,6 +39,17 @@ export default function StudentList({ students = [] }) {
       return matchesQuery && matchesDept;
     });
   }, [studentList, query, deptFilter]);
+
+  async function handleRemoveStudent(studentId) {
+    if (!studentId) return;
+
+    try {
+      const request = await fetch(``);
+    } catch (err) {
+      console.log(err);
+      return toast.error("Failed to remove student. Please try again.");
+    }
+  }
 
   return (
     <div className="space-y-5">
@@ -166,9 +178,9 @@ export default function StudentList({ students = [] }) {
                         variant="ghost"
                         size="sm"
                         className="w-full justify-center text-rose-600 hover:text-rose-700 dark:text-rose-300"
-                        // onClick={() =>
-                        //   onRemoveStudent?.(student._id || student.id)
-                        // }
+                        onClick={() => {
+                          handleRemoveStudent(student._id);
+                        }}
                       >
                         <Trash2 className="size-4 mr-2" /> Remove
                       </Button>

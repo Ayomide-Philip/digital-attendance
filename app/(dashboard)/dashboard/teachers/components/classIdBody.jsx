@@ -18,7 +18,9 @@ export default function ClassIdBody({ students, classId, settings, overview }) {
 
       {activeTab === "Overview" ? <OverviewTab overview={overview} /> : null}
 
-      {activeTab === "Students" ? <StudentsTab students={students} /> : null}
+      {activeTab === "Students" ? (
+        <StudentsTab students={students} classId={classId} />
+      ) : null}
 
       {activeTab === "Attendance" ? <AttendanceTab classId={classId} /> : null}
 
