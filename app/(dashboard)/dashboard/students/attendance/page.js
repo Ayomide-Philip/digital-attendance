@@ -4,6 +4,7 @@ import { useMemo, useState, useEffect } from "react";
 import { CalendarCheck2 } from "lucide-react";
 import VisibleAttendance from "../components/visibleAttendance";
 import { toast } from "sonner";
+import LoadingComponent from "../../teachers/components/loading";
 
 const initialAttendance = [
   {
@@ -170,7 +171,11 @@ export default function Attendance() {
         </div>
       </section>
 
-      <VisibleAttendance visibleAttendance={visibleAttendance} />
+      {loading ? (
+        <LoadingComponent />
+      ) : (
+        <VisibleAttendance visibleAttendance={visibleAttendance} />
+      )}
     </div>
   );
 }

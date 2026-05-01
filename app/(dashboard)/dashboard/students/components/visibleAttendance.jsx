@@ -7,19 +7,7 @@ import {
   UserRoundCheck,
   Users,
 } from "lucide-react";
-const handleMarkAttendance = (recordId) => {
-  setAttendance((current) =>
-    current.map((item) =>
-      item._id === recordId
-        ? {
-            ...item,
-            status: "Present",
-            timestamp: new Date().toISOString(),
-          }
-        : item,
-    ),
-  );
-};
+
 export default function VisibleAttendance({ visibleAttendance }) {
   return (
     <>
