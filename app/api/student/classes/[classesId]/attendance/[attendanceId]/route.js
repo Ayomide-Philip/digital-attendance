@@ -76,7 +76,10 @@ export const GET = auth(async function GET(req, { params }) {
     const attendance = await Attendance.findOne({
       _id: new mongoose.Types.ObjectId(attendanceId),
       classesId: new mongoose.Types.ObjectId(classesId),
-    }).lean();
+    })
+      .populate("teacherId", "name email")
+      .populate("classesId", "name code -_id")
+      .lean();
 
     if (!attendance) {
       return NextResponse.json(
