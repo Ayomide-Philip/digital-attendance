@@ -108,13 +108,13 @@ export const GET = auth(async function GET(req, { params }) {
       _id: attendance?._id,
       title: attendance?.title,
       description: attendance?.description,
-      createdAt: attendance?.createdAt,
-      startTime: attendance?.startTime,
-      endTime: attendance?.endTime,
       classesId: attendance?.classesId,
       teacherId: attendance?.teacherId,
       status: status,
       timestamp: studentStatus?.timestamp || null,
+      createdAt: attendance?.createdAt,
+      startTime: attendance?.startTime,
+      endTime: attendance?.endTime,
     };
     return NextResponse.json(
       {
