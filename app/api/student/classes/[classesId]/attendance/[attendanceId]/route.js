@@ -4,6 +4,7 @@ import Classes from "@/lib/models/classes.model";
 import User from "@/lib/models/user.model";
 import mongoose from "mongoose";
 import { NextResponse } from "next/server";
+import Attendance from "@/lib/models/attendance.model";
 
 export const GET = auth(async function GET(req, { params }) {
   if (!req?.auth || !req?.auth?.user) {
@@ -60,9 +61,62 @@ export const GET = auth(async function GET(req, { params }) {
       _id: new mongoose.Types.ObjectId(classesId),
       students: new mongoose.Types.ObjectId(userId),
     });
+
+    if (!isUserEnrolled) {
+      return NextResponse.json(
+        {
+          error: "Unauthorized Access to Class Attendance",
+        },
+        {
+          status: 404,
+        },
+      );
+    }
+
+    const attendance = await Attendance.findOne({
+      _id: new mongoose.Types.ObjectId(attendanceId),
+      classesId: new mongoose.Types.ObjectId(classesId),
+    }).lean();
+
+    if (!attendance) {
+      return NextResponse.json(
+        {
+          error: "Attendance record not found for the provided class.",
+        },
+        {
+          status: 404,
+        },
+      );
+    }
+
+    let status;
+    const studentStatus = attendance?.students?.find(
+      (s) => s?.studentId?.toString() === userId.toString(),
+    );
+
+    if (studentStatus) {
+      status = studentStatus.status;
+    } else {
+      status =
+        new Date() > new Date(attendance?.endTime) ? "absent" : "pending";
+    }
+
+    const studentAttendance = {
+      _id: attendance?._id,
+      title: attendance?.title,
+      description: attendance?.description,
+      createdAt: attendance?.createdAt,
+      startTime: attendance?.startTime,
+      endTime: attendance?.endTime,
+      classesId: attendance?.classesId,
+      teacherId: attendance?.teacherId,
+      status: status,
+      timestamp: studentStatus?.timestamp || null,
+    };
     return NextResponse.json(
       {
-        isUserEnrolled: isUserEnrolled,
+        message: "Attendance details fetched successfully",
+        attendance: studentAttendance || null,
       },
       {
         status: 200,
