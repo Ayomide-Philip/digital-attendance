@@ -164,7 +164,6 @@ export default function StartSessionModal({
     }
 
     setIsStartingSession(true);
-    console.log("Captured location samples:", capturedSamples);
     if (capturedSamples.length < 5) {
       setIsStartingSession(false);
       return toast.error(
