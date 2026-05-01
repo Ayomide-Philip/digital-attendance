@@ -74,10 +74,40 @@ export async function PUT(req, { params }) {
       );
     }
 
+    const studentExistInClass = classes.students.some((student) =>
+      student.equals(new mongoose.Types.ObjectId(studentId)),
+    );
+
+    if (!studentExistInClass) {
+      return NextResponse.json(
+        {
+          error: "Student not found in this class",
+        },
+        {
+          status: 404,
+        },
+      );
+    }
+
+    const removeStudent = await Classes.findOneAndUpdate(
+      {
+        _id: new mongoose.Types.ObjectId(classesId),
+        teacher: new mongoose.Types.ObjectId(userId),
+      },
+      {
+        $pull: {
+          students: new mongoose.Types.ObjectId(studentId),
+        },
+      },
+      {
+        returnDocument: "after",
+      },
+    );
+
     return NextResponse.json(
       {
-        studentId,
-        classesId,
+        message: "Student removed from class successfully",
+        removedStudent: !!removeStudent,
       },
       {
         status: 200,
