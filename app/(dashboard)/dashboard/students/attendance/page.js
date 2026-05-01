@@ -6,85 +6,7 @@ import VisibleAttendance from "../components/visibleAttendance";
 import { toast } from "sonner";
 import LoadingComponent from "../../teachers/components/loading";
 
-const initialAttendance = [
-  {
-    _id: "69ebe46f783515a2af88c242",
-    title: "attendance_for_4/24/2026",
-    description:
-      "Weekly review session for advanced algebra, including quick exercises and a short quiz.",
-    createdAt: "2026-04-24T21:45:19.466Z",
-    startTime: "2026-04-24T23:00:00.000Z",
-    endTime: "2026-04-29T23:00:00.000Z",
-    classesId: {
-      name: "Advance Algebra",
-      code: "MTH205",
-    },
-    teacherId: {
-      name: "John Doe",
-      displayName: "Prof. John Doe",
-    },
-    status: "Absent",
-    timestamp: null,
-  },
-  {
-    _id: "69ebe46f783515a2af88c243",
-    title: "attendance_for_4/26/2026",
-    description:
-      "Interactive session on group work and class participation for the week.",
-    createdAt: "2026-04-26T18:15:19.466Z",
-    startTime: "2026-04-26T19:00:00.000Z",
-    endTime: "2026-04-26T21:00:00.000Z",
-    classesId: {
-      name: "Software Engineering",
-      code: "CSE301",
-    },
-    teacherId: {
-      name: "Sarah Lee",
-      displayName: "Dr. Sarah Lee",
-    },
-    status: "Present",
-    timestamp: "2026-04-26T19:11:00.000Z",
-  },
-  {
-    _id: "69ebe46f783515a2af88c244",
-    title: "attendance_for_4/28/2026",
-    description: "Attendance window opened for the upcoming lab assessment.",
-    createdAt: "2026-04-28T16:05:19.466Z",
-    startTime: "2026-04-28T18:00:00.000Z",
-    endTime: "2026-04-30T18:00:00.000Z",
-    classesId: {
-      name: "Database Systems",
-      code: "CSC310",
-    },
-    teacherId: {
-      name: "Michael Tan",
-      displayName: "Prof. Michael Tan",
-    },
-    status: "Pending",
-    timestamp: null,
-  },
-  {
-    _id: "69ebe46f783515a2af88c245",
-    title: "attendance_for_4/27/2026",
-    description:
-      "Late check-in approved after the class moved its attendance deadline.",
-    createdAt: "2026-04-27T20:45:19.466Z",
-    startTime: "2026-04-27T21:00:00.000Z",
-    endTime: "2026-04-27T22:30:00.000Z",
-    classesId: {
-      name: "Communication Skills",
-      code: "GST102",
-    },
-    teacherId: {
-      name: "Alicia Gomez",
-      displayName: "Ms. Alicia Gomez",
-    },
-    status: "Late",
-    timestamp: "2026-04-27T22:06:00.000Z",
-  },
-];
-
-const filters = ["All", "Present", "Absent", "Pending"];
+const filters = ["All", "Present", "Absent", "Pending", "Flagged"];
 
 export default function Attendance() {
   const [attendance, setAttendance] = useState([]);
@@ -93,7 +15,9 @@ export default function Attendance() {
 
   const visibleAttendance = useMemo(() => {
     if (activeFilter === "All") return attendance;
-    return attendance.filter((item) => item.status === activeFilter);
+    return attendance.filter(
+      (item) => item?.status?.toLowerCase() === activeFilter?.toLowerCase(),
+    );
   }, [attendance, activeFilter]);
 
   useEffect(() => {

@@ -39,8 +39,6 @@ export default function VisibleAttendance({ visibleAttendance }) {
         <section className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
           {visibleAttendance.map((record, index) => {
             const statusStyles = getStatusStyles(record.status);
-            const StatusIcon = statusStyles.icon;
-            const isPending = record.status === "Pending";
             const isMarked = record.status !== "Pending";
             const isExpired = isSessionExpired(record.endTime);
 
@@ -126,10 +124,10 @@ export default function VisibleAttendance({ visibleAttendance }) {
                       );
                     }}
                     disabled={isMarked || isExpired}
-                    className={`inline-flex w-full items-center justify-center gap-2 rounded-xl border px-4 py-2.5 text-sm font-semibold transition-all duration-200 sm:w-auto ${
+                    className={`inline-flex cursor-pointer w-full items-center justify-center gap-2 rounded-xl border px-4 py-2.5 text-sm font-semibold transition-all duration-200 sm:w-auto ${
                       isMarked || isExpired
                         ? "cursor-not-allowed border-slate-200 bg-slate-100 text-slate-400 dark:border-slate-800 dark:bg-slate-900/70 dark:text-slate-500"
-                        : `${statusStyles.button} hover:-translate-y-0.5 hover:shadow-sm`
+                        : "border-sky-200 bg-sky-50 text-sky-700 hover:bg-sky-100 hover:-translate-y-0.5 hover:shadow-sm dark:border-sky-900/50 dark:bg-sky-950/40 dark:text-sky-300 dark:hover:bg-sky-900/60"
                     }`}
                   >
                     {isMarked ? (
@@ -144,7 +142,7 @@ export default function VisibleAttendance({ visibleAttendance }) {
                       </>
                     ) : (
                       <>
-                        <StatusIcon className="size-4" />
+                        <ShieldCheck className="size-4" />
                         Mark Attendance
                       </>
                     )}
