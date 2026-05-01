@@ -39,10 +39,32 @@ export async function PUT(req, { params }) {
       );
     }
 
-    return NextResponse.json({
-      studentId,
-      classesId,
-    });
+    const studentExist = await User.findById(
+      new mongoose.Types.ObjectId(studentId),
+    )
+      .lean()
+      .select("_id");
+
+    if (!studentExist) {
+      return NextResponse.json(
+        {
+          error: "Student not found",
+        },
+        {
+          status: 404,
+        },
+      );
+    }
+
+    return NextResponse.json(
+      {
+        studentId,
+        classesId,
+      },
+      {
+        status: 200,
+      },
+    );
   } catch (err) {
     console.log(err);
     return NextResponse.json(
