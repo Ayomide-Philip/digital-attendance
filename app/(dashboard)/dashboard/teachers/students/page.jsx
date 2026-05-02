@@ -1,7 +1,6 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Search } from "lucide-react";
 
 import StudentList from "@/app/(dashboard)/dashboard/teachers/components/StudentList";
 import {
@@ -9,7 +8,6 @@ import {
   teacherClasses,
 } from "@/app/(dashboard)/dashboard/teachers/components/mock-data";
 import { Button } from "@/components/ui/button";
-import Card from "@/components/ui/card";
 
 export default function StudentsPage() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -49,45 +47,7 @@ export default function StudentsPage() {
         </div>
       </div>
 
-      <Card className="rounded-2xl p-5">
-        <div className="grid grid-cols-1 gap-3 lg:grid-cols-[1fr_auto]">
-          <div className="relative">
-            <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-slate-500" />
-            <input
-              value={searchTerm}
-              onChange={(event) => setSearchTerm(event.target.value)}
-              placeholder="Search by name or matric ID"
-              className="h-10 w-full rounded-xl border border-slate-200 bg-white pl-9 pr-3 text-sm outline-none transition focus:border-sky-400 dark:border-slate-700 dark:bg-slate-900"
-            />
-          </div>
-
-          <div className="flex flex-wrap gap-2">
-            <Button
-              variant={classFilter === "" ? "default" : "outline"}
-              className="h-10 rounded-xl px-4"
-              onClick={() => setClassFilter("")}
-            >
-              All Classes
-            </Button>
-            {teacherClasses.map((item) => (
-              <Button
-                key={item.id}
-                variant={classFilter === item.id ? "default" : "outline"}
-                className="h-10 rounded-xl px-4"
-                onClick={() => setClassFilter(item.id)}
-              >
-                {item.name}
-              </Button>
-            ))}
-          </div>
-        </div>
-      </Card>
-
-      <StudentList
-        students={filteredStudents}
-        classes={teacherClasses}
-        mode="global"
-      />
+      <StudentList students={filteredStudents} classes={teacherClasses} />
     </div>
   );
 }
