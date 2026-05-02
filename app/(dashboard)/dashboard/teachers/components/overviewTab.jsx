@@ -145,16 +145,25 @@ export default function OverviewTab({ overview, classId }) {
             key={item.label}
             className="rounded-2xl border border-slate-200/70 bg-white/85 p-5 shadow-sm transition-transform duration-300 hover:-translate-y-0.5 dark:border-slate-800 dark:bg-slate-950/70"
           >
-            <div className="flex items-start justify-between gap-3">
-              <div>
+            <div
+              className="flex items-start justify-between gap-3 transition-opacity duration-300"
+              style={{ opacity: loadingStats ? 0.5 : 1 }}
+            >
+              <div className="flex-1">
                 <p className="text-sm text-slate-500 dark:text-slate-400">
                   {item.label}
                 </p>
-                <p className="mt-2 capitalize text-2xl font-semibold text-slate-900 dark:text-slate-100">
-                  {item.value}
-                </p>
+                {loadingStats ? (
+                  <div className="mt-2 h-8 w-24 animate-pulse rounded-lg bg-slate-200 dark:bg-slate-700" />
+                ) : (
+                  <p className="mt-2 capitalize text-2xl font-semibold text-slate-900 dark:text-slate-100">
+                    {item.value}
+                  </p>
+                )}
               </div>
-              <div className={`rounded-xl p-2.5 ${item.tone}`}>
+              <div
+                className={`rounded-xl p-2.5 transition-all ${loadingStats ? "opacity-50" : ""} ${item.tone}`}
+              >
                 <item.icon className="size-5" />
               </div>
             </div>
