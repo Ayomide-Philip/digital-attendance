@@ -75,6 +75,11 @@ export default function StudentClassAttendance({ attendanceHeading, classId }) {
       value: "Flagged",
       count: sessions.filter((s) => s.status === "Flagged").length,
     },
+    {
+      label: "Pending",
+      value: "Pending",
+      count: sessions.filter((s) => s.status === "Pending").length,
+    },
   ];
 
   return (

@@ -4,8 +4,6 @@ import {
   Calendar,
   CheckCircle2,
   Clock3,
-  GraduationCap,
-  NotebookPen,
   School,
   Users,
 } from "lucide-react";
