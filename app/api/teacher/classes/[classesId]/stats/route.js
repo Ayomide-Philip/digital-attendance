@@ -1,5 +1,8 @@
 import { auth } from "@/auth";
+import { connectDatabase } from "@/lib/database/connectdb";
 import { NextResponse } from "next/server";
+import mongoose from "mongoose";
+import User from "@/lib/models/user.model";
 
 export const GET = auth(async function GET(req, { params }) {
   if (!req?.auth || !req?.auth?.user) {
@@ -27,6 +30,31 @@ export const GET = auth(async function GET(req, { params }) {
   }
 
   try {
+    await connectDatabase();
+    const user = await User.findById(new mongoose.Types.ObjectId(userId));
+
+    if (!user) {
+      return NextResponse.json(
+        {
+          error: "Unauthorized Access",
+        },
+        {
+          status: 401,
+        },
+      );
+    }
+
+    if (user?.role !== "teacher") {
+      return NextResponse.json(
+        {
+          error: "Forbidden Access",
+        },
+        {
+          status: 403,
+        },
+      );
+    }
+
     return NextResponse.json(
       {
         message: `Stats for class ${classesId} will be implemented in the future.`,
