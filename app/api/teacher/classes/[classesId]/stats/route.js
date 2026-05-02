@@ -94,10 +94,11 @@ export const GET = auth(async function GET(req, { params }) {
         message: `Stats for class ${classExists?.name} fetched successfully.`,
         totalStudents: classExists?.students?.length || 0,
         totalAttendanceRecords: attendance?.length || 0,
-        totalNumberOfStudentsWhoAttended: totalNumberOfStudentsWhoAttended,
+        totalNumberOfStudentsWhoAttended,
         attendanceRate: totalRecordsExpected
           ? (totalNumberOfStudentsWhoAttended / totalRecordsExpected) * 100
           : 0,
+        totalRecordsExpected,
       },
       {
         status: 200,
