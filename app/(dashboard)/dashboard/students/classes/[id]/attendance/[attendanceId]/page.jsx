@@ -226,8 +226,11 @@ export default function Page() {
                     </div>
                     <button
                       type="button"
+                      disabled={
+                        sessionState !== "active" || status !== "pending"
+                      }
                       onClick={handleCaptureLocation}
-                      className="w-full rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition-colors duration-200 hover:bg-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400"
+                      className="w-full rounded-xl px-4 py-2.5 text-sm font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 disabled:cursor-not-allowed disabled:border disabled:border-slate-200 disabled:bg-slate-100 disabled:text-slate-400 disabled:shadow-none disabled:hover:bg-slate-100"
                     >
                       Capture Location
                     </button>
@@ -279,7 +282,7 @@ export default function Page() {
                 <button
                   type="button"
                   disabled
-                  className="w-full cursor-not-allowed rounded-xl bg-slate-100 px-4 py-2.5 text-sm font-semibold text-slate-500"
+                  className="w-full cursor-not-allowed rounded-xl border border-dashed border-slate-200 bg-slate-50 px-4 py-2.5 text-sm font-semibold text-slate-400 shadow-none"
                 >
                   {!isLocationCaptured && isPendingAndActive
                     ? "Capture location first"
