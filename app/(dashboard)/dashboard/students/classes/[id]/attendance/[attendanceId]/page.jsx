@@ -13,25 +13,6 @@ import { useParams } from "next/navigation";
 import { toast } from "sonner";
 import LoadingComponent from "@/app/(dashboard)/dashboard/teachers/components/loading";
 
-const attendanceData = {
-  _id: "69ebe51d783515a2af88c243",
-  title: "attendance for first class",
-  description: "",
-  classesId: {
-    name: "Advance Algebra",
-    code: "mth205",
-  },
-  teacherId: {
-    name: "John Doe",
-    email: "a@gmail.com",
-  },
-  status: "pending",
-  timestamp: null,
-  createdAt: "2026-04-24T21:48:13.843Z",
-  startTime: "2026-04-24T23:50:00.000Z",
-  endTime: "2026-05-25T00:00:00.000Z",
-};
-
 function formatDateTime(dateString) {
   return new Date(dateString).toLocaleString(undefined, {
     month: "short",
@@ -45,7 +26,6 @@ function formatDateTime(dateString) {
 export default function Page() {
   const { id, attendanceId } = useParams();
   const [attendance, setAttendance] = useState(null);
-  const [status, setStatus] = useState(attendance?.status || "pending");
   const [successMessage, setSuccessMessage] = useState("");
   const [locationStatus, setLocationStatus] = useState("idle");
   const [loading, setLoading] = useState(true);
@@ -93,6 +73,7 @@ export default function Page() {
   const now = new Date();
   const start = attendance ? new Date(attendance.startTime) : null;
   const end = attendance ? new Date(attendance.endTime) : null;
+  const status = attendance ? attendance.status : "pending";
   const sessionState = !attendance
     ? "closed"
     : now < start
@@ -124,7 +105,6 @@ export default function Page() {
   };
 
   const handleMarkAttendance = () => {
-    setStatus("present");
     setSuccessMessage("Attendance marked successfully");
   };
 
