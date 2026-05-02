@@ -26,5 +26,24 @@ export const GET = auth(async function GET(req, { params }) {
     );
   }
 
-  try{}catch(err){}
+  try {
+    return NextResponse.json(
+      {
+        message: `Stats for class ${classesId} will be implemented in the future.`,
+      },
+      {
+        status: 200,
+      },
+    );
+  } catch (err) {
+    console.log(err);
+    return NextResponse.json(
+      {
+        error: "An error occurred while fetching class stats.",
+      },
+      {
+        status: 500,
+      },
+    );
+  }
 });
