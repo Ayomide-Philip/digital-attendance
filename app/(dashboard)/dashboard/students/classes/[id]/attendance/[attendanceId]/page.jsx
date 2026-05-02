@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   CheckCircle2,
   CircleDot,
@@ -9,6 +9,9 @@ import {
   MapPin,
   User,
 } from "lucide-react";
+import { useParams } from "next/navigation";
+import { toast } from "sonner";
+import LoadingComponent from "@/app/(dashboard)/dashboard/teachers/components/loading";
 
 const attendanceData = {
   _id: "69ebe51d783515a2af88c243",
@@ -40,14 +43,52 @@ function formatDateTime(dateString) {
 }
 
 export default function Page() {
-  const attendance = attendanceData;
+  const { id, attendanceId } = useParams();
+  const [attendance, setAttendance] = useState(null);
   const [status, setStatus] = useState(attendance?.status || "pending");
   const [successMessage, setSuccessMessage] = useState("");
   const [locationStatus, setLocationStatus] = useState("idle");
+  const [loading, setLoading] = useState(true);
   const [location] = useState({
     latitude: 7.51738,
     longitude: 4.51685,
   });
+
+  useEffect(() => {
+    if (!id || !attendanceId) {
+      return (window.location.href = "/dashboard/students/classes");
+    }
+    async function fetchAttendance() {
+      try {
+        const request = await fetch(
+          `/api/student/classes/${id}/attendance/${attendanceId}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            cache: "no-store",
+            credentials: "include",
+          },
+        );
+        const response = await request.json();
+        if (!request?.ok || response?.error) {
+          setLoading(false);
+          return toast.error(
+            response?.error || "Failed to load attendance session",
+          );
+        }
+        setAttendance(response?.attendance);
+        setLoading(false);
+      } catch (err) {
+        setLoading(false);
+        return toast.error("Failed to load attendance session");
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchAttendance();
+  }, [id, attendanceId]);
 
   const now = new Date();
   const start = attendance ? new Date(attendance.startTime) : null;
@@ -99,6 +140,8 @@ export default function Page() {
   const isAlreadyMarked = status !== "pending";
   const isLocationCaptured = locationStatus === "captured";
   const canMarkAttendance = isPendingAndActive && isLocationCaptured;
+
+  if (loading) return <LoadingComponent />;
 
   if (!attendance) {
     return (
@@ -159,10 +202,10 @@ export default function Page() {
                 </div>
                 <span
                   className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ${
-                    statusStyles[status] || statusStyles.flagged
+                    statusStyles[status] || statusStyles.absent
                   }`}
                 >
-                  {statusLabel[status] || "Flagged"}
+                  {statusLabel[status] || "Absent"}
                 </span>
               </div>
 
