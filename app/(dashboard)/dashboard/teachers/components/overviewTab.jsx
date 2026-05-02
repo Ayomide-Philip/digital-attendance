@@ -13,24 +13,6 @@ import Card from "@/components/ui/card";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
-const recentActivity = [
-  {
-    title: "Attendance marked for Week 3",
-    time: "2 hours ago",
-    icon: CheckCircle2,
-  },
-  {
-    title: "New student joined class",
-    time: "Yesterday",
-    icon: GraduationCap,
-  },
-  {
-    title: "Class updated by teacher",
-    time: "2 days ago",
-    icon: NotebookPen,
-  },
-];
-
 const upcomingSessions = [
   {
     topic: "Matrix Transformations",
@@ -52,6 +34,7 @@ const upcomingSessions = [
 export default function OverviewTab({ overview, classId }) {
   const [stats, setStats] = useState(null);
   const [loadingStats, setLoadingStats] = useState(true);
+  const [recentActivity, setRecentActivity] = useState([]);
 
   useEffect(() => {
     if (!classId) return;
@@ -83,6 +66,36 @@ export default function OverviewTab({ overview, classId }) {
       }
     }
     fetchStats();
+  }, [classId]);
+
+  useEffect(() => {
+    if (!classId) return;
+    async function fetchActivity() {
+      try {
+        const request = await fetch(
+          `/api/teacher/classes/${classId}/attendance`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            credentials: "include",
+          },
+        );
+        const response = await request.json();
+        if (request?.ok && response?.attendance) {
+          const activity = response.attendance.map((item) => ({
+            title: `Attendance: ${item.title}`,
+            time: formatRelativeTime(item.createdAt),
+            icon: CheckCircle2,
+          }));
+          setRecentActivity(activity.slice(0, 3));
+        }
+      } catch (err) {
+        console.error("Failed to load recent activity");
+      }
+    }
+    fetchActivity();
   }, [classId]);
 
   const quickStats = [
@@ -267,4 +280,20 @@ function formatDate(dateString) {
     month: "short",
     year: "numeric",
   });
+}
+
+function formatRelativeTime(dateString) {
+  const date = new Date(dateString);
+  const now = new Date();
+  const seconds = Math.floor((now - date) / 1000);
+  const minutes = Math.floor(seconds / 60);
+  const hours = Math.floor(minutes / 60);
+  const days = Math.floor(hours / 24);
+
+  if (seconds < 60) return "just now";
+  if (minutes < 60) return `${minutes}m ago`;
+  if (hours < 24) return `${hours}h ago`;
+  if (days === 1) return "yesterday";
+  if (days < 7) return `${days}d ago`;
+  return formatDate(dateString);
 }
