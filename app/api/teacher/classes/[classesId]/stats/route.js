@@ -92,13 +92,15 @@ export const GET = auth(async function GET(req, { params }) {
     return NextResponse.json(
       {
         message: `Stats for class ${classExists?.name} fetched successfully.`,
-        totalStudents: classExists?.students?.length || 0,
-        totalAttendanceRecords: attendance?.length || 0,
-        totalNumberOfStudentsWhoAttended,
-        attendanceRate: totalRecordsExpected
-          ? (totalNumberOfStudentsWhoAttended / totalRecordsExpected) * 100
-          : 0,
-        totalRecordsExpected,
+        stats: {
+          totalStudents: classExists?.students?.length || 0,
+          totalAttendanceRecords: attendance?.length || 0,
+          totalNumberOfStudentsWhoAttended,
+          attendanceRate: totalRecordsExpected
+            ? (totalNumberOfStudentsWhoAttended / totalRecordsExpected) * 100
+            : 0,
+          totalRecordsExpected,
+        },
       },
       {
         status: 200,

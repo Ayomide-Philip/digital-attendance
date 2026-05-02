@@ -10,8 +10,8 @@ import {
   Users,
 } from "lucide-react";
 import Card from "@/components/ui/card";
-// import { watchLocationWithBounds } from "@/lib/utility/getUserCurrentLocation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 const recentActivity = [
   {
@@ -49,54 +49,61 @@ const upcomingSessions = [
   },
 ];
 
-export default function OverviewTab({ overview }) {
-  // useEffect(() => {
-  //   const connection =
-  //     navigator.connection ||
-  //     navigator.mozConnection ||
-  //     navigator.webkitConnection;
-  //   console.log(connection);
+export default function OverviewTab({ overview, classId }) {
+  const [stats, setStats] = useState(null);
 
-  //   const watcher = watchLocationWithBounds(
-  //     (bounds) => {
-  //       console.log("Location Bounds:", bounds);
-  //     },
-  //     (error) => {
-  //       console.log("Error watching location:", error);
-  //     },
-  //     {
-  //       minSamples: 5,
-  //       requiredAccuracy: 30,
-  //       maxDurationMs: 60000,
-  //     },
-  //   );
+  useEffect(() => {
+    if (!classId) return;
+    async function fetchStats() {
+      try {
+        const request = await fetch(`/api/teacher/classes/${classId}/stats`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+        });
+        const response = await request.json();
+        if (!request?.ok || response?.error) {
+          toast.error(
+            response?.error ||
+              "Failed to load attendance stats. Please try again later.",
+          );
+          window.location.href = `/dashboard/teachers/classes`;
+        }
+        setStats(response.stats);
+      } catch (err) {
+        toast.error("Failed to load attendance stats. Please try again later.");
+        window.location.href = `/dashboard/teachers/classes`;
+      }
+    }
+    fetchStats();
+  }, [classId]);
 
-  //   return () => {
-  //     watcher.stop("component_unmount");
-  //   };
-  // }, []);
   const quickStats = [
     {
       label: "Total Students",
-      value: overview?.students?.length || "0",
+      value: stats?.totalStudents || "0",
       icon: Users,
       tone: "bg-sky-500/10 text-sky-700 dark:text-sky-300",
     },
     {
-      label: "Present Today",
-      value: "116",
+      label: "Total Attended",
+      value: `${stats?.totalNumberOfStudentsWhoAttended || "0"}/${stats?.totalRecordsExpected || "0"}`,
       icon: BadgeCheck,
       tone: "bg-emerald-500/10 text-emerald-700 dark:text-emerald-300",
     },
     {
       label: "Attendance Rate",
-      value: "91%",
+      value: stats?.attendanceRate
+        ? `${stats.attendanceRate.toFixed(2)}%`
+        : "0%",
       icon: CheckCircle2,
       tone: "bg-violet-500/10 text-violet-700 dark:text-violet-300",
     },
     {
-      label: "Class Sessions",
-      value: "24",
+      label: "Attendance Sessions",
+      value: stats?.totalAttendanceRecords || "0",
       icon: Calendar,
       tone: "bg-amber-500/10 text-amber-700 dark:text-amber-300",
     },
