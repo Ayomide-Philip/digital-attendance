@@ -4,6 +4,7 @@ import { NextResponse } from "next/server";
 import mongoose from "mongoose";
 import User from "@/lib/models/user.model";
 import Classes from "@/lib/models/classes.model";
+import Attandance from "@/lib/models/attendance.model";
 
 export const GET = auth(async function GET(req, { params }) {
   if (!req?.auth || !req?.auth?.user) {
@@ -70,9 +71,32 @@ export const GET = auth(async function GET(req, { params }) {
         },
       );
     }
+
+    const attendance = await Attandance.find({
+      classesId: new mongoose.Types.ObjectId(classesId),
+      teacherId: new mongoose.Types.ObjectId(userId),
+    });
+
+    const totalNumberOfStudentsWhoAttended = attendance.reduce(
+      (total, records) => {
+        const presentStudents = records?.students?.filter(
+          (student) => student?.status === "present",
+        ).length;
+        return total + presentStudents;
+      },
+      0,
+    );
     return NextResponse.json(
       {
-        message: `Stats for class ${classesId} will be implemented in the future.`,
+        message: `Stats for class ${classExists?.name} fetched successfully.`,
+        totalStudents: classExists?.students?.length || 0,
+        totalAttendanceRecords: attendance?.length || 0,
+        totalNumberOfStudentsWhoAttended: totalNumberOfStudentsWhoAttended,
+        attendanceRate:
+          (totalNumberOfStudentsWhoAttended /
+            ((classExists?.students?.length || 1) *
+              (attendance?.length || 1))) *
+          100,
       },
       {
         status: 200,
