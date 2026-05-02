@@ -51,10 +51,12 @@ const upcomingSessions = [
 
 export default function OverviewTab({ overview, classId }) {
   const [stats, setStats] = useState(null);
+  const [loadingStats, setLoadingStats] = useState(true);
 
   useEffect(() => {
     if (!classId) return;
     async function fetchStats() {
+      setLoadingStats(true);
       try {
         const request = await fetch(`/api/teacher/classes/${classId}/stats`, {
           method: "GET",
@@ -72,9 +74,12 @@ export default function OverviewTab({ overview, classId }) {
           window.location.href = `/dashboard/teachers/classes`;
         }
         setStats(response.stats);
+        setLoadingStats(false);
       } catch (err) {
         toast.error("Failed to load attendance stats. Please try again later.");
         window.location.href = `/dashboard/teachers/classes`;
+      } finally {
+        setLoadingStats(false);
       }
     }
     fetchStats();
