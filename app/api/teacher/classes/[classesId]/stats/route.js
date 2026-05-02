@@ -3,6 +3,7 @@ import { connectDatabase } from "@/lib/database/connectdb";
 import { NextResponse } from "next/server";
 import mongoose from "mongoose";
 import User from "@/lib/models/user.model";
+import Classes from "@/lib/models/classes.model";
 
 export const GET = auth(async function GET(req, { params }) {
   if (!req?.auth || !req?.auth?.user) {
@@ -55,6 +56,20 @@ export const GET = auth(async function GET(req, { params }) {
       );
     }
 
+    const classExists = await Classes.findOne({
+      _id: new mongoose.Types.ObjectId(classesId),
+      teacher: new mongoose.Types.ObjectId(userId),
+    });
+    if (!classExists) {
+      return NextResponse.json(
+        {
+          error: "Class not found or you do not have access to it.",
+        },
+        {
+          status: 404,
+        },
+      );
+    }
     return NextResponse.json(
       {
         message: `Stats for class ${classesId} will be implemented in the future.`,
