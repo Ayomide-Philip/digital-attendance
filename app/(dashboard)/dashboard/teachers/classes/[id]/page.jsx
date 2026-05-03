@@ -9,7 +9,7 @@ export default async function Page({ params }) {
   if (!id || id === "undefined" || id === "null") {
     return (
       <ClassErrorState
-        error="Invalid class id in URL"
+        error="Invalid Parameters"
         retryHref="/dashboard/teachers/classes"
       />
     );
