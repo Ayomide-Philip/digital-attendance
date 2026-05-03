@@ -4,14 +4,7 @@
 import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import Card from "@/components/ui/card";
-import {
-  Trash2,
-  Search,
-  Building2,
-  Users,
-  Mail,
-  Hash,
-} from "lucide-react";
+import { Trash2, Search, Building2, Users, Mail, Hash } from "lucide-react";
 import { toast } from "sonner";
 import Select from "@/components/ui/select";
 
@@ -97,7 +90,8 @@ export default function StudentList({ students = [], classId }) {
                 Students in Class
               </h2>
               <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-                Total: {studentList.length} enrolled student{studentList.length !== 1 ? "s" : ""}
+                Total: {studentList.length} enrolled student
+                {studentList.length !== 1 ? "s" : ""}
               </p>
             </div>
           </div>
@@ -156,9 +150,10 @@ export default function StudentList({ students = [], classId }) {
           </p>
         </Card>
       ) : (
-        <div className="space-y-3">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
           {filtered.map((student, idx) => {
-            const displayName = student?.displayName || student?.name || "Unknown";
+            const displayName =
+              student?.displayName || student?.name || "Unknown";
             const matric = student?.matricNo || "N/A";
             const email = student?.email || "";
             const department = student?.department || "";
@@ -167,48 +162,51 @@ export default function StudentList({ students = [], classId }) {
             return (
               <Card
                 key={student._id || idx}
-                className="group flex items-center justify-between gap-4 rounded-2xl border border-slate-200/70 bg-white/85 p-4 shadow-sm transition-all duration-200 hover:border-slate-300 hover:shadow-md dark:border-slate-800 dark:bg-slate-950/70 dark:hover:border-slate-700"
+                className="group block h-full rounded-2xl border border-slate-200/70 bg-white/90 p-5 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-slate-200/40 dark:border-slate-800 dark:bg-slate-950/80 dark:hover:shadow-black/20"
               >
-                <div className="flex items-center gap-4 min-w-0 flex-1">
-                  <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-linear-to-br from-sky-500 to-cyan-600 text-xs font-semibold text-white shadow-md">
-                    {initials}
-                  </div>
-
-                  <div className="min-w-0 flex-1">
-                    <h3 className="truncate text-sm font-semibold text-slate-900 dark:text-slate-100">
-                      {displayName}
-                    </h3>
-                    <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
-                      <span className="inline-flex items-center gap-1">
-                        <Hash className="size-3" />
-                        {matric}
-                      </span>
-                      {email && (
-                        <span className="inline-flex items-center gap-1">
-                          <Mail className="size-3" />
-                          {email}
-                        </span>
-                      )}
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex items-start gap-3 min-w-0">
+                    <div className="grid size-10 shrink-0 place-items-center rounded-xl bg-linear-to-br from-sky-500 to-cyan-600 text-xs font-semibold text-white">
+                      {initials}
+                    </div>
+                    <div className="min-w-0">
+                      <h3 className="line-clamp-1 text-base font-semibold text-slate-900 dark:text-slate-100">
+                        {displayName}
+                      </h3>
+                      <p className="mt-0.5 truncate text-xs text-slate-500 dark:text-slate-400">
+                        {email}
+                      </p>
                     </div>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3">
-                  {department && (
-                    <div className="hidden sm:flex items-center gap-1.5 rounded-full border border-sky-200 bg-sky-50 px-3 py-1 text-xs font-medium text-sky-700 dark:border-sky-900/50 dark:bg-sky-950/40 dark:text-sky-300">
-                      <Building2 className="size-3" />
-                      <span className="truncate">{department}</span>
-                    </div>
-                  )}
+                <div className="mt-3 rounded-lg bg-slate-50/80 px-2.5 py-1.5 dark:bg-slate-900/60">
+                  <p className="truncate text-xs font-medium text-slate-600 dark:text-slate-300">
+                    {department}
+                  </p>
+                </div>
+
+                <div className="mt-4 space-y-2">
+                  <p className="text-xs font-medium text-slate-500 dark:text-slate-400">
+                    Matric Number
+                  </p>
+                  <div className="inline-flex items-center rounded-full border border-sky-200 bg-sky-50 px-3 py-1 text-xs font-semibold text-sky-700 dark:border-sky-900/50 dark:bg-sky-950/40 dark:text-sky-300">
+                    <Hash className="size-3 mr-1" />
+                    {matric}
+                  </div>
+                </div>
+
+                <div className="mt-4 flex justify-end">
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="shrink-0 text-slate-500 hover:text-rose-600 dark:text-slate-400 dark:hover:text-rose-400"
+                    className="text-slate-400 hover:text-rose-600 dark:text-slate-600 dark:hover:text-rose-400"
                     onClick={() => {
                       handleRemoveStudent(student._id);
                     }}
                   >
-                    <Trash2 className="size-4" />
+                    <Trash2 className="size-4 mr-2" />
+                    Remove
                   </Button>
                 </div>
               </Card>

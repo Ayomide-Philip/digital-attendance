@@ -46,7 +46,7 @@ export const GET = auth(async function GET(req) {
     const classes = await Classes.find({
       teacher: new mongoose.Types.ObjectId(userId),
     })
-      .populate("students", "name email department")
+      .populate("students", "name email department matricNo")
       .select("name students")
       .lean();
 
