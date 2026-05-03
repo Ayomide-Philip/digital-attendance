@@ -50,21 +50,39 @@ export const GET = auth(async function GET(req) {
       .select("name students")
       .lean();
 
-    const studentBelongToClasses = classes?.map((c) => {
-      return c.students?.map((s) => {
-        return {
+    const studentBelongToClasses = (classes ?? []).reduce((acc, c) => {
+      (c.students ?? []).forEach((s) => {
+        const studentId = s._id.toString();
+        const existingStudent = acc.get(studentId);
+
+        if (existingStudent) {
+          existingStudent.classes.push({
+            name: c.name,
+            classId: c._id.toString(),
+          });
+          return;
+        }
+
+        acc.set(studentId, {
           ...s,
-          className: c.name,
-          classId: c._id,
-        };
+          classes: [
+            {
+              name: c.name,
+              classId: c._id.toString(),
+            },
+          ],
+        });
       });
-    });
+
+      return acc;
+    }, new Map());
+
+    const students = [...studentBelongToClasses.values()];
 
     return NextResponse.json(
       {
         message: "Get all teacher students",
-        // classes: classes,
-        students: studentBelongToClasses,
+        students,
       },
       {
         status: 200,
