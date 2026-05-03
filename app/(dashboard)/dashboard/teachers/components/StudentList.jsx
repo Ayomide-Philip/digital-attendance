@@ -96,12 +96,20 @@ export default function StudentList({ students = [], classId }) {
             </div>
           </div>
 
-          <div className="flex gap-3 flex-wrap">
-            <div className="flex flex-col rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 dark:border-slate-800 dark:bg-slate-900/60">
+          <div className="flex flex-wrap gap-2 lg:gap-3">
+            <div className="flex flex-col rounded-xl border border-slate-200 bg-sky-50/80 px-3 py-2 dark:border-slate-800 dark:bg-sky-950/20">
+              <p className="text-xs font-medium text-slate-500 dark:text-slate-400">
+                Total Students
+              </p>
+              <p className="mt-1 text-lg font-bold text-sky-600 dark:text-sky-300">
+                {studentList.length}
+              </p>
+            </div>
+            <div className="flex flex-col rounded-xl border border-slate-200 bg-sky-50/80 px-3 py-2 dark:border-slate-800 dark:bg-sky-950/20">
               <p className="text-xs font-medium text-slate-500 dark:text-slate-400">
                 Departments
               </p>
-              <p className="text-xl font-semibold text-slate-900 dark:text-slate-100">
+              <p className="mt-1 text-lg font-bold text-sky-600 dark:text-sky-300">
                 {departments.length - 1}
               </p>
             </div>
