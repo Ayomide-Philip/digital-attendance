@@ -1,5 +1,6 @@
 import { auth } from "@/auth";
 import { connectDatabase } from "@/lib/database/connectdb";
+import Attandance from "@/lib/models/attendance.model";
 import Classes from "@/lib/models/classes.model";
 import User from "@/lib/models/user.model";
 import mongoose from "mongoose";
@@ -87,9 +88,18 @@ export const GET = auth(async function GET(req, { params }) {
       );
     }
 
+    const attendance = await Attandance.find({
+      classesId: new mongoose.Types.ObjectId(classesId),
+    })
+      .select("students")
+      .lean();
+
     return NextResponse.json({
       message: `Stats for class ${isClassExists?.name} retrieved successfully`,
-      data: isClassExists,
+      stats: {
+        class: isClassExists,
+        attendance,
+      },
     });
   } catch (err) {
     console.log(err);
