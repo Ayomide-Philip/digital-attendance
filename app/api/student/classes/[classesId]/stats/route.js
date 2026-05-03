@@ -94,11 +94,48 @@ export const GET = auth(async function GET(req, { params }) {
       .select("students")
       .lean();
 
+    const totalAttendance = attendance?.length || 0;
+    const totalStudents = isClassExists?.students?.length || 0;
+    const presentCount = attendance?.reduce((count, record) => {
+      const studentRecord = record?.students?.find(
+        (s) => s?.studentId?.toString() === userId.toString(),
+      );
+      if (studentRecord?.status === "present") {
+        return count + 1;
+      }
+      return count;
+    }, 0);
+
+    const attendanceRate =
+      totalAttendance > 0 ? (presentCount / totalAttendance) * 100 : 0;
+
+    let performanceStatus;
+
+    switch (true) {
+      case attendanceRate >= 80:
+        performanceStatus = "Excellent";
+        break;
+      case attendanceRate >= 60:
+        performanceStatus = "Good";
+        break;
+      case attendanceRate >= 50:
+        performanceStatus = "Fair";
+        break;
+      case attendanceRate >= 30:
+        performanceStatus = "Poor";
+        break;
+      default:
+        performanceStatus = "Critical";
+    }
+
     return NextResponse.json({
       message: `Stats for class ${isClassExists?.name} retrieved successfully`,
       stats: {
-        class: isClassExists,
-        attendance,
+        totalAttendance,
+        totalStudents,
+        presentCount,
+        attendanceRate,
+        performanceStatus,
       },
     });
   } catch (err) {
