@@ -38,6 +38,7 @@ export default function StudentOverview({ classDetails, classId }) {
         setLoadingStats(false);
       }
     }
+    fetchStudentStats();
   }, [classId]);
   const mockClassData = {
     id: "class-001",
@@ -75,25 +76,25 @@ export default function StudentOverview({ classDetails, classId }) {
         {[
           {
             label: "Your Attendance",
-            value: `${mockClassData.attendancePercentage}%`,
+            value: `${studentStats?.attendanceRate?.toFixed(1) || 0}%`,
             icon: CheckCircle,
             tone: "bg-emerald-500/10 text-emerald-700 dark:text-emerald-300",
           },
           {
             label: "Total Sessions",
-            value: 8,
+            value: studentStats?.totalAttendance || 0,
             icon: Calendar,
             tone: "bg-blue-500/10 text-blue-700 dark:text-blue-300",
           },
           {
             label: "Class Size",
-            value: mockClassData.totalStudents,
+            value: studentStats?.totalStudents || 0,
             icon: Users,
             tone: "bg-purple-500/10 text-purple-700 dark:text-purple-300",
           },
           {
             label: "Performance",
-            value: "Good",
+            value: studentStats?.performanceStatus || "N/A",
             icon: TrendingUp,
             tone: "bg-violet-500/10 text-violet-700 dark:text-violet-300",
           },
@@ -107,9 +108,13 @@ export default function StudentOverview({ classDetails, classId }) {
                 <p className="text-sm text-slate-500 dark:text-slate-400">
                   {item.label}
                 </p>
-                <p className="mt-2 text-2xl font-semibold capitalize text-slate-900 dark:text-slate-100">
-                  {item.value}
-                </p>
+                {loadingStats ? (
+                  <div className="mt-2 h-8 w-24 animate-pulse rounded-lg bg-slate-200 dark:bg-slate-700" />
+                ) : (
+                  <p className="mt-2 text-2xl font-semibold capitalize text-slate-900 dark:text-slate-100">
+                    {item.value}
+                  </p>
+                )}
               </div>
               <div className={`rounded-xl p-2.5 ${item.tone}`}>
                 <item.icon className="size-5" />
