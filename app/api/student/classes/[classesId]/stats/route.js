@@ -1,5 +1,6 @@
 import { auth } from "@/auth";
 import { connectDatabase } from "@/lib/database/connectdb";
+import Classes from "@/lib/models/classes.model";
 import User from "@/lib/models/user.model";
 import mongoose from "mongoose";
 import { NextResponse } from "next/server";
@@ -56,8 +57,39 @@ export const GET = auth(async function GET(req, { params }) {
       );
     }
 
+    const isClassExists = await Classes.findById(
+      new mongoose.Types.ObjectId(classesId),
+    )
+      .select("students name")
+      .lean();
+
+    if (!isClassExists) {
+      return NextResponse.json(
+        {
+          error: "Class does not exist",
+        },
+        {
+          status: 404,
+        },
+      );
+    }
+
+    if (
+      !isClassExists?.students?.find((s) => s?.toString() === userId.toString())
+    ) {
+      return NextResponse.json(
+        {
+          error: "You are not enrolled in this class",
+        },
+        {
+          status: 403,
+        },
+      );
+    }
+
     return NextResponse.json({
-      message: "Stats for specific class",
+      message: `Stats for class ${isClassExists?.name} retrieved successfully`,
+      data: isClassExists,
     });
   } catch (err) {
     console.log(err);
