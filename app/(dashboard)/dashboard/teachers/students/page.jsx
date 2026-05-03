@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Search,
   Users,
@@ -9,63 +9,6 @@ import {
   SlidersHorizontal,
 } from "lucide-react";
 import Select from "@/components/ui/select";
-
-const mockStudents = [
-  {
-    _id: "1",
-    name: "John Doe",
-    email: "john.doe@student.oauife.edu.ng",
-    department: "Computing Science and Cyber Security",
-    enrolledClasses: [
-      { name: "Advance Algebra", classId: "1" },
-      { name: "Introductory to computing science", classId: "2" },
-      { name: "Web Development", classId: "3" },
-      { name: "Data Structures", classId: "4" },
-    ],
-  },
-  {
-    _id: "2",
-    name: "Amina Yusuf",
-    email: "amina.yusuf@student.oauife.edu.ng",
-    department: "Mathematics",
-    enrolledClasses: [
-      { name: "Advance Algebra", classId: "1" },
-      { name: "Linear Algebra", classId: "5" },
-    ],
-  },
-  {
-    _id: "3",
-    name: "Tobi Adewale",
-    email: "tobi.adewale@student.oauife.edu.ng",
-    department: "Computer Engineering",
-    enrolledClasses: [
-      { name: "Circuit Theory", classId: "6" },
-      { name: "Introductory to computing science", classId: "2" },
-      { name: "Embedded Systems", classId: "7" },
-    ],
-  },
-  {
-    _id: "4",
-    name: "Chioma Okafor",
-    email: "chioma.okafor@student.oauife.edu.ng",
-    department: "Software Engineering",
-    enrolledClasses: [
-      { name: "Web Development", classId: "3" },
-      { name: "Database Design", classId: "8" },
-    ],
-  },
-  {
-    _id: "5",
-    name: "Zainab Hassan",
-    email: "zainab.hassan@student.oauife.edu.ng",
-    department: "Computing Science and Cyber Security",
-    enrolledClasses: [
-      { name: "Cybersecurity Basics", classId: "9" },
-      { name: "Network Administration", classId: "10" },
-      { name: "Ethical Hacking", classId: "11" },
-    ],
-  },
-];
 
 function getInitials(name) {
   return name
@@ -78,27 +21,55 @@ function getInitials(name) {
 }
 
 export default function StudentsPage() {
-  const [students] = useState(mockStudents);
+  const [students, setStudents] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [departmentFilter, setDepartmentFilter] = useState("all");
 
+  useEffect(() => {
+    async function fetchStudents() {
+      try {
+        const response = await fetch("/api/teacher/students", {
+          method: "GET",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        const data = await response.json();
+
+        if (data?.students) {
+          setStudents(data.students || []);
+        } else {
+          setStudents([]);
+        }
+      } catch (err) {
+        console.error("Failed to fetch students:", err);
+        setError("Failed to load students");
+        setStudents([]);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchStudents();
+  }, []);
+
   const departments = [
     "all",
-    ...new Set(students.map((student) => student.department)),
+    ...new Set(students.map((student) => student.department).filter(Boolean)),
   ];
 
   const filteredStudents = students.filter((student) => {
     const matchesSearch =
-      student.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      student.email.toLowerCase().includes(searchQuery.toLowerCase());
+      student.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      student.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      student.matricNo?.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesDept =
       departmentFilter === "all" || student.department === departmentFilter;
     return matchesSearch && matchesDept;
   });
-
-  const totalClasses = new Set(
-    students.flatMap((s) => s.enrolledClasses.map((c) => c.classId)),
-  ).size;
 
   return (
     <div className="space-y-5">
@@ -126,15 +97,7 @@ export default function StudentsPage() {
               Total Students
             </p>
             <p className="text-xl font-semibold text-slate-900 dark:text-slate-100">
-              {students.length}
-            </p>
-          </div>
-          <div className="flex flex-col rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 dark:border-slate-800 dark:bg-slate-900/60">
-            <p className="text-xs font-medium text-slate-500 dark:text-slate-400">
-              Total Classes
-            </p>
-            <p className="text-xl font-semibold text-slate-900 dark:text-slate-100">
-              {totalClasses}
+              {loading ? "-" : students.length}
             </p>
           </div>
         </div>
@@ -168,7 +131,24 @@ export default function StudentsPage() {
         </div>
       </div>
 
-      {filteredStudents.length === 0 ? (
+      {loading ? (
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+          {[...Array(6)].map((_, i) => (
+            <div
+              key={i}
+              className="animate-pulse rounded-2xl bg-slate-200 p-5 dark:bg-slate-800"
+              style={{ height: "280px" }}
+            />
+          ))}
+        </div>
+      ) : error ? (
+        <div className="rounded-2xl border border-dashed border-red-300/70 bg-red-50 p-8 text-center shadow-sm dark:border-red-900/50 dark:bg-red-950/20">
+          <p className="text-base font-semibold text-red-700 dark:text-red-300">
+            Error loading students
+          </p>
+          <p className="mt-2 text-sm text-red-600 dark:text-red-400">{error}</p>
+        </div>
+      ) : filteredStudents.length === 0 ? (
         <section className="rounded-2xl border border-dashed border-slate-300/90 bg-white/70 p-12 text-center shadow-sm dark:border-slate-700 dark:bg-slate-950/60">
           <div className="mx-auto mb-4 flex size-12 items-center justify-center rounded-2xl bg-slate-100 text-slate-400 dark:bg-slate-900 dark:text-slate-500">
             <Users className="size-6" />
@@ -182,69 +162,53 @@ export default function StudentsPage() {
         </section>
       ) : (
         <section className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
-          {filteredStudents.map((student) => {
-            const visibleClasses = student.enrolledClasses.slice(0, 2);
-            const moreCount =
-              student.enrolledClasses.length - visibleClasses.length;
-
-            return (
-              <div
-                key={student._id}
-                className="group block h-full rounded-2xl border border-slate-200/70 bg-white/90 p-5 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-slate-200/40 dark:border-slate-800 dark:bg-slate-950/80 dark:hover:shadow-black/20"
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <div className="flex items-start gap-3 min-w-0">
-                    <div className="grid size-10 shrink-0 place-items-center rounded-xl bg-linear-to-br from-sky-500 to-cyan-600 text-xs font-semibold text-white">
-                      {getInitials(student.name)}
-                    </div>
-                    <div className="min-w-0">
-                      <h3 className="line-clamp-1 text-base font-semibold text-slate-900 dark:text-slate-100">
-                        {student.name}
-                      </h3>
-                      <p className="mt-0.5 truncate text-xs text-slate-500 dark:text-slate-400">
-                        {student.email}
-                      </p>
-                    </div>
+          {filteredStudents.map((student) => (
+            <div
+              key={student._id}
+              className="group block h-full rounded-2xl border border-slate-200/70 bg-white/90 p-5 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-slate-200/40 dark:border-slate-800 dark:bg-slate-950/80 dark:hover:shadow-black/20"
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div className="flex items-start gap-3 min-w-0">
+                  <div className="grid size-10 shrink-0 place-items-center rounded-xl bg-linear-to-br from-sky-500 to-cyan-600 text-xs font-semibold text-white">
+                    {getInitials(student.name)}
                   </div>
-                  <ArrowUpRight className="mt-0.5 size-4 shrink-0 text-slate-300 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-slate-400 dark:text-slate-600 dark:group-hover:text-slate-500" />
-                </div>
-
-                <div className="mt-3 rounded-lg bg-slate-50/80 px-2.5 py-1.5 dark:bg-slate-900/60">
-                  <p className="truncate text-xs font-medium text-slate-600 dark:text-slate-300">
-                    {student.department}
-                  </p>
-                </div>
-
-                <div className="mt-4 space-y-2">
-                  <p className="text-xs font-medium text-slate-500 dark:text-slate-400">
-                    Enrolled Classes ({student.enrolledClasses.length})
-                  </p>
-                  <div className="flex flex-wrap gap-1.5">
-                    {visibleClasses.map((classItem) => (
-                      <span
-                        key={classItem.classId}
-                        className="inline-flex items-center rounded-full bg-sky-50 px-2.5 py-1 text-xs font-medium text-sky-700 transition-colors duration-300 group-hover:bg-sky-100 dark:bg-sky-950/40 dark:text-sky-300 dark:group-hover:bg-sky-950/60"
-                      >
-                        {classItem.name}
-                      </span>
-                    ))}
-                    {moreCount > 0 && (
-                      <span className="inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-medium text-slate-600 dark:border-slate-800 dark:bg-slate-900/60 dark:text-slate-300">
-                        +{moreCount}
-                      </span>
-                    )}
+                  <div className="min-w-0">
+                    <h3 className="line-clamp-1 text-base font-semibold text-slate-900 dark:text-slate-100">
+                      {student.name}
+                    </h3>
+                    <p className="mt-0.5 truncate text-xs text-slate-500 dark:text-slate-400">
+                      {student.email}
+                    </p>
                   </div>
                 </div>
+                <ArrowUpRight className="mt-0.5 size-4 shrink-0 text-slate-300 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-slate-400 dark:text-slate-600 dark:group-hover:text-slate-500" />
+              </div>
 
-                <div className="mt-4 border-t border-slate-200/70 pt-3 dark:border-slate-800/70">
-                  <button className="inline-flex items-center gap-2 rounded-lg bg-sky-50 px-3 py-1.5 text-xs font-semibold text-sky-700 transition-colors duration-300 hover:bg-sky-100 dark:bg-sky-950/30 dark:text-sky-300 dark:hover:bg-sky-950/50">
-                    <BookOpen className="size-3.5" />
-                    View Details
-                  </button>
+              <div className="mt-3 rounded-lg bg-slate-50/80 px-2.5 py-1.5 dark:bg-slate-900/60">
+                <p className="truncate text-xs font-medium text-slate-600 dark:text-slate-300">
+                  {student.department}
+                </p>
+              </div>
+
+              <div className="mt-4 space-y-2">
+                <p className="text-xs font-medium text-slate-500 dark:text-slate-400">
+                  Matric Number
+                </p>
+                <div className="rounded-full bg-sky-50 px-3 py-2 dark:bg-sky-950/40">
+                  <span className="inline-flex items-center text-xs font-semibold text-sky-700 dark:text-sky-300">
+                    {student.matricNo || "N/A"}
+                  </span>
                 </div>
               </div>
-            );
-          })}
+
+              <div className="mt-4 border-t border-slate-200/70 pt-3 dark:border-slate-800/70">
+                <button className="inline-flex items-center gap-2 rounded-lg bg-sky-50 px-3 py-1.5 text-xs font-semibold text-sky-700 transition-colors duration-300 hover:bg-sky-100 dark:bg-sky-950/30 dark:text-sky-300 dark:hover:bg-sky-950/50">
+                  <BookOpen className="size-3.5" />
+                  View Details
+                </button>
+              </div>
+            </div>
+          ))}
         </section>
       )}
     </div>
