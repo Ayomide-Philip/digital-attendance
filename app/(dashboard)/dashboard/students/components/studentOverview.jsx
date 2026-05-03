@@ -40,20 +40,6 @@ export default function StudentOverview({ classDetails, classId }) {
     }
     fetchStudentStats();
   }, [classId]);
-  const mockClassData = {
-    id: "class-001",
-    name: "Introduction to Web Development",
-    code: "CS101",
-    description:
-      "Learn the fundamentals of web development with HTML, CSS, and JavaScript.",
-    teacher: {
-      name: "Dr. Sarah Johnson",
-      email: "sarah.johnson@school.edu",
-      bio: "Experienced web developer with 10+ years in the industry.",
-    },
-    totalStudents: 32,
-    attendancePercentage: 92,
-  };
   return (
     <>
       <Card className="rounded-2xl border border-slate-200/70 bg-white/85 p-6 shadow-sm dark:border-slate-800 dark:bg-slate-950/70">
