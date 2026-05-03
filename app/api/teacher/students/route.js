@@ -56,7 +56,7 @@ export const GET = auth(async function GET(req) {
         const existingStudent = acc.get(studentId);
 
         if (existingStudent) {
-          existingStudent.classes.push({
+          existingStudent.enrolledClasses.push({
             name: c.name,
             classId: c._id.toString(),
           });
@@ -65,7 +65,7 @@ export const GET = auth(async function GET(req) {
 
         acc.set(studentId, {
           ...s,
-          classes: [
+          enrolledClasses: [
             {
               name: c.name,
               classId: c._id.toString(),
