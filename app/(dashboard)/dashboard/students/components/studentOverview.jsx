@@ -1,6 +1,14 @@
 import Card from "@/components/ui/card";
 import { Calendar, CheckCircle, TrendingUp, User, Users } from "lucide-react";
-export default function StudentOverview({ classDetails }) {
+import { useEffect, useState } from "react";
+export default function StudentOverview({ classDetails, classId }) {
+  const [studentStats, setStudentStats] = useState(null);
+
+  useEffect(() => {
+    if (!classId) {
+      return (window.location.href = "/dashboard/students/classes/");
+    }
+  }, [classId]);
   const mockClassData = {
     id: "class-001",
     name: "Introduction to Web Development",
