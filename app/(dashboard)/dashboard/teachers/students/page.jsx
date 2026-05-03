@@ -8,6 +8,7 @@ import {
   ArrowUpRight,
   SlidersHorizontal,
 } from "lucide-react";
+import Select from "@/components/ui/select";
 
 const mockStudents = [
   {
@@ -151,20 +152,20 @@ export default function StudentsPage() {
           />
         </label>
 
-        <label className="flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-slate-600 transition focus-within:border-sky-400 focus-within:bg-white dark:border-slate-800 dark:bg-slate-900/60 dark:text-slate-400">
-          <SlidersHorizontal className="size-4 shrink-0" />
-          <select
+        <div className="relative">
+          <SlidersHorizontal className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-slate-500 pointer-events-none dark:text-slate-400" />
+          <Select
             value={departmentFilter}
             onChange={(e) => setDepartmentFilter(e.target.value)}
-            className="bg-transparent text-sm outline-none dark:text-slate-100"
+            className="pl-9"
           >
             {departments.map((dept) => (
               <option key={dept} value={dept}>
                 {dept === "all" ? "All departments" : dept}
               </option>
             ))}
-          </select>
-        </label>
+          </Select>
+        </div>
       </div>
 
       {filteredStudents.length === 0 ? (
