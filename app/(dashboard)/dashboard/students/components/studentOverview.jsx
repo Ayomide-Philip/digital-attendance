@@ -1,12 +1,42 @@
 import Card from "@/components/ui/card";
 import { Calendar, CheckCircle, TrendingUp, User, Users } from "lucide-react";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 export default function StudentOverview({ classDetails, classId }) {
   const [studentStats, setStudentStats] = useState(null);
+  const [loadingStats, setLoadingStats] = useState(true);
 
   useEffect(() => {
     if (!classId) {
       return (window.location.href = "/dashboard/students/classes/");
+    }
+
+    async function fetchStudentStats() {
+      try {
+        const request = await fetch(`/api/student/classes/${classId}/stats`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          cache: "no-cache",
+        });
+        const response = await request.json();
+        if (!request?.ok || response?.error) {
+          setLoadingStats(false);
+          toast.error(response?.error || "Failed to fetch student stats");
+          window.location.href = "/dashboard/students/classes/";
+          return;
+        }
+        setStudentStats(response?.stats || null);
+        setLoadingStats(false);
+      } catch (err) {
+        setLoadingStats(false);
+        toast.error("Failed to fetch student stats. Please try again later.");
+        window.location.href = "/dashboard/students/classes/";
+      } finally {
+        setLoadingStats(false);
+      }
     }
   }, [classId]);
   const mockClassData = {
