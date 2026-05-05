@@ -1,4 +1,5 @@
 import { auth } from "@/auth";
+import { connectDatabase } from "@/lib/database/connectdb";
 import { NextResponse } from "next/server";
 
 export const GET = auth(async function GET(req) {
@@ -26,6 +27,7 @@ export const GET = auth(async function GET(req) {
   }
 
   try {
+    await connectDatabase();
     return NextResponse.json({
       message: "Hello, teacher! This is your stats endpoint.",
     });
