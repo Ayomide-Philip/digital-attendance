@@ -1,5 +1,6 @@
 import { auth } from "@/auth";
 import { connectDatabase } from "@/lib/database/connectdb";
+import Classes from "@/lib/models/classes.model";
 import User from "@/lib/models/user.model";
 import mongoose from "mongoose";
 import { NextResponse } from "next/server";
@@ -56,8 +57,22 @@ export const GET = auth(async function GET(req) {
       );
     }
 
+    const classes = await Classes.find({
+      teacher: new mongoose.Types.ObjectId(userId),
+    }).lean();
+
+    const newClasses = classes.filter((c) => {
+      const oneWeekMs = 7 * 24 * 60 * 60 * 1000;
+      const today = new Date();
+      const classDate = new Date(c.createdAt);
+      console.log(today - classDate);
+      return Math.abs(today - classDate) <= oneWeekMs;
+    });
+
     return NextResponse.json({
       message: "Hello, teacher! This is your stats endpoint.",
+      totalClasses: classes?.length || 0,
+      newAddedClasses: newClasses?.length || 0,
     });
   } catch (err) {
     console.log(err);
