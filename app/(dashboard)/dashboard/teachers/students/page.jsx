@@ -148,7 +148,7 @@ export default function StudentsPage() {
           </p>
           <p className="mt-2 text-sm text-red-600 dark:text-red-400">{error}</p>
         </div>
-      ) : filteredStudents.length === 0 ? (
+      ) : filteredStudents?.length === 0 ? (
         <section className="rounded-2xl border border-dashed border-slate-300/90 bg-white/70 p-12 text-center shadow-sm dark:border-slate-700 dark:bg-slate-950/60">
           <div className="mx-auto mb-4 flex size-12 items-center justify-center rounded-2xl bg-slate-100 text-slate-400 dark:bg-slate-900 dark:text-slate-500">
             <Users className="size-6" />
@@ -162,22 +162,22 @@ export default function StudentsPage() {
         </section>
       ) : (
         <section className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
-          {filteredStudents.map((student) => (
+          {filteredStudents.map((student, idx) => (
             <div
-              key={student._id}
+              key={student?._id || idx}
               className="group block h-full rounded-2xl border border-slate-200/70 bg-white/90 p-5 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-slate-200/40 dark:border-slate-800 dark:bg-slate-950/80 dark:hover:shadow-black/20"
             >
               <div className="flex items-start justify-between gap-3">
                 <div className="flex items-start gap-3 min-w-0">
                   <div className="grid size-10 shrink-0 place-items-center rounded-xl bg-linear-to-br from-sky-500 to-cyan-600 text-xs font-semibold text-white">
-                    {getInitials(student.name)}
+                    {getInitials(student?.name || "Unknown")}
                   </div>
                   <div className="min-w-0">
                     <h3 className="line-clamp-1 text-base font-semibold text-slate-900 dark:text-slate-100">
-                      {student.name}
+                      {student?.name || "Unknown"}
                     </h3>
                     <p className="mt-0.5 truncate text-xs text-slate-500 dark:text-slate-400">
-                      {student.email}
+                      {student?.email || "N/A"}
                     </p>
                   </div>
                 </div>
@@ -186,7 +186,7 @@ export default function StudentsPage() {
 
               <div className="mt-3 rounded-lg bg-slate-50/80 px-2.5 py-1.5 dark:bg-slate-900/60">
                 <p className="truncate text-xs font-medium text-slate-600 dark:text-slate-300">
-                  {student.department}
+                  {student?.department || "N/A"}
                 </p>
               </div>
 
@@ -196,16 +196,9 @@ export default function StudentsPage() {
                 </p>
                 <div className="rounded-full bg-sky-50 px-3 py-2 dark:bg-sky-950/40">
                   <span className="inline-flex items-center text-xs font-semibold text-sky-700 dark:text-sky-300">
-                    {student.matricNo || "N/A"}
+                    {student?.matricNo || "N/A"}
                   </span>
                 </div>
-              </div>
-
-              <div className="mt-4 border-t border-slate-200/70 pt-3 dark:border-slate-800/70">
-                <button className="inline-flex items-center gap-2 rounded-lg bg-sky-50 px-3 py-1.5 text-xs font-semibold text-sky-700 transition-colors duration-300 hover:bg-sky-100 dark:bg-sky-950/30 dark:text-sky-300 dark:hover:bg-sky-950/50">
-                  <BookOpen className="size-3.5" />
-                  View Details
-                </button>
               </div>
             </div>
           ))}
