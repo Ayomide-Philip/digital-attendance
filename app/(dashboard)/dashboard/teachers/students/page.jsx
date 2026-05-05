@@ -4,16 +4,7 @@ import { useState, useEffect } from "react";
 import { Search, Users, ArrowUpRight, SlidersHorizontal } from "lucide-react";
 import Select from "@/components/ui/select";
 import LoadingArray from "@/components/loadingArray";
-
-function getInitials(name) {
-  return name
-    .split(" ")
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((part) => part[0])
-    .join("")
-    .toUpperCase();
-}
+import getInitials from "@/lib/utility/getInitials";
 
 export default function StudentsPage() {
   const [students, setStudents] = useState([]);

@@ -4,9 +4,10 @@
 import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import Card from "@/components/ui/card";
-import { Trash2, Search, Building2, Users, Mail, Hash } from "lucide-react";
+import { Trash2, Search, Building2, Users, Hash } from "lucide-react";
 import { toast } from "sonner";
 import Select from "@/components/ui/select";
+import getInitials from "@/lib/utility/getInitials";
 
 export default function StudentList({ students = [], classId }) {
   const [query, setQuery] = useState("");
@@ -62,16 +63,6 @@ export default function StudentList({ students = [], classId }) {
       console.log(err);
       return toast.error("Failed to remove student. Please try again.");
     }
-  }
-
-  function getInitials(name) {
-    return (name || "")
-      .split(" ")
-      .filter(Boolean)
-      .map((w) => w[0])
-      .join("")
-      .toUpperCase()
-      .slice(0, 2);
   }
 
   return (
@@ -208,7 +199,7 @@ export default function StudentList({ students = [], classId }) {
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="text-slate-400 hover:text-rose-600 dark:text-slate-600 dark:hover:text-rose-400"
+                    className="text-slate-400 cursor-pointer hover:text-rose-600 dark:text-slate-600 dark:hover:text-rose-400"
                     onClick={() => {
                       handleRemoveStudent(student._id);
                     }}
