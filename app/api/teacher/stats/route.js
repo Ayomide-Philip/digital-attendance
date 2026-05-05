@@ -1,5 +1,6 @@
 import { auth } from "@/auth";
 import { connectDatabase } from "@/lib/database/connectdb";
+import Attandance from "@/lib/models/attendance.model";
 import Classes from "@/lib/models/classes.model";
 import User from "@/lib/models/user.model";
 import mongoose from "mongoose";
@@ -61,18 +62,23 @@ export const GET = auth(async function GET(req) {
       teacher: new mongoose.Types.ObjectId(userId),
     }).lean();
 
-    const newClasses = classes.filter((c) => {
+    const newClasses = (classes || [])?.filter((c) => {
       const oneWeekMs = 7 * 24 * 60 * 60 * 1000;
       const today = new Date();
-      const classDate = new Date(c.createdAt);
+      const classDate = new Date(c?.createdAt);
       console.log(today - classDate);
       return Math.abs(today - classDate) <= oneWeekMs;
     });
+
+    const attendance = await Attandance.find({
+      teacherId: new mongoose.Types.ObjectId(userId),
+    }).lean();
 
     return NextResponse.json({
       message: "Hello, teacher! This is your stats endpoint.",
       totalClasses: classes?.length || 0,
       newAddedClasses: newClasses?.length || 0,
+      totalAttendance: attendance?.length || 0,
     });
   } catch (err) {
     console.log(err);
