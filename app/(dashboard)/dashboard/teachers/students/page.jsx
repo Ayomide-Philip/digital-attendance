@@ -1,14 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import {
-  Search,
-  Users,
-  BookOpen,
-  ArrowUpRight,
-  SlidersHorizontal,
-} from "lucide-react";
+import { Search, Users, ArrowUpRight, SlidersHorizontal } from "lucide-react";
 import Select from "@/components/ui/select";
+import LoadingArray from "@/components/loadingArray";
 
 function getInitials(name) {
   return name
@@ -132,15 +127,7 @@ export default function StudentsPage() {
       </div>
 
       {loading ? (
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
-          {[...Array(6)].map((_, i) => (
-            <div
-              key={i}
-              className="animate-pulse rounded-2xl bg-slate-200 p-5 dark:bg-slate-800"
-              style={{ height: "280px" }}
-            />
-          ))}
-        </div>
+        <LoadingArray />
       ) : error ? (
         <div className="rounded-2xl border border-dashed border-red-300/70 bg-red-50 p-8 text-center shadow-sm dark:border-red-900/50 dark:bg-red-950/20">
           <p className="text-base font-semibold text-red-700 dark:text-red-300">
