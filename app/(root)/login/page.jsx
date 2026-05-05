@@ -20,6 +20,23 @@ export default function LoginPage() {
     }
 
     setIsSubmitting(true);
+    if (!email || !email?.trim() || !password || !password?.trim()) {
+      toast.error("Please fill in the email and password.");
+      setIsSubmitting(false);
+      return;
+    }
+
+    if (!/\S+@\S+\.\S+/.test(email.trim())) {
+      toast.error("Inncorrect email address format");
+      setIsSubmitting(false);
+      return;
+    }
+
+    if (password.trim().length < 8) {
+      toast.error("Password must be at least 8 characters long.");
+      setIsSubmitting(false);
+      return;
+    }
 
     try {
       const signin = await signIn("credentials", {

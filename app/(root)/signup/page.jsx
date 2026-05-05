@@ -57,11 +57,11 @@ export default function SignupPage() {
       return toast.error("Password must be at least 8 characters long.");
     }
 
-    // if (getPasswordStrength(password) < 3) {
-    //   return toast.error(
-    //     "Password is too weak. Use uppercase, lowercase, numbers, and symbols.",
-    //   );
-    // }
+    if (getPasswordStrength(password) < 3) {
+      return toast.error(
+        "Password is too weak. Use uppercase, lowercase, numbers, and symbols.",
+      );
+    }
 
     if (password !== confirmPassword) {
       return toast.error("Passwords do not match. Please check and try again.");
@@ -77,7 +77,7 @@ export default function SignupPage() {
         },
         body: JSON.stringify({
           email: email.trim().toLowerCase(),
-          name: name,
+          name: name.trim(),
           password: password,
           role: role.trim(),
         }),
