@@ -95,11 +95,13 @@ export const GET = auth(async function GET(req) {
 
     return NextResponse.json({
       message: "Successfully fetched stats data",
-      totalClasses: classes?.length || 0,
-      newAddedClasses: newClasses?.length || 0,
-      totalAttendance: attendance?.length || 0,
-      ongoingAttendance: ongoingTeacherAttendance?.length || 0,
-      students: uniqueStudentIds.length || 0,
+      stats: {
+        totalClasses: classes?.length || 0,
+        newAddedClasses: newClasses?.length || 0,
+        totalAttendance: attendance?.length || 0,
+        ongoingAttendance: ongoingTeacherAttendance?.length || 0,
+        students: uniqueStudentIds.length || 0,
+      },
     });
   } catch (err) {
     console.log(err);
