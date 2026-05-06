@@ -38,6 +38,8 @@ export default function TeachersDashboardPage() {
           toast.error(response?.error || "Unable to fetch teacher stats");
           return router.push("/dashboard");
         }
+        setTeacherStats(response?.stats || null);
+        setStatsLoading(false);
       } catch (err) {
         toast.error("Unable to fetch teacher stats. Please try again later.");
         return router.push("/dashboard");
@@ -45,13 +47,14 @@ export default function TeachersDashboardPage() {
         setStatsLoading(false);
       }
     }
+    getTeacherStats();
   }, [router]);
-  const stats = {
-    totalClasses: teacherClasses.length,
+  const stats = teacherStats || {
+    totalClasses: 0,
     newAddedClasses: 0,
-    totalAttendance: 3,
-    ongoingAttendance: 1,
-    students: getAllStudents().length,
+    totalAttendance: 0,
+    ongoingAttendance: 0,
+    students: 0,
   };
 
   const summaryCards = [
@@ -118,6 +121,7 @@ export default function TeachersDashboardPage() {
             value={item.value}
             subtitle={item.subtitle}
             icon={item.icon}
+            statsLoading={statsLoading}
           />
         ))}
       </section>
