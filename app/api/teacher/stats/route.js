@@ -60,7 +60,9 @@ export const GET = auth(async function GET(req) {
 
     const classes = await Classes.find({
       teacher: new mongoose.Types.ObjectId(userId),
-    }).lean();
+    })
+      .lean()
+      .select("createdAt students");
 
     const newClasses = (classes || [])?.filter((c) => {
       const oneWeekMs = 7 * 24 * 60 * 60 * 1000;
@@ -71,13 +73,22 @@ export const GET = auth(async function GET(req) {
 
     const attendance = await Attandance.find({
       teacherId: new mongoose.Types.ObjectId(userId),
-    }).lean();
+    })
+      .lean()
+      .select("startTime endTime classesId teacherId");
+
+    const ongoingTeacherAttendance = attendance.filter((att) => {
+      const endTime = new Date(att?.endTime);
+      const now = new Date();
+      return endTime > now;
+    });
 
     return NextResponse.json({
       message: "Hello, teacher! This is your stats endpoint.",
       totalClasses: classes?.length || 0,
       newAddedClasses: newClasses?.length || 0,
       totalAttendance: attendance?.length || 0,
+      ongoingAttendance: ongoingTeacherAttendance?.length || 0,
     });
   } catch (err) {
     console.log(err);
