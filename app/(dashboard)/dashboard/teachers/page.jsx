@@ -16,20 +16,36 @@ import Card from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 export default function TeachersDashboardPage() {
   const [teacherStats, setTeacherStats] = useState(null);
   const [statsLoading, setStatsLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
     async function getTeacherStats() {
       try {
+        const request = await fetch(`/api/teacher/stats`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+        });
+        const response = await request.json();
+        if (!request?.ok || response?.error) {
+          toast.error(response?.error || "Unable to fetch teacher stats");
+          return router.push("/dashboard");
+        }
       } catch (err) {
-        toast.error("");
+        toast.error("Unable to fetch teacher stats. Please try again later.");
+        return router.push("/dashboard");
       } finally {
+        setStatsLoading(false);
       }
     }
-  }, []);
+  }, [router]);
   const stats = {
     totalClasses: teacherClasses.length,
     newAddedClasses: 0,
