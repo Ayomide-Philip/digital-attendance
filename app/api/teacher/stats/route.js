@@ -77,6 +77,16 @@ export const GET = auth(async function GET(req) {
       .lean()
       .select("startTime endTime classesId teacherId");
 
+    const uniqueStudentIds = [
+      ...new Set(
+        (classes || [])
+          ?.flatMap((c) => {
+            return c?.students || [];
+          })
+          .map((s) => s.toString()),
+      ),
+    ];
+
     const ongoingTeacherAttendance = attendance.filter((att) => {
       const endTime = new Date(att?.endTime);
       const now = new Date();
@@ -84,11 +94,12 @@ export const GET = auth(async function GET(req) {
     });
 
     return NextResponse.json({
-      message: "Hello, teacher! This is your stats endpoint.",
+      message: "Successfully fetched stats data",
       totalClasses: classes?.length || 0,
       newAddedClasses: newClasses?.length || 0,
       totalAttendance: attendance?.length || 0,
       ongoingAttendance: ongoingTeacherAttendance?.length || 0,
+      students: uniqueStudentIds.length || 0,
     });
   } catch (err) {
     console.log(err);
