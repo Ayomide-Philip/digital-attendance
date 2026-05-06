@@ -66,7 +66,6 @@ export const GET = auth(async function GET(req) {
       const oneWeekMs = 7 * 24 * 60 * 60 * 1000;
       const today = new Date();
       const classDate = new Date(c?.createdAt);
-      console.log(today - classDate);
       return Math.abs(today - classDate) <= oneWeekMs;
     });
 
