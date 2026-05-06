@@ -49,30 +49,23 @@ export default function TeachersDashboardPage() {
     }
     getTeacherStats();
   }, [router]);
-  const stats = teacherStats || {
-    totalClasses: 0,
-    newAddedClasses: 0,
-    totalAttendance: 0,
-    ongoingAttendance: 0,
-    students: 0,
-  };
 
   const summaryCards = [
     {
       title: "Total Classes",
-      value: stats.totalClasses,
-      subtitle: `${stats.newAddedClasses} new added classes`,
+      value: teacherStats?.totalClasses,
+      subtitle: `${teacherStats?.newAddedClasses} new added classes`,
       icon: BookCopy,
     },
     {
       title: "Total Attendance",
-      value: stats.totalAttendance,
-      subtitle: `${stats.ongoingAttendance} ongoing attendance`,
+      value: teacherStats?.totalAttendance,
+      subtitle: `${teacherStats?.ongoingAttendance} ongoing attendance`,
       icon: CalendarCheck2,
     },
     {
       title: "Total Students",
-      value: stats.students,
+      value: teacherStats?.students,
       subtitle: "All enrolled students",
       icon: Users,
     },
