@@ -14,9 +14,22 @@ import StatsCard from "@/app/(dashboard)/dashboard/teachers/components/StatsCard
 import { buttonVariants } from "@/components/ui/button";
 import Card from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 export default function TeachersDashboardPage() {
-  // Stats data structure
+  const [teacherStats, setTeacherStats] = useState(null);
+  const [statsLoading, setStatsLoading] = useState(true);
+
+  useEffect(() => {
+    async function getTeacherStats() {
+      try {
+      } catch (err) {
+        toast.error("");
+      } finally {
+      }
+    }
+  }, []);
   const stats = {
     totalClasses: teacherClasses.length,
     newAddedClasses: 0,
