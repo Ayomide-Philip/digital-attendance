@@ -88,9 +88,10 @@ export const GET = auth(async function GET(req) {
     ];
 
     const ongoingTeacherAttendance = attendance.filter((att) => {
+      const startTime = new Date(att?.startTime);
       const endTime = new Date(att?.endTime);
       const now = new Date();
-      return endTime > now;
+      return startTime > now && endTime > now;
     });
 
     return NextResponse.json({
