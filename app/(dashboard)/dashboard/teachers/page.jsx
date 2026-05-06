@@ -16,24 +16,33 @@ import Card from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
 export default function TeachersDashboardPage() {
+  // Stats data structure
+  const stats = {
+    totalClasses: teacherClasses.length,
+    newAddedClasses: 0,
+    totalAttendance: 3,
+    ongoingAttendance: 1,
+    students: getAllStudents().length,
+  };
+
   const summaryCards = [
     {
       title: "Total Classes",
-      value: teacherClasses.length,
-      subtitle: "Across all teaching groups",
+      value: stats.totalClasses,
+      subtitle: `${stats.newAddedClasses} new added classes`,
       icon: BookCopy,
     },
     {
-      title: "Total Students",
-      value: getAllStudents().length,
-      subtitle: "All enrolled students",
-      icon: Users,
+      title: "Total Attendance",
+      value: stats.totalAttendance,
+      subtitle: `${stats.ongoingAttendance} ongoing attendance`,
+      icon: CalendarCheck2,
     },
     {
-      title: "Attendance Taken Today",
-      value: "3 / 4",
-      subtitle: "Scheduled sessions completed",
-      icon: CalendarCheck2,
+      title: "Total Students",
+      value: stats.students,
+      subtitle: "All enrolled students",
+      icon: Users,
     },
   ];
 
