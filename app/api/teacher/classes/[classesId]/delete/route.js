@@ -15,9 +15,15 @@ export const DELETE = auth(async function DELETE(req, { params }) {
       },
     );
   }
-  return NextResponse.json({
-    message: "DELETE a class",
-    userId,
-    classesId,
-  });
+  try {
+    return NextResponse.json({
+      message: "DELETE a class",
+      userId,
+      classesId,
+    });
+  } catch (err) {
+    return NextResponse.json({
+      error: "Unable to delete class",
+    });
+  }
 });
