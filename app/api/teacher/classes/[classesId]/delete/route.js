@@ -56,8 +56,13 @@ export const DELETE = auth(async function DELETE(req, { params }) {
       classesId,
     });
   } catch (err) {
-    return NextResponse.json({
-      error: "Unable to delete class",
-    });
+    return NextResponse.json(
+      {
+        error: "Unable to delete class",
+      },
+      {
+        status: 400,
+      },
+    );
   }
 });
