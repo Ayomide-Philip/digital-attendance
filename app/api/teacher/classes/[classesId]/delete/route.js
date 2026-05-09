@@ -19,9 +19,10 @@ export const DELETE = auth(async function DELETE(req, { params }) {
       },
     );
   }
+
   try {
     await connectDatabase();
-    const user = await User.findById(new mongoose.Types.ObjectId(userId));
+    const user = await User.findById(new mongoose.Types.ObjectId(userId)).lean();
 
     if (!user) {
       return NextResponse.json(
@@ -48,7 +49,7 @@ export const DELETE = auth(async function DELETE(req, { params }) {
     const classExist = await Classes.findOne({
       _id: new mongoose.Types.ObjectId(classesId),
       teacher: new mongoose.Types.ObjectId(userId),
-    });
+    }).select("name code").lean();
 
     if (!classExist) {
       return NextResponse.json({
@@ -59,9 +60,10 @@ export const DELETE = auth(async function DELETE(req, { params }) {
     }
 
     return NextResponse.json({
-      message: "DELETE a class",
+      message: `${classExist.name} (${classExist.code}) has been deleted successfully`,
       userId,
       classesId,
+      classExist
     });
   } catch (err) {
     return NextResponse.json(
