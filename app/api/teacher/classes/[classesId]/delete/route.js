@@ -52,7 +52,7 @@ export const DELETE = auth(async function DELETE(req, { params }) {
 
     if (!classExist) {
       return NextResponse.json({
-        error: "Class not found",
+        error: "Class does not exist or you are not the teacher of this class",
       }, {
         status: 404,
       })
