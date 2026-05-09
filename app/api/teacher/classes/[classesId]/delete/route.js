@@ -50,6 +50,14 @@ export const DELETE = auth(async function DELETE(req, { params }) {
       teacher: new mongoose.Types.ObjectId(userId),
     });
 
+    if (!classExist) {
+      return NextResponse.json({
+        error: "Class not found",
+      }, {
+        status: 404,
+      })
+    }
+
     return NextResponse.json({
       message: "DELETE a class",
       userId,
