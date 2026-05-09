@@ -1,5 +1,5 @@
 import { auth } from "@/auth";
-import { connectDatabase } from "@/lib/database/ ";
+import { connectDatabase } from "@/lib/database/connectdb";
 import Classes from "@/lib/models/classes.model";
 import User from "@/lib/models/user.model";
 import mongoose from "mongoose";
