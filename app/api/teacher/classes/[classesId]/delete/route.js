@@ -1,5 +1,6 @@
 import { auth } from "@/auth";
 import { connectDatabase } from "@/lib/database/connectdb";
+import Attandance from "@/lib/models/attendance.model";
 import Classes from "@/lib/models/classes.model";
 import User from "@/lib/models/user.model";
 import mongoose from "mongoose";
@@ -59,11 +60,17 @@ export const DELETE = auth(async function DELETE(req, { params }) {
       })
     }
 
+    const classAttendance = await Attandance.find({
+      teacherId: new mongoose.Types.ObjectId(userId),
+      classesId: new mongoose.Types.ObjectId(classesId),
+    })
+
     return NextResponse.json({
       message: `${classExist.name} (${classExist.code}) has been deleted successfully`,
       userId,
       classesId,
-      classExist
+      classExist,
+      classAttendance
     });
   } catch (err) {
     return NextResponse.json(
