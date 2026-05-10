@@ -21,6 +21,7 @@ export const DELETE = auth(async function DELETE(req, { params }) {
     );
   }
 
+  const transaction = await mongoose.startSession()
   try {
     await connectDatabase();
     const user = await User.findById(new mongoose.Types.ObjectId(userId)).lean();
