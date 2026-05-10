@@ -51,7 +51,7 @@ export const DELETE = auth(async function DELETE(req, { params }) {
     const classExist = await Classes.findOne({
       _id: new mongoose.Types.ObjectId(classesId),
       teacher: new mongoose.Types.ObjectId(userId),
-    }).select("name code").lean();
+    }).select("name code").lean().session(session);
 
     if (!classExist) {
       return NextResponse.json({
@@ -61,36 +61,38 @@ export const DELETE = auth(async function DELETE(req, { params }) {
       })
     }
 
-    const classAttendance = await Attandance.find({
+    session.startTransaction();
+
+    const deletedAttendance = await Attandance.deleteMany({
       teacherId: new mongoose.Types.ObjectId(userId),
       classesId: new mongoose.Types.ObjectId(classesId),
+    }, {
+      session
     })
 
-    // session.startTransaction();
+    const deletedClass = await Classes.findOneAndDelete({
+      _id: new mongoose.Types.ObjectId(classesId),
+      teacher: new mongoose.Types.ObjectId(userId),
+    }, {
+      session
+    })
 
-    // await Attandance.deleteMany({
-    //   teacherId: new mongoose.Types.ObjectId(userId),
-    //   classesId: new mongoose.Types.ObjectId(classesId),
-    // }, {
-    //   session
-    // })
+    if (!deletedClass) {
+      await session.abortTransaction();
+      return NextResponse.json({
+        error: "An error occurred while deleting the class. Please try again later."
+      }, {
+        status: 500,
+      })
+    }
 
-    // const deletedClass = await Classes.findOneAndDelete({
-    //   _id: new mongoose.Types.ObjectId(classesId),
-    //   teacher: new mongoose.Types.ObjectId(userId),
-    // }, {
-    //   session
-    // })
-
-    // console.log(deletedClass)
+    await session.commitTransaction();
     return NextResponse.json({
       message: `${classExist.name} (${classExist.code}) has been deleted successfully`,
-      userId,
-      classesId,
-      classExist,
-      classAttendance
+      deletedAttendanceCount: deletedAttendance.deletedCount,
     });
   } catch (err) {
+    await session.abortTransaction();
     console.log(err)
     return NextResponse.json(
       {
@@ -100,5 +102,7 @@ export const DELETE = auth(async function DELETE(req, { params }) {
         status: 400,
       },
     );
+  } finally {
+    session.endSession();
   }
 });
