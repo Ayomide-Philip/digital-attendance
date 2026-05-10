@@ -16,8 +16,7 @@ export const DELETE = auth(async function DELETE(req, { params }) {
   }
 
   const { classesId } = await params;
-  const { userId } = await req.json();
-
+  const userId = req?.auth?.user?.id
   if (!classesId.trim() || !userId.trim()) {
     return NextResponse.json(
       {
