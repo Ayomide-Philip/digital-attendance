@@ -20,7 +20,6 @@ export default function SettingsTab({ settings = {} }) {
     departmentCodes: settings?.rules?.departmentCode || [],
   });
   const [departmentInput, setDepartmentInput] = useState("");
-  const [confirmAction, setConfirmAction] = useState(null);
   const [deleteConfirm, setDeleteConfirm] = useState(false);
 
   const schoolName = settings?.school || "Not set";
@@ -49,17 +48,9 @@ export default function SettingsTab({ settings = {} }) {
     toast.success("Settings saved locally.");
   };
 
-  const handleDangerAction = () => {
-    if (confirmAction === "reset") {
-      setRules({ emailSuffix: "", departmentCodes: [] });
-      toast.success("Class rules reset to defaults.");
-    }
-
-    if (confirmAction === "delete") {
-      toast.success("Class deleted successfully.");
-    }
-
-    setConfirmAction(null);
+  const handleDelete = () => {
+    toast.success("Class deleted successfully.");
+    setDeleteConfirm(false);
   };
 
   return (
@@ -215,7 +206,7 @@ export default function SettingsTab({ settings = {} }) {
                   type="button"
                   variant="destructive"
                   className="h-10 rounded-xl px-4"
-                  onClick={() => setConfirmAction("delete")}
+                  onClick={() => setDeleteConfirm(true)}
                 >
                   <AlertTriangle className="size-4" />
                   Delete Class
@@ -236,46 +227,69 @@ export default function SettingsTab({ settings = {} }) {
         </div>
       </div>
 
-      {confirmAction ? (
-        <div className="fixed inset-0 z-60 flex items-center justify-center bg-slate-950/60 p-4 backdrop-blur-sm">
-          <Card className="w-full max-w-lg rounded-3xl border border-slate-200/70 p-6 shadow-2xl dark:border-slate-800 dark:bg-slate-950">
-            <div className="flex items-start gap-3">
-              <div className="rounded-xl bg-rose-500/15 p-2 text-rose-700 dark:text-rose-300">
-                <AlertTriangle className="size-5" />
-              </div>
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-rose-700 dark:text-rose-300">
-                  Confirm Action
-                </p>
-                <h3 className="mt-1 text-xl font-semibold text-slate-900 dark:text-slate-100">
-                  {confirmAction === "reset"
-                    ? "Reset Class Rules"
-                    : "Delete Class"}
-                </h3>
-                <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">
-                  {confirmAction === "reset"
-                    ? "This will restore default rules for this class. Students will need to meet the new requirements."
-                    : "This will permanently delete the class. This action cannot be undone."}
-                </p>
+      {deleteConfirm ? (
+        <div className="fixed inset-0 z-60 flex items-center justify-center bg-slate-950/70 p-4 backdrop-blur-md">
+          <Card className="w-full max-w-md rounded-2xl border border-rose-200/50 bg-white p-8 shadow-2xl dark:border-rose-900/30 dark:bg-slate-950">
+            {/* Icon Section */}
+            <div className="flex justify-center">
+              <div className="rounded-full bg-rose-500/15 p-4 text-rose-600 dark:text-rose-400">
+                <AlertTriangle className="size-8" />
               </div>
             </div>
 
-            <div className="mt-6 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+            {/* Content Section */}
+            <div className="mt-6 text-center">
+              <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
+                Delete Class?
+              </h2>
+              <p className="mt-3 text-sm text-slate-600 dark:text-slate-400">
+                This action is{" "}
+                <span className="font-semibold text-rose-600 dark:text-rose-400">
+                  permanent and cannot be undone
+                </span>
+                . The class and all associated data will be removed from the
+                system.
+              </p>
+
+              {/* Warning List */}
+              <div className="mt-5 space-y-2 rounded-lg bg-rose-50/50 p-4 dark:bg-rose-950/20">
+                <p className="text-xs font-semibold uppercase tracking-wide text-rose-700 dark:text-rose-300">
+                  What will be deleted:
+                </p>
+                <ul className="space-y-1.5 text-sm text-rose-700 dark:text-rose-200">
+                  <li className="flex items-start gap-2">
+                    <span className="mt-1 block size-1.5 rounded-full bg-rose-500 shrink-0" />
+                    All class details and configuration
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="mt-1 block size-1.5 rounded-full bg-rose-500 shrink-0" />
+                    Enrollment records and student data
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="mt-1 block size-1.5 rounded-full bg-rose-500 shrink-0" />
+                    Attendance and grade histories
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="mt-8 flex gap-3 sm:flex-row">
               <Button
                 type="button"
                 variant="outline"
-                className="h-11 rounded-xl px-4"
-                onClick={() => setConfirmAction(null)}
+                className="h-11 flex-1 rounded-lg px-4 font-medium"
+                onClick={() => setDeleteConfirm(false)}
               >
-                Cancel
+                Keep Class
               </Button>
               <Button
                 type="button"
                 variant="destructive"
-                className="h-11 rounded-xl px-4"
-                onClick={handleDangerAction}
+                className="h-11 flex-1 rounded-lg px-4 font-medium"
+                onClick={handleDelete}
               >
-                Confirm
+                Delete Permanently
               </Button>
             </div>
           </Card>
