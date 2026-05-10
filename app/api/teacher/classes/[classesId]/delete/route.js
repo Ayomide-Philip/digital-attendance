@@ -24,6 +24,7 @@ export const DELETE = auth(async function DELETE(req, { params }) {
   const session = await mongoose.startSession()
   try {
     await connectDatabase();
+    session.startTransaction();
     const user = await User.findById(new mongoose.Types.ObjectId(userId)).lean();
 
     if (!user) {
@@ -60,8 +61,6 @@ export const DELETE = auth(async function DELETE(req, { params }) {
         status: 404,
       })
     }
-
-    session.startTransaction();
 
     const deletedAttendance = await Attandance.deleteMany({
       teacherId: new mongoose.Types.ObjectId(userId),
