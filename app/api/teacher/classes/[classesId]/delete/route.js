@@ -21,7 +21,7 @@ export const DELETE = auth(async function DELETE(req, { params }) {
     );
   }
 
-  const transaction = await mongoose.startSession()
+  const session = await mongoose.startSession()
   try {
     await connectDatabase();
     const user = await User.findById(new mongoose.Types.ObjectId(userId)).lean();
@@ -66,6 +66,23 @@ export const DELETE = auth(async function DELETE(req, { params }) {
       classesId: new mongoose.Types.ObjectId(classesId),
     })
 
+    // session.startTransaction();
+
+    // await Attandance.deleteMany({
+    //   teacherId: new mongoose.Types.ObjectId(userId),
+    //   classesId: new mongoose.Types.ObjectId(classesId),
+    // }, {
+    //   session
+    // })
+
+    // const deletedClass = await Classes.findOneAndDelete({
+    //   _id: new mongoose.Types.ObjectId(classesId),
+    //   teacher: new mongoose.Types.ObjectId(userId),
+    // }, {
+    //   session
+    // })
+
+    // console.log(deletedClass)
     return NextResponse.json({
       message: `${classExist.name} (${classExist.code}) has been deleted successfully`,
       userId,
@@ -74,6 +91,7 @@ export const DELETE = auth(async function DELETE(req, { params }) {
       classAttendance
     });
   } catch (err) {
+    console.log(err)
     return NextResponse.json(
       {
         error: "Unable to delete class",
