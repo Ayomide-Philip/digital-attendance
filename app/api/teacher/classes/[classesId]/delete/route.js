@@ -7,6 +7,14 @@ import mongoose from "mongoose";
 import { NextResponse } from "next/server";
 
 export const DELETE = auth(async function DELETE(req, { params }) {
+  if (!req?.auth || !req?.auth?.user) {
+    return NextResponse.json({
+      error: "Unauthorized Access"
+    }, {
+      status: 401
+    })
+  }
+
   const { classesId } = await params;
   const { userId } = await req.json();
 
