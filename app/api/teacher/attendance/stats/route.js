@@ -1,6 +1,9 @@
 import { auth } from "@/auth";
 import { connectDatabase } from "@/lib/database/connectdb";
+import User from "@/lib/models/user.model";
 import { NextResponse } from "next/server";
+import mongoose from "mongoose";
+import Attandance from "@/lib/models/attendance.model";
 
 export const GET = auth(async function GET(req, { params }) {
     if (!req?.auth || !req?.auth?.user) {
@@ -32,9 +35,35 @@ export const GET = auth(async function GET(req, { params }) {
 
     try {
         await connectDatabase();
+        const user = await User.findById(new mongoose.Types.ObjectId(userId));
+
+        if (!user) {
+            return NextResponse.json({
+                error: "Unauthorized Access"
+            }, {
+                status: 401
+            })
+        }
+
+        if (user?.role !== "teacher") {
+            return NextResponse.json({
+                error: "Forbidden Access"
+            }, {
+                status: 403
+            })
+        }
+
+
+
+        const attendance = await Attandance.find({
+            teacherId: new mongoose.Types.ObjectId(userId)
+        }).select("classesId teacherId startTime endTime students").populate("classesId", "name code").lean()
+
         return NextResponse.json({
             message: "Attendance stats endpoint is under construction",
-            query: query
+            query: query,
+            attendance,
+            att: getWeeklyAttendanceStats()
         })
     } catch (err) {
         return NextResponse.json({
@@ -44,3 +73,56 @@ export const GET = auth(async function GET(req, { params }) {
         })
     }
 })
+
+function getThisWeekRange() {
+    const now = new Date();
+    const day = now.getDay();
+
+    const daysFromMonday = day === 0 ? 6 : day - 1;
+
+    const monday = new Date(now);
+    monday.setDate(now.getDate() - daysFromMonday);
+    monday.setHours(0, 0, 0, 0);
+
+    const sunday = new Date(monday);
+    sunday.setDate(monday.getDate() + 6);
+    sunday.setHours(23, 59, 59, 999);
+
+    return { monday, sunday };
+}
+
+function getWeeklyAttendanceStats(sessions = []) {
+    const { monday, sunday } = getThisWeekRange();
+
+    const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+
+    // Initialize all 7 days with empty buckets
+    const buckets = days.map((name, i) => {
+        const date = new Date(monday);
+        date.setDate(monday.getDate() + i);
+        return { name, date, sessions: [] };
+    });
+
+    for (const session of sessions) {
+        const sessionDate = new Date(session.startDate);
+        if (sessionDate < monday || sessionDate > sunday) continue;
+
+        const bucket = buckets.find((b) => {
+            const bDate = b.date;
+            return (
+                sessionDate.getFullYear() === bDate.getFullYear() &&
+                sessionDate.getMonth() === bDate.getMonth() &&
+                sessionDate.getDate() === bDate.getDate()
+            );
+        });
+
+        if (bucket) bucket.sessions.push(session);
+    }
+
+    return buckets.map((bucket) => {
+        return {
+            name: bucket.name,
+            attendance: bucket?.sessions?.length
+        };
+    });
+}
