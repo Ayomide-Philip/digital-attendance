@@ -4,6 +4,7 @@ import User from "@/lib/models/user.model";
 import { NextResponse } from "next/server";
 import mongoose from "mongoose";
 import Attandance from "@/lib/models/attendance.model";
+import Classes from "@/lib/models/classes.model";
 
 export const GET = auth(async function GET(req, { params }) {
     if (!req?.auth || !req?.auth?.user) {
@@ -53,19 +54,51 @@ export const GET = auth(async function GET(req, { params }) {
             })
         }
 
-
-
         const attendance = await Attandance.find({
             teacherId: new mongoose.Types.ObjectId(userId)
-        }).select("classesId teacherId startTime endTime students").populate("classesId", "name code").lean()
+        }).select("classesId teacherId startTime endTime students")
+            .populate("classesId", "name code")
+            .lean()
 
+        const classes = await Classes.find({
+            teacher: new mongoose.Types.ObjectId(userId)
+        }).select("name code _id").lean();
+
+        const classCountMap = attendance.reduce((acc, session) => {
+            const classId = session?.classesId?._id?.toString();
+            if (!classId) return acc;
+
+            if (!acc[classId]) {
+                acc[classId] = {
+                    classId,
+                    totalSessions: 0,
+                };
+            }
+
+            acc[classId].totalSessions += 1;
+            return acc;
+        }, {});
+
+        const classSummary = Object.values(classCountMap);
+        const returnAllClassesDetails = classes.map((cls) => {
+            const summary = classSummary.find((s) => s.classId === cls._id.toString());
+            return {
+                classId: cls._id,
+                name: cls.name,
+                code: cls.code,
+                totalSessions: summary ? summary.totalSessions : 0,
+            }
+        })
         return NextResponse.json({
             message: "Attendance stats endpoint is under construction",
-            query: query,
-            attendance,
-            att: getWeeklyAttendanceStats()
+            // attendance,
+            // stats: {
+            //     attendance: getWeeklyAttendanceStats(attendance)
+            // },
+            classes: returnAllClassesDetails || [],
         })
     } catch (err) {
+        console.log(err)
         return NextResponse.json({
             error: `Failed to fetch ${query} attendance stats. Please try again later.`
         }, {
@@ -103,7 +136,7 @@ function getWeeklyAttendanceStats(sessions = []) {
     });
 
     for (const session of sessions) {
-        const sessionDate = new Date(session?.startDate);
+        const sessionDate = new Date(session?.startTime);
         if (sessionDate < monday || sessionDate > sunday) continue;
 
         const bucket = buckets.find((b) => {
@@ -130,6 +163,7 @@ function getWeeklyAttendanceStats(sessions = []) {
         return {
             name: bucket.name,
             attendance: totalPresent,
+            totalSessions: bucket.sessions.length
         };
     });
 }
