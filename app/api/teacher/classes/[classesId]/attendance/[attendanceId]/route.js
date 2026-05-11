@@ -96,7 +96,15 @@ export const GET = auth(async function GET(req, { params }) {
 });
 
 export const DELETE = auth(async function DELETE(req, { params }) {
-  const { userId } = await req.json();
+  if (!req?.auth || !req?.auth?.user) {
+    return NextResponse.json({
+      error: "Unauthorized Access"
+    }, {
+      status: 401
+    })
+  }
+
+  const userId = req?.auth?.user?.id;
   const { classesId, attendanceId } = await params;
 
   if (!userId.trim() || !classesId.trim() || !attendanceId.trim()) {
