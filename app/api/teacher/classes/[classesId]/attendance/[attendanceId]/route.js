@@ -126,8 +126,51 @@ export const DELETE = auth(async function DELETE(req, { params }) {
       })
     }
 
+    const classData = await Classes.findOne({
+      _id: new mongoose.Types.ObjectId(classesId),
+      teacher: new mongoose.Types.ObjectId(userId)
+    }).select("name").lean();
+
+    if (!classData) {
+      return NextResponse.json({
+        error: "Class not found or unauthorized access"
+      }, {
+        status: 404
+      })
+    }
+
+    const attendanceData = await Attandance.findOne({
+      _id: new mongoose.Types.ObjectId(attendanceId),
+      classesId: new mongoose.Types.ObjectId(classesId),
+      teacherId: new mongoose.Types.ObjectId(userId)
+    }).lean();
+
+    if (!attendanceData) {
+      return NextResponse.json({
+        error: "Attendance record not found or unauthorized access"
+      }, {
+        status: 404
+      })
+    }
+
+    const deleteResult = await Attandance.deleteOne({
+      _id: new mongoose.Types.ObjectId(attendanceId),
+      classesId: new mongoose.Types.ObjectId(classesId),
+      teacherId: new mongoose.Types.ObjectId(userId)
+    });
+
+    if (deleteResult.deletedCount === 0) {
+      return NextResponse.json({
+        error: "Failed to delete attendance record"
+      }, {
+        status: 500
+      })
+    }
+
     return NextResponse.json({
-      message: "Successfully deleted Attendance"
+      message: `Successfully deleted attendance record for class ${classData?.name}`
+    }, {
+      status: 200
     })
   } catch (err) {
     console.log(err);
