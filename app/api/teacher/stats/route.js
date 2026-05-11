@@ -91,7 +91,7 @@ export const GET = auth(async function GET(req) {
       const startTime = new Date(att?.startTime);
       const endTime = new Date(att?.endTime);
       const now = new Date();
-      return startTime > now && endTime > now;
+      return now > startTime && now < endTime;
     });
 
     return NextResponse.json({

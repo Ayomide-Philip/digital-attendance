@@ -60,6 +60,16 @@ export const GET = auth(async function GET(req, { params }) {
             .populate("classesId", "name code")
             .lean()
 
+
+        if (query === "weekly") {
+            return NextResponse.json({
+                message: "Weekly attendance stats for teacher",
+                stats: {
+                    attendance: getWeeklyAttendanceStats(attendance)
+                }
+            })
+        }
+
         const classes = await Classes.find({
             teacher: new mongoose.Types.ObjectId(userId)
         }).select("name code _id").lean();
@@ -89,15 +99,6 @@ export const GET = auth(async function GET(req, { params }) {
                 totalSessions: summary ? summary.totalSessions : 0,
             }
         })
-
-        if (query === "weekly") {
-            return NextResponse.json({
-                message: "Weekly attendance stats for teacher",
-                stats: {
-                    attendance: getWeeklyAttendanceStats(attendance)
-                }
-            })
-        }
         return NextResponse.json({
             message: "Attendance stats endpoint is under construction",
             stats: { classes: returnAllClassesDetails || [] },
