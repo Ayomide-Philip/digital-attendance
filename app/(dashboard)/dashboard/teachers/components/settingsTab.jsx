@@ -12,6 +12,15 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import Card from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import SettingsCard from "./settingsCard";
 
 export default function SettingsTab({ settings = {} }) {
@@ -217,7 +226,7 @@ export default function SettingsTab({ settings = {} }) {
 
           <SettingsCard title="Help" description="Quick support information.">
             <a
-              href="mailto:admin@oauife.edu.ng"
+              href="#"
               className="inline-flex items-center gap-2 text-sm font-medium text-sky-700 underline-offset-4 transition hover:underline dark:text-sky-300"
             >
               Contact Admin
@@ -227,74 +236,47 @@ export default function SettingsTab({ settings = {} }) {
         </div>
       </div>
 
-      {deleteConfirm ? (
-        <div className="fixed inset-0 z-60 flex items-center justify-center bg-slate-950/70 p-4 backdrop-blur-md">
-          <Card className="w-full max-w-md rounded-2xl border border-rose-200/50 bg-white p-8 shadow-2xl dark:border-rose-900/30 dark:bg-slate-950">
-            {/* Icon Section */}
-            <div className="flex justify-center">
-              <div className="rounded-full bg-rose-500/15 p-4 text-rose-600 dark:text-rose-400">
-                <AlertTriangle className="size-8" />
+      <Dialog open={deleteConfirm} onOpenChange={setDeleteConfirm}>
+        <DialogContent className="border-none bg-zinc-950/95 shadow-2xl backdrop-blur-2xl rounded-3xl p-0 overflow-hidden">
+          <div className="absolute inset-0 bg-linear-to-b from-rose-500/5 to-transparent pointer-events-none" />
+
+          <div className="relative p-8 sm:p-10">
+            <div className="flex flex-col items-center text-center gap-6">
+              <div className="flex size-16 items-center justify-center rounded-full bg-rose-500/15 shadow-lg shadow-rose-500/30 ring-1 ring-rose-500/20">
+                <AlertTriangle className="size-7 text-rose-400" />
+              </div>
+
+              <div className="space-y-3">
+                <DialogTitle className="text-2xl font-semibold text-zinc-50">
+                  Delete Class?
+                </DialogTitle>
+                <DialogDescription className="text-sm leading-6 text-zinc-400">
+                  This action cannot be undone. All attendance records and data
+                  for this class will be permanently removed from the system.
+                </DialogDescription>
               </div>
             </div>
 
-            {/* Content Section */}
-            <div className="mt-6 text-center">
-              <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
-                Delete Class?
-              </h2>
-              <p className="mt-3 text-sm text-slate-600 dark:text-slate-400">
-                This action is{" "}
-                <span className="font-semibold text-rose-600 dark:text-rose-400">
-                  permanent and cannot be undone
-                </span>
-                . The class and all associated data will be removed from the
-                system.
-              </p>
-
-              {/* Warning List */}
-              <div className="mt-5 space-y-2 rounded-lg bg-rose-50/50 p-4 dark:bg-rose-950/20">
-                <p className="text-xs font-semibold uppercase tracking-wide text-rose-700 dark:text-rose-300">
-                  What will be deleted:
-                </p>
-                <ul className="space-y-1.5 text-sm text-rose-700 dark:text-rose-200">
-                  <li className="flex items-start gap-2">
-                    <span className="mt-1 block size-1.5 rounded-full bg-rose-500 shrink-0" />
-                    All class details and configuration
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="mt-1 block size-1.5 rounded-full bg-rose-500 shrink-0" />
-                    Enrollment records and student data
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="mt-1 block size-1.5 rounded-full bg-rose-500 shrink-0" />
-                    Attendance and grade histories
-                  </li>
-                </ul>
-              </div>
-            </div>
-
-            {/* Action Buttons */}
-            <div className="mt-8 flex gap-3 sm:flex-row">
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Button
                 type="button"
                 variant="outline"
-                className="h-11 flex-1 rounded-lg px-4 font-medium"
+                className="h-11 rounded-xl border-none bg-zinc-900/50 text-zinc-300 font-medium transition-all duration-200 hover:bg-zinc-900 dark:hover:bg-zinc-800"
                 onClick={() => setDeleteConfirm(false)}
               >
-                Keep Class
+                Cancel
               </Button>
               <Button
                 type="button"
-                variant="destructive"
-                className="h-11 flex-1 rounded-lg px-4 font-medium"
+                className="h-11 rounded-xl border-none bg-rose-600 text-white font-semibold shadow-lg shadow-rose-600/50 transition-all duration-200 hover:bg-rose-700 hover:shadow-rose-600/70 active:scale-95"
                 onClick={handleDelete}
               >
-                Delete Permanently
+                Delete Class
               </Button>
             </div>
-          </Card>
-        </div>
-      ) : null}
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
