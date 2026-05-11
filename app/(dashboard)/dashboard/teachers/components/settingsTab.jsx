@@ -257,7 +257,7 @@ export default function SettingsTab({ settings = {} }) {
               </div>
             </div>
 
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row justify-center">
               <Button
                 type="button"
                 variant="outline"
