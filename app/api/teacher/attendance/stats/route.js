@@ -89,13 +89,18 @@ export const GET = auth(async function GET(req, { params }) {
                 totalSessions: summary ? summary.totalSessions : 0,
             }
         })
+
+        if (query === "weekly") {
+            return NextResponse.json({
+                message: "Weekly attendance stats for teacher",
+                stats: {
+                    attendance: getWeeklyAttendanceStats(attendance)
+                }
+            })
+        }
         return NextResponse.json({
             message: "Attendance stats endpoint is under construction",
-            // attendance,
-            // stats: {
-            //     attendance: getWeeklyAttendanceStats(attendance)
-            // },
-            classes: returnAllClassesDetails || [],
+            stats: { classes: returnAllClassesDetails || [] },
         })
     } catch (err) {
         console.log(err)
