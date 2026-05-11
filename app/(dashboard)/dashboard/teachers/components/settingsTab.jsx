@@ -22,6 +22,7 @@ export default function SettingsTab({ settings = {}, classId }) {
   });
   const [departmentInput, setDepartmentInput] = useState("");
   const [deleteConfirm, setDeleteConfirm] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const schoolName = settings?.school || "Not set";
 
@@ -51,6 +52,7 @@ export default function SettingsTab({ settings = {}, classId }) {
 
   async function handleDelete() {
     if (!deleteConfirm || !classId) return;
+    setIsDeleting(true);
     try {
       const request = await fetch(`/api/teacher/classes/${classId}/delete`, {
         method: "DELETE",
@@ -61,6 +63,7 @@ export default function SettingsTab({ settings = {}, classId }) {
       });
       const response = await request.json();
       if (!request?.ok || response?.error) {
+        setIsDeleting(false);
         return toast.error(
           response?.error || "An error occurred while deleting the class.",
         );
@@ -69,6 +72,7 @@ export default function SettingsTab({ settings = {}, classId }) {
       setDeleteConfirm(false);
       window.location.href = "/dashboard/teachers/classes";
     } catch (err) {
+      setIsDeleting(false);
       return toast.error(
         "An error occurred while deleting the class. Please try again.",
       );
@@ -289,17 +293,28 @@ export default function SettingsTab({ settings = {}, classId }) {
                 <button
                   type="button"
                   onClick={() => setDeleteConfirm(false)}
-                  className="h-11 flex-1 rounded-xl border cursor-pointer border-slate-200 bg-white text-sm font-medium text-slate-700 transition hover:bg-slate-50 active:scale-[0.98] dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800"
+                  disabled={isDeleting}
+                  className="h-11 flex-1 rounded-xl border cursor-pointer border-slate-200 bg-white text-sm font-medium text-slate-700 transition hover:bg-slate-50 active:scale-[0.98] dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Cancel
                 </button>
                 <button
                   type="button"
                   onClick={handleDelete}
-                  className="h-11 flex-1 rounded-xl border cursor-pointer border-rose-200 bg-rose-50 text-sm font-medium text-rose-600 transition hover:bg-rose-100 active:scale-[0.98] dark:border-rose-900/50 dark:bg-rose-950/30 dark:text-rose-400 dark:hover:bg-rose-950/60 inline-flex items-center justify-center gap-1.5"
+                  disabled={isDeleting}
+                  className="h-11 flex-1 rounded-xl border cursor-pointer border-rose-200 bg-rose-50 text-sm font-medium text-rose-600 transition hover:bg-rose-100 active:scale-[0.98] dark:border-rose-900/50 dark:bg-rose-950/30 dark:text-rose-400 dark:hover:bg-rose-950/60 inline-flex items-center justify-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <Trash2 className="size-3.5" />
-                  Delete class
+                  {isDeleting ? (
+                    <>
+                      <div className="size-3.5 border-2 border-rose-300 border-t-rose-600 rounded-full animate-spin dark:border-rose-700 dark:border-t-rose-400" />
+                      Deleting...
+                    </>
+                  ) : (
+                    <>
+                      <Trash2 className="size-3.5" />
+                      Delete class
+                    </>
+                  )}
                 </button>
               </div>
             </div>
