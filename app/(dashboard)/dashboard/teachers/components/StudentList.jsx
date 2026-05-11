@@ -12,6 +12,7 @@ import getInitials from "@/lib/utility/getInitials";
 export default function StudentList({ students = [], classId }) {
   const [query, setQuery] = useState("");
   const [deptFilter, setDeptFilter] = useState("All");
+  const [loadingStudentId, setLoadingStudentId] = useState(null);
 
   const studentList = Array.isArray(students) ? students : [];
 
@@ -38,6 +39,7 @@ export default function StudentList({ students = [], classId }) {
   async function handleRemoveStudent(studentId) {
     if (!studentId) return;
 
+    setLoadingStudentId(studentId);
     try {
       const request = await fetch(
         `/api/teacher/classes/${classId}/remove?studentId=${studentId}`,
@@ -51,6 +53,7 @@ export default function StudentList({ students = [], classId }) {
       );
       const response = await request.json();
       if (!request.ok || response?.error) {
+        setLoadingStudentId(null);
         return toast.error(
           response?.error || "Failed to remove student. Please try again.",
         );
@@ -61,6 +64,7 @@ export default function StudentList({ students = [], classId }) {
       }, 2000);
     } catch (err) {
       console.log(err);
+      setLoadingStudentId(null);
       return toast.error("Failed to remove student. Please try again.");
     }
   }
@@ -199,13 +203,23 @@ export default function StudentList({ students = [], classId }) {
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="text-slate-400 cursor-pointer hover:text-rose-600 dark:text-slate-600 dark:hover:text-rose-400"
+                    disabled={loadingStudentId === student._id}
+                    className="text-slate-400 cursor-pointer hover:text-rose-600 disabled:opacity-50 disabled:cursor-not-allowed dark:text-slate-600 dark:hover:text-rose-400"
                     onClick={() => {
                       handleRemoveStudent(student._id);
                     }}
                   >
-                    <Trash2 className="size-4 mr-2" />
-                    Remove
+                    {loadingStudentId === student._id ? (
+                      <>
+                        <div className="size-4 mr-2 border-2 border-slate-400 border-t-rose-600 rounded-full animate-spin" />
+                        Removing...
+                      </>
+                    ) : (
+                      <>
+                        <Trash2 className="size-4 mr-2" />
+                        Remove
+                      </>
+                    )}
                   </Button>
                 </div>
               </Card>
