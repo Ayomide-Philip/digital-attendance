@@ -98,7 +98,43 @@ export const GET = auth(async function GET(req, { params }) {
 export const DELETE = auth(async function DELETE(req, { params }) {
   const { userId } = await req.json();
   const { classesId, attendanceId } = await params;
-  return NextResponse.json({
-    message: "Successfully deleted Attendance"
-  })
+
+  if (!userId.trim() || !classesId.trim() || !attendanceId.trim()) {
+    return NextResponse.json({
+      error: "Invalid Parameters"
+    }, {
+      status: 400
+    });
+  }
+
+  try {
+    await connectDatabase();
+    const user = await User.findById(new mongoose.Types.ObjectId(userId)).select("role").lean();
+    if (!user) {
+      return NextResponse.json({
+        error: "Unauthorized Access"
+      }, {
+        status: 401
+      })
+    }
+
+    if (user.role !== "teacher") {
+      return NextResponse.json({
+        error: "Forbidden Access"
+      }, {
+        status: 403
+      })
+    }
+
+    return NextResponse.json({
+      message: "Successfully deleted Attendance"
+    })
+  } catch (err) {
+    console.log(err);
+    return NextResponse.json({
+      error: "Unable to delete attendance record"
+    }, {
+      status: 500
+    })
+  }
 })
