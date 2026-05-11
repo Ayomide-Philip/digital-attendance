@@ -4,7 +4,6 @@ import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 
 export const PUT = auth(async function PUT(req) {
-  console.log(req.auth);
   if (!req?.auth || !req?.auth?.user) {
     return NextResponse.json(
       {
