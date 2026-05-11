@@ -94,3 +94,11 @@ export const GET = auth(async function GET(req, { params }) {
     );
   }
 });
+
+export const DELETE = auth(async function DELETE(req, { params }) {
+  const { userId } = await req.json();
+  const { classesId, attendanceId } = await params;
+  return NextResponse.json({
+    message: "Successfully deleted Attendance"
+  })
+})

@@ -216,9 +216,9 @@ export default function OverviewTab({ overview, classId }) {
           </div>
 
           <div className="space-y-3">
-            {recentActivity.map((item) => (
+            {recentActivity.map((item, idx) => (
               <div
-                key={item.title}
+                key={idx}
                 className="flex items-start gap-3 rounded-xl border border-slate-200/70 p-3 dark:border-slate-800"
               >
                 <div className="rounded-lg bg-sky-500/10 p-2 text-sky-700 dark:text-sky-300">
@@ -226,10 +226,10 @@ export default function OverviewTab({ overview, classId }) {
                 </div>
                 <div className="min-w-0">
                   <p className="text-sm font-medium text-slate-900 dark:text-slate-100">
-                    {item.title}
+                    {item?.title}
                   </p>
                   <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-                    {item.time}
+                    {item?.time}
                   </p>
                 </div>
               </div>
@@ -247,21 +247,21 @@ export default function OverviewTab({ overview, classId }) {
         </div>
 
         <div className="space-y-3">
-          {upcomingSessions.map((session) => (
+          {upcomingSessions.map((session, idx) => (
             <div
-              key={`${session.topic}-${session.date}`}
+              key={idx}
               className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-200/70 p-4 dark:border-slate-800"
             >
               <div>
                 <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">
-                  {session.topic}
+                  {session?.topic}
                 </p>
                 <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-                  {session.date}
+                  {session?.date}
                 </p>
               </div>
               <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700 dark:bg-slate-800 dark:text-slate-300">
-                {session.time}
+                {session?.time}
               </span>
             </div>
           ))}
