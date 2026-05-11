@@ -96,7 +96,6 @@ function getWeeklyAttendanceStats(sessions = []) {
 
     const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
-    // Initialize all 7 days with empty buckets
     const buckets = days.map((name, i) => {
         const date = new Date(monday);
         date.setDate(monday.getDate() + i);
@@ -104,7 +103,7 @@ function getWeeklyAttendanceStats(sessions = []) {
     });
 
     for (const session of sessions) {
-        const sessionDate = new Date(session.startDate);
+        const sessionDate = new Date(session?.startDate);
         if (sessionDate < monday || sessionDate > sunday) continue;
 
         const bucket = buckets.find((b) => {
@@ -120,9 +119,17 @@ function getWeeklyAttendanceStats(sessions = []) {
     }
 
     return buckets.map((bucket) => {
+        const totalPresent = bucket?.sessions?.reduce((sum, session) => {
+            const presentStudents = session?.students?.filter(
+                (student) => student?.status === "present"
+            ).length;
+
+            return sum + presentStudents;
+        }, 0);
+
         return {
             name: bucket.name,
-            attendance: bucket?.sessions?.length
+            attendance: totalPresent,
         };
     });
 }

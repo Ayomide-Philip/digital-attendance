@@ -94,7 +94,7 @@ export default function DashboardCharts({ trendData = [], classData = [] }) {
                   tickLine={false}
                   axisLine={false}
                   width={isMobile ? 36 : 42}
-                  tickFormatter={(v) => `${v}%`}
+                  tickFormatter={(v) => `${v}`}
                 />
                 <Tooltip {...tooltipStyle} />
                 <Line
