@@ -6,6 +6,7 @@ import {
   Save,
   School,
   ShieldAlert,
+  Trash2,
   X,
 } from "lucide-react";
 import { useState } from "react";
@@ -16,12 +17,10 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
-  DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import SettingsCard from "./settingsCard";
+import { createPortal } from "react-dom";
 
 export default function SettingsTab({ settings = {} }) {
   const [rules, setRules] = useState({
@@ -57,10 +56,7 @@ export default function SettingsTab({ settings = {} }) {
     toast.success("Settings saved locally.");
   };
 
-  const handleDelete = () => {
-    toast.success("Class deleted successfully.");
-    setDeleteConfirm(false);
-  };
+  async function handleDelete() {}
 
   return (
     <div className="space-y-5">
@@ -236,47 +232,63 @@ export default function SettingsTab({ settings = {} }) {
         </div>
       </div>
 
-      <Dialog open={deleteConfirm} onOpenChange={setDeleteConfirm}>
-        <DialogContent className="border-none bg-zinc-950/95 shadow-2xl backdrop-blur-2xl rounded-3xl p-0 overflow-hidden">
-          <div className="absolute inset-0 bg-linear-to-b from-rose-500/5 to-transparent pointer-events-none" />
+      {deleteConfirm &&
+        createPortal(
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center sm:items-center"
+            aria-modal="true"
+            role="dialog"
+          >
+            <div
+              className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+              onClick={() => setDeleteConfirm(false)}
+            />
 
-          <div className="relative p-8 sm:p-10">
-            <div className="flex flex-col items-center text-center gap-6">
-              <div className="flex size-16 items-center justify-center rounded-full bg-rose-500/15 shadow-lg shadow-rose-500/30 ring-1 ring-rose-500/20">
-                <AlertTriangle className="size-7 text-rose-400" />
+            <div className="relative z-10 w-full max-w-sm mx-4 mb-4 sm:mb-0 bg-white dark:bg-slate-950 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden">
+              <div className="p-6 pb-5 flex flex-col gap-5">
+                <div className="flex size-11 items-center justify-center rounded-xl bg-rose-50 border border-rose-200 dark:bg-rose-950/30 dark:border-rose-900/50">
+                  <Trash2 className="size-5 text-rose-600 dark:text-rose-400" />
+                </div>
+
+                <div className="flex flex-col gap-1.5">
+                  <h2 className="text-base font-semibold text-slate-900 dark:text-slate-100">
+                    Delete this class?
+                  </h2>
+                  <p className="text-sm leading-relaxed text-slate-500 dark:text-slate-400">
+                    All attendance records and student data will be permanently
+                    removed. This cannot be reversed.
+                  </p>
+                </div>
+
+                <div className="inline-flex w-fit items-center gap-1.5 rounded-lg border border-rose-200 bg-rose-50 px-2.5 py-1 dark:border-rose-900/50 dark:bg-rose-950/30">
+                  <AlertTriangle className="size-3 text-rose-600 dark:text-rose-400" />
+                  <span className="text-xs font-medium text-rose-600 dark:text-rose-400">
+                    Permanent action
+                  </span>
+                </div>
               </div>
-
-              <div className="space-y-3">
-                <DialogTitle className="text-2xl font-semibold text-zinc-50">
-                  Delete Class?
-                </DialogTitle>
-                <DialogDescription className="text-sm leading-6 text-zinc-400">
-                  This action cannot be undone. All attendance records and data
-                  for this class will be permanently removed from the system.
-                </DialogDescription>
+              <div className="h-px bg-slate-100 dark:bg-slate-800" />{" "}
+              <div className="p-4 flex gap-2.5">
+                <button
+                  type="button"
+                  onClick={() => setDeleteConfirm(false)}
+                  className="h-11 flex-1 rounded-xl border border-slate-200 bg-white text-sm font-medium text-slate-700 transition hover:bg-slate-50 active:scale-[0.98] dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={handleDelete}
+                  className="h-11 flex-1 rounded-xl border border-rose-200 bg-rose-50 text-sm font-medium text-rose-600 transition hover:bg-rose-100 active:scale-[0.98] dark:border-rose-900/50 dark:bg-rose-950/30 dark:text-rose-400 dark:hover:bg-rose-950/60 inline-flex items-center justify-center gap-1.5"
+                >
+                  <Trash2 className="size-3.5" />
+                  Delete class
+                </button>
               </div>
             </div>
-
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row justify-center">
-              <Button
-                type="button"
-                variant="outline"
-                className="h-11 rounded-xl border-none bg-zinc-900/50 text-zinc-300 font-medium transition-all duration-200 hover:bg-zinc-900 dark:hover:bg-zinc-800"
-                onClick={() => setDeleteConfirm(false)}
-              >
-                Cancel
-              </Button>
-              <Button
-                type="button"
-                className="h-11 rounded-xl border-none bg-rose-600 text-white font-semibold shadow-lg shadow-rose-600/50 transition-all duration-200 hover:bg-rose-700 hover:shadow-rose-600/70 active:scale-95"
-                onClick={handleDelete}
-              >
-                Delete Class
-              </Button>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
+          </div>,
+          document.body,
+        )}
     </div>
   );
 }
