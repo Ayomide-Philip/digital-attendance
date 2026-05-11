@@ -12,17 +12,10 @@ import {
 import { useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import Card from "@/components/ui/card";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import SettingsCard from "./settingsCard";
 import { createPortal } from "react-dom";
 
-export default function SettingsTab({ settings = {} }) {
+export default function SettingsTab({ settings = {}, classId }) {
   const [rules, setRules] = useState({
     emailSuffix: settings?.rules?.emailSuffix || "",
     departmentCodes: settings?.rules?.departmentCode || [],
@@ -32,7 +25,7 @@ export default function SettingsTab({ settings = {} }) {
 
   const schoolName = settings?.school || "Not set";
 
-  const handleAddDepartmentCode = () => {
+  function handleAddDepartmentCode() {
     const nextCode = departmentInput.trim().toLowerCase();
 
     if (!nextCode) {
@@ -49,14 +42,38 @@ export default function SettingsTab({ settings = {} }) {
       departmentCodes: [...current.departmentCodes, nextCode],
     }));
     setDepartmentInput("");
-  };
+  }
 
-  const handleSave = (event) => {
+  function handleSave(event) {
     event.preventDefault();
     toast.success("Settings saved locally.");
-  };
+  }
 
-  async function handleDelete() {}
+  async function handleDelete() {
+    if (!deleteConfirm || !classId) return;
+    try {
+      const request = await fetch(`/api/teacher/classes/${classId}/delete`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      });
+      const response = await request.json();
+      if (!request?.ok || response?.error) {
+        return toast.error(
+          response?.error || "An error occurred while deleting the class.",
+        );
+      }
+      toast.success(response?.message || "Class deleted successfully.");
+      setDeleteConfirm(false);
+      window.location.href = "/dashboard/teachers/classes";
+    } catch (err) {
+      return toast.error(
+        "An error occurred while deleting the class. Please try again.",
+      );
+    }
+  }
 
   return (
     <div className="space-y-5">
@@ -210,7 +227,7 @@ export default function SettingsTab({ settings = {} }) {
                 <Button
                   type="button"
                   variant="destructive"
-                  className="h-10 rounded-xl px-4"
+                  className="h-10 rounded-xl px-4 cursor-pointer inline-flex items-center gap-2"
                   onClick={() => setDeleteConfirm(true)}
                 >
                   <AlertTriangle className="size-4" />
@@ -272,14 +289,14 @@ export default function SettingsTab({ settings = {} }) {
                 <button
                   type="button"
                   onClick={() => setDeleteConfirm(false)}
-                  className="h-11 flex-1 rounded-xl border border-slate-200 bg-white text-sm font-medium text-slate-700 transition hover:bg-slate-50 active:scale-[0.98] dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800"
+                  className="h-11 flex-1 rounded-xl border cursor-pointer border-slate-200 bg-white text-sm font-medium text-slate-700 transition hover:bg-slate-50 active:scale-[0.98] dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800"
                 >
                   Cancel
                 </button>
                 <button
                   type="button"
                   onClick={handleDelete}
-                  className="h-11 flex-1 rounded-xl border border-rose-200 bg-rose-50 text-sm font-medium text-rose-600 transition hover:bg-rose-100 active:scale-[0.98] dark:border-rose-900/50 dark:bg-rose-950/30 dark:text-rose-400 dark:hover:bg-rose-950/60 inline-flex items-center justify-center gap-1.5"
+                  className="h-11 flex-1 rounded-xl border cursor-pointer border-rose-200 bg-rose-50 text-sm font-medium text-rose-600 transition hover:bg-rose-100 active:scale-[0.98] dark:border-rose-900/50 dark:bg-rose-950/30 dark:text-rose-400 dark:hover:bg-rose-950/60 inline-flex items-center justify-center gap-1.5"
                 >
                   <Trash2 className="size-3.5" />
                   Delete class
