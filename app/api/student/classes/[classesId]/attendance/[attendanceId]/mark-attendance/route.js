@@ -73,9 +73,11 @@ export const PUT = auth(async function PUT(req, { params }) {
 
   try {
     await connectDatabase();
+    // querying for if the user exist in the database
     const user = await User.findById(new mongoose.Types.ObjectId(userId))
       .select("role")
       .lean();
+    // if the user dosent exist return 401
     if (!user) {
       return NextResponse.json(
         {
@@ -86,7 +88,7 @@ export const PUT = auth(async function PUT(req, { params }) {
         },
       );
     }
-
+    // if the user dosent have the required role return 403
     if (user?.role !== "student") {
       return NextResponse.json(
         {
@@ -97,14 +99,46 @@ export const PUT = auth(async function PUT(req, { params }) {
         },
       );
     }
-
+    // check if the class exist
     const classExist = await Classes.findOne({
       _id: new mongoose.Types.ObjectId(classesId),
       students: new mongoose.Types.ObjectId(userId),
+    })
+      .select("name code students description teacher")
+      .lean();
+    // if the class dosent exist return 404
+    if (!classExist) {
+      return NextResponse.json(
+        {
+          error: "Class does not exist or you don't have access to class",
+        },
+        {
+          status: 404,
+        },
+      );
+    }
+    // check for the particlar attendance the user want to mark
+    const attendanceExist = await Attandance.findOne({
+      _id: new mongoose.Types.ObjectId(attendanceId),
+      classesId: new mongoose.Types.ObjectId(classesId),
+      teacherId: new mongoose.Types.ObjectId(classExist?.teacher),
     });
+    // if attendance does not exist return 404
+    if (!attendanceExist) {
+      return NextResponse.json(
+        {
+          error: "Attendnace does not exist",
+        },
+        {
+          status: 404,
+        },
+      );
+    }
+
     return NextResponse.json({
       message: "Attendance marked successfully",
       classExist,
+      attendanceExist,
     });
   } catch (err) {
     console.log(err);
