@@ -46,6 +46,7 @@ export default function ClassDetailsPage() {
     return tabFromHash(window.location.hash);
   });
   const [classDetails, setClassDetails] = useState(null);
+  const [attendance, setAttendance] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -79,18 +80,39 @@ export default function ClassDetailsPage() {
   useEffect(() => {
     async function fetchClassDetails() {
       try {
-        const request = await fetch(`/api/student/classes/${id}`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-        });
-        const response = await request.json();
-        if (!request.ok || response?.error) {
-          throw new Error(response?.error || "Failed to fetch class details");
+        const [classRequest, attendanceRequest] = await Promise.all([
+          fetch(`/api/student/classes/${id}`, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            credentials: "include",
+          }),
+          fetch(`/api/student/classes/${id}/attendance`, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            credentials: "include",
+          }),
+        ]);
+
+        const classResponse = await classRequest.json();
+        const attendanceResponse = await attendanceRequest.json();
+
+        if (!classRequest.ok || classResponse?.error) {
+          throw new Error(
+            classResponse?.error || "Failed to fetch class details",
+          );
         }
-        setClassDetails(response?.classes || null);
+
+        if (!attendanceRequest.ok || attendanceResponse?.error) {
+          throw new Error(
+            attendanceResponse?.error || "Failed to fetch attendance records",
+          );
+        }
+        setClassDetails(classResponse?.classes || null);
+        setAttendance(attendanceResponse?.attendance || []);
         setLoading(false);
       } catch (err) {
         console.log(err);
@@ -125,8 +147,8 @@ export default function ClassDetailsPage() {
 
       {selectedTab === "Attendance" && (
         <StudentClassAttendance
+          attendance={attendance}
           attendanceHeading={attedanceHeadingDetails}
-          classId={id}
         />
       )}
 
