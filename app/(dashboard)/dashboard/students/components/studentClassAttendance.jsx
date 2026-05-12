@@ -177,7 +177,7 @@ export default function StudentClassAttendance({
                         <GraduationCap className="size-4 shrink-0" />
                         <span className="truncate">
                           {className}
-                          {classCode ? ` • ${classCode}` : ""}
+                          {classCode ? ` • ${classCode.toUpperCase()}` : ""}
                         </span>
                       </div>
                     </div>
