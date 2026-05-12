@@ -2,14 +2,8 @@
 
 import { BookCopy, CalendarCheck2, Plus, Users } from "lucide-react";
 import Link from "next/link";
-
 import DashboardCharts from "@/app/(dashboard)/dashboard/teachers/components/DashboardCharts";
-import {
-  attendancePerClassData,
-  dashboardAttendanceTrend,
-  getAllStudents,
-  teacherClasses,
-} from "@/app/(dashboard)/dashboard/teachers/components/mock-data";
+import { teacherClasses } from "@/app/(dashboard)/dashboard/teachers/components/mock-data";
 import StatsCard from "@/app/(dashboard)/dashboard/teachers/components/StatsCard";
 import { buttonVariants } from "@/components/ui/button";
 import Card from "@/components/ui/card";
@@ -180,7 +174,11 @@ export default function TeachersDashboardPage() {
         ))}
       </section>
 
-      <DashboardCharts trendData={trendData} classData={classData} />
+      <DashboardCharts
+        trendData={trendData}
+        classData={classData}
+        fetchDataError={fetchDataError}
+      />
 
       <Card className="rounded-2xl p-5">
         <div className="mb-4">

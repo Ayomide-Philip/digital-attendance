@@ -27,7 +27,7 @@ function useWindowWidth() {
 
 const tooltipStyle = {
   contentStyle: {
-    borderRadius: 12,
+    borderRadius: 10,
     border: "1px solid rgba(148,163,184,0.3)",
     backgroundColor: "rgba(15,23,42,0.96)",
     color: "#e2e8f0",

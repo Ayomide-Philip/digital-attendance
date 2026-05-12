@@ -112,7 +112,7 @@ export const GET = auth(async function GET(req, { params }) {
         (s) => s.classId === cls._id.toString(),
       );
       return {
-        name: cls.name,
+        name: cls?.code,
         attendance: summary ? summary.totalSessions : 0,
       };
     });
