@@ -135,9 +135,48 @@ export const PUT = auth(async function PUT(req, { params }) {
       );
     }
 
+    // logic for first validating some basics attendance stuff before touching the user coords passed
+    if (
+      attendanceExist?.students.find(
+        (s) => s?.studentId?.toString() === userId?.toString(),
+      )
+    ) {
+      // if the user has taken an attendance before
+      return NextResponse.json(
+        {
+          error: "You have taken the attendance before",
+        },
+        {
+          status: 400,
+        },
+      );
+    }
+    if (new Date(attendanceExist?.startTime) > new Date()) {
+      // if attendance hasnt started
+      return NextResponse.json(
+        {
+          error: "Attendance hasn't started",
+        },
+        {
+          status: 400,
+        },
+      );
+    }
+
+    if (new Date() > new Date(attendanceExist?.endTime)) {
+      // if attendance has ended return 400
+      return NextResponse.json(
+        {
+          error: "Attendance has ended",
+        },
+        {
+          status: 400,
+        },
+      );
+    }
+
     return NextResponse.json({
       message: "Attendance marked successfully",
-      classExist,
       attendanceExist,
     });
   } catch (err) {
