@@ -197,9 +197,9 @@ export const PUT = auth(async function PUT(req, { params }) {
     let approvedStudentCoords = validateStudentsCoords.filter(
       (c) => c?.coords?.accuracy <= Number(MAX_ALLOWED_STUDENTS_ACCURACY),
     );
-    // sort the approvedStudentCoords based on the timestamp in descending order (latest first)
+    // sort the approvedStudentCoords based on the timestamp in accending order (older first)
     approvedStudentCoords = [...approvedStudentCoords].sort(
-      (a, b) => b?.timestamp - a?.timestamp,
+      (a, b) => a?.timestamp - b?.timestamp,
     );
     // if the number of valid student coords is less than 3 return an error response
     if (approvedStudentCoords?.length < 3) {
@@ -265,7 +265,7 @@ export const PUT = auth(async function PUT(req, { params }) {
       );
 
       const timeDifference =
-        (prevCoords?.timestamp - currentCoords?.timestamp) / 1000;
+        (currentCoords?.timestamp - prevCoords?.timestamp) / 1000;
 
       if (timeDifference <= 0) {
         timestampViolationScores += 1;
@@ -274,7 +274,7 @@ export const PUT = auth(async function PUT(req, { params }) {
 
       const speed = Math.abs(distance) / Math.abs(timeDifference);
 
-      if (speed > 15) {
+      if (speed > 10) {
         speedViolationScores++;
       }
     }
@@ -299,7 +299,7 @@ export const PUT = auth(async function PUT(req, { params }) {
         approvedStudentCoords?.[0]?.timestamp,
     );
 
-    if (timeSpan < 5000) {
+    if (timeSpan < 10000) {
       universalViolationScore++;
     }
 
