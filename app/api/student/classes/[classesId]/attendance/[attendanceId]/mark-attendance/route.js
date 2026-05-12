@@ -213,14 +213,42 @@ export const PUT = auth(async function PUT(req, { params }) {
       );
     }
 
-    let violationScore = 0;
+    let universalViolationScore = 0;
+    const anchorLat = median(
+      approvedStudentCoords.map((c) => c?.coords?.latitude),
+    );
+    const anchorLng = median(
+      approvedStudentCoords.map((c) => c?.coords?.longitude),
+    );
+
+    let distanceViolationScores = 0;
+    approvedStudentCoords.forEach((c) => {
+      const distance = haversineDistanceCalculation(
+        anchorLat,
+        anchorLng,
+        c?.coords?.latitude,
+        c?.coords?.longitude,
+      );
+      if (Math.abs(distance) > Number(STUDENT_CLUSTER_RADIUS)) {
+        distanceViolationScores += 1;
+      }
+    });
+
+    const distanceViolationRatio =
+      distanceViolationScores / approvedStudentCoords.length;
+
+    if (distanceViolationRatio > 0.4) {
+      universalViolationScore += 1;
+    }
 
     return NextResponse.json({
       message: "Attendance marked successfully",
       //   attendanceExist,
       //   approvedStudentCoords,
-      studentAnchorPoint,
-      violationScore,
+      //   studentAnchorPoint,
+      anchorLat,
+      anchorLng,
+      distanceViolationScores,
     });
   } catch (err) {
     console.log(err);
@@ -234,3 +262,11 @@ export const PUT = auth(async function PUT(req, { params }) {
     );
   }
 });
+
+function median(values) {
+  const sorted = [...values].sort((a, b) => a - b);
+  const mid = Math.floor(sorted.length / 2);
+  return sorted.length % 2 !== 0
+    ? sorted[mid]
+    : (sorted[mid - 1] + sorted[mid]) / 2;
+}
