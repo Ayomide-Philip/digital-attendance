@@ -5,11 +5,13 @@ import {
   CalendarDays,
   CheckCircle2,
   Clock3,
+  ChevronRight,
   Filter,
   GraduationCap,
   Users,
   XCircle,
 } from "lucide-react";
+import Link from "next/link";
 import { useMemo, useState } from "react";
 
 const FILTERS = ["All", "Pending", "Present", "Absent", "Flagged"];
@@ -218,6 +220,28 @@ export default function StudentClassAttendance({
                       </p>
                     </div>
                   ) : null}
+
+                  <div className="pt-1">
+                    <Link
+                      href={
+                        session?.classesId?._id && session?._id
+                          ? `/dashboard/students/classes/${session.classesId._id}/attendance/${session._id}`
+                          : "#"
+                      }
+                      aria-disabled={!(session?.classesId?._id && session?._id)}
+                      tabIndex={
+                        session?.classesId?._id && session?._id ? 0 : -1
+                      }
+                      className={`inline-flex w-full items-center justify-center gap-2 rounded-xl border px-4 py-2.5 text-sm font-semibold transition-all duration-200 sm:w-auto ${
+                        session?.classesId?._id && session?._id
+                          ? "border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-200 dark:hover:border-slate-700 dark:hover:bg-slate-900"
+                          : "pointer-events-none border-slate-200 bg-slate-100 text-slate-400 dark:border-slate-800 dark:bg-slate-900/60 dark:text-slate-600"
+                      }`}
+                    >
+                      View attendance
+                      <ChevronRight className="size-4" />
+                    </Link>
+                  </div>
                 </div>
               </article>
             );
