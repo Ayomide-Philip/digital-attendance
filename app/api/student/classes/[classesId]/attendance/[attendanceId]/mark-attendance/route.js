@@ -197,11 +197,11 @@ export const PUT = auth(async function PUT(req, { params }) {
     let approvedStudentCoords = validateStudentsCoords.filter(
       (c) => c?.coords?.accuracy <= Number(MAX_ALLOWED_STUDENTS_ACCURACY),
     );
-
+    // sort the approvedStudentCoords based on the timestamp in descending order (latest first)
     approvedStudentCoords = [...approvedStudentCoords].sort(
       (a, b) => b?.timestamp - a?.timestamp,
     );
-
+    // if the number of valid student coords is less than 3 return an error response
     if (approvedStudentCoords?.length < 3) {
       return NextResponse.json(
         {
@@ -212,8 +212,10 @@ export const PUT = auth(async function PUT(req, { params }) {
         },
       );
     }
-
+    // decleared a universal violation score to calculate the overall violation score for the attendance session based on different factors like distance from teacher, distance from student cluster and accuracy of the coords
     let universalViolationScore = 0;
+
+    // calculate the anchor point of the student cluster using the median of the latitude and longitude of the approved student coords to minimize the effect of outliers
     const anchorLat = median(
       approvedStudentCoords.map((c) => c?.coords?.latitude),
     );
@@ -221,6 +223,7 @@ export const PUT = auth(async function PUT(req, { params }) {
       approvedStudentCoords.map((c) => c?.coords?.longitude),
     );
 
+    // calculate distance of the students coords from eachother to detect a spike or an anomaly in the data which can indicate a potential cheating attempt
     let distanceViolationScores = 0;
     approvedStudentCoords.forEach((c) => {
       const distance = haversineDistanceCalculation(
@@ -240,6 +243,49 @@ export const PUT = auth(async function PUT(req, { params }) {
     if (distanceViolationRatio > 0.4) {
       universalViolationScore += 1;
     }
+    // speed abnormality detection can also be implemented here if we have multiple samples from the students to detect if there is a sudden spike in the speed of the student which can indicate a potential cheating attempt
+    let speedViolationScores = 0;
+    let timestampViolationScores = 0;
+
+    for (let i = 1; i < approvedStudentCoords?.length; i++) {
+      const prevCoords = approvedStudentCoords[i - 1];
+      const currentCoords = approvedStudentCoords[i];
+
+      const distance = haversineDistanceCalculation(
+        prevCoords?.coords?.latitude,
+        prevCoords?.coords?.longitude,
+        currentCoords?.coords?.latitude,
+        currentCoords?.coords?.longitude,
+      );
+
+      const timeDifference =
+        (currentCoords?.timestamp - prevCoords?.timestamp) / 1000;
+
+      if (timeDifference <= 0) {
+        timestampViolationScores += 1;
+        continue;
+      }
+
+      const speed = Math.abs(distance) / Math.abs(timeDifference);
+
+      if (speed > 15) {
+        speedViolationScores++;
+      }
+    }
+
+    const speedViolationRatio =
+      speedViolationScores / (approvedStudentCoords?.length - 1);
+
+    const timestampViolationRatio =
+      timestampViolationScores / (approvedStudentCoords?.length - 1);
+
+    if (speedViolationRatio > 0.3) {
+      universalViolationScore += 1;
+    }
+
+    if (timestampViolationRatio > 0.3) {
+      universalViolationScore += 1;
+    }
 
     return NextResponse.json({
       message: "Attendance marked successfully",
@@ -249,6 +295,7 @@ export const PUT = auth(async function PUT(req, { params }) {
       anchorLat,
       anchorLng,
       distanceViolationScores,
+      distanceViolationRatio,
     });
   } catch (err) {
     console.log(err);
