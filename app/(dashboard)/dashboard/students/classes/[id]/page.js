@@ -101,15 +101,19 @@ export default function ClassDetailsPage() {
         const attendanceResponse = await attendanceRequest.json();
 
         if (!classRequest.ok || classResponse?.error) {
-          throw new Error(
+          toast.error(
             classResponse?.error || "Failed to fetch class details",
           );
+          window.location.href = "/dashboard/students/classes";
+          return;
         }
 
         if (!attendanceRequest.ok || attendanceResponse?.error) {
-          throw new Error(
+          toast.error(
             attendanceResponse?.error || "Failed to fetch attendance records",
           );
+          window.location.href = "/dashboard/students/classes";
+          return;
         }
         setClassDetails(classResponse?.classes || null);
         setAttendance(attendanceResponse?.attendance || []);
