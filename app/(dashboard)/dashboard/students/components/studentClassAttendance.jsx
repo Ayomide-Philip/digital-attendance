@@ -73,21 +73,21 @@ export default function StudentClassAttendance({
 
   return (
     <section className="w-full space-y-6">
-      <header className="rounded-3xl border border-slate-200/80 bg-white/95 p-5 shadow-sm ring-1 ring-slate-950/5 dark:border-slate-800/70 dark:bg-slate-950/70 dark:ring-white/5 sm:p-6">
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-          <div className="flex items-start gap-4">
-            <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-slate-900 text-white shadow-lg shadow-slate-900/15 dark:bg-slate-100 dark:text-slate-900">
+      <header className="rounded-3xl border border-slate-200/80 bg-white/95 p-4 shadow-sm ring-1 ring-slate-950/5 dark:border-slate-800/70 dark:bg-slate-950/70 dark:ring-white/5 sm:p-5 lg:p-6">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:gap-4">
+            <div className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-slate-900 text-white shadow-lg shadow-slate-900/15 dark:bg-slate-100 dark:text-slate-900 sm:size-12">
               <CalendarDays className="size-6" />
             </div>
-            <div className="space-y-1">
-              <p className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400">
+            <div className="space-y-1.5">
+              <p className="inline-flex w-fit items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400 sm:text-xs sm:tracking-[0.18em]">
                 <Filter className="size-3.5" />
                 Attendance list
               </p>
-              <h2 className="text-2xl font-semibold tracking-tight text-slate-900 dark:text-slate-50 sm:text-3xl">
+              <h2 className="max-w-[18ch] text-xl font-semibold leading-tight tracking-tight text-slate-900 dark:text-slate-50 sm:max-w-none sm:text-2xl lg:text-3xl">
                 {headingTitle}
               </h2>
-              <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-slate-600 dark:text-slate-400">
+              <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm leading-6 text-slate-600 dark:text-slate-400">
                 <span className="inline-flex items-center gap-1.5">
                   <Users className="size-4" />
                   {headingTeacher}
@@ -102,24 +102,22 @@ export default function StudentClassAttendance({
             </div>
           </div>
 
-          <div className="flex flex-wrap gap-2">
+          <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
             {FILTERS.map((filter) => {
               const active = statusFilter === filter;
-              const count = counts[filter] ?? 0;
-
               return (
                 <button
                   key={filter}
                   type="button"
                   onClick={() => setStatusFilter(filter)}
                   aria-pressed={active}
-                  className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-slate-400/40 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-slate-950 ${
+                  className={`inline-flex cursor-pointer min-w-0 items-center justify-center gap-2 rounded-full border px-3 py-2 text-xs font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-slate-400/40 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-slate-950 sm:px-4 sm:text-sm ${
                     active
                       ? "border-slate-900 bg-slate-900 text-white shadow-sm dark:border-slate-100 dark:bg-slate-100 dark:text-slate-900"
                       : "border-slate-200 bg-slate-50 text-slate-600 hover:border-slate-300 hover:bg-slate-100 dark:border-slate-800 dark:bg-slate-900/70 dark:text-slate-300 dark:hover:border-slate-700 dark:hover:bg-slate-900"
                   }`}
                 >
-                  <span>{filter}</span>
+                  <span className="truncate">{filter}</span>
                   <span
                     className={`rounded-full px-2 py-0.5 text-xs font-semibold ${
                       active
@@ -127,7 +125,7 @@ export default function StudentClassAttendance({
                         : "bg-slate-200 text-slate-600 dark:bg-slate-800 dark:text-slate-300"
                     }`}
                   >
-                    {count}
+                    {counts[filter] ?? 0}
                   </span>
                 </button>
               );
@@ -172,7 +170,7 @@ export default function StudentClassAttendance({
                 <div className="flex h-full flex-col gap-3.5">
                   <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                     <div className="min-w-0 space-y-2">
-                      <h3 className="text-base font-semibold leading-snug text-slate-900 dark:text-slate-50 sm:text-lg">
+                      <h3 className="text-base font-semibold leading-snug text-slate-900 dark:text-slate-50 sm:text-lg capitalize">
                         {session?.title || "Attendance Session"}
                       </h3>
                       <div className="inline-flex max-w-full items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-medium text-slate-700 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300 sm:text-sm">
