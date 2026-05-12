@@ -152,7 +152,7 @@ export default function StudentClassAttendance({
           </div>
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 2xl:grid-cols-3">
           {filteredSessions.map((session) => {
             const statusMeta = getStatusMeta(session?.status);
             const className = session?.classesId?.name || "Class";
@@ -165,15 +165,15 @@ export default function StudentClassAttendance({
             return (
               <article
                 key={session?._id}
-                className="group rounded-3xl border border-slate-200 bg-white p-5 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md dark:border-slate-800 dark:bg-slate-950/70"
+                className="group rounded-2xl border border-slate-200 bg-white/95 p-3.5 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md dark:border-slate-800 dark:bg-slate-950/70 sm:p-4"
               >
-                <div className="flex h-full flex-col gap-5">
-                  <div className="flex items-start justify-between gap-3">
+                <div className="flex h-full flex-col gap-3.5">
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                     <div className="min-w-0 space-y-2">
-                      <h3 className="text-lg font-semibold leading-snug text-slate-900 dark:text-slate-50 sm:text-xl">
+                      <h3 className="text-base font-semibold leading-snug text-slate-900 dark:text-slate-50 sm:text-lg">
                         {session?.title || "Attendance Session"}
                       </h3>
-                      <div className="inline-flex max-w-full items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-sm font-medium text-slate-700 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300">
+                      <div className="inline-flex max-w-full items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-medium text-slate-700 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300 sm:text-sm">
                         <GraduationCap className="size-4 shrink-0" />
                         <span className="truncate">
                           {className}
@@ -183,34 +183,19 @@ export default function StudentClassAttendance({
                     </div>
 
                     <span
-                      className={`inline-flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold ${statusMeta.badgeClass}`}
+                      className={`inline-flex w-fit shrink-0 items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-semibold sm:text-xs ${statusMeta.badgeClass}`}
                     >
                       {statusMeta.icon}
                       {session?.status || "Pending"}
                     </span>
                   </div>
 
-                  <div className="grid gap-3 sm:grid-cols-2">
-                    <div className="rounded-2xl border border-slate-200/80 bg-slate-50/80 p-4 dark:border-slate-800 dark:bg-slate-900/60">
-                      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">
-                        Teacher
-                      </p>
-                      <p className="mt-2 text-sm font-medium text-slate-900 dark:text-slate-100">
-                        {teacherName}
-                      </p>
-                    </div>
-
-                    <div className="rounded-2xl border border-slate-200/80 bg-slate-50/80 p-4 dark:border-slate-800 dark:bg-slate-900/60">
-                      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">
-                        Status
-                      </p>
-                      <p className="mt-2 text-sm font-medium text-slate-900 dark:text-slate-100">
-                        {statusMeta.label}
-                      </p>
-                    </div>
+                  <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
+                    <MiniInfoCard label="Teacher" value={teacherName} />
+                    <MiniInfoCard label="Status" value={statusMeta.label} />
                   </div>
 
-                  <div className="grid gap-3 sm:grid-cols-2">
+                  <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
                     <TimeField
                       icon={Clock3}
                       label="Start time"
@@ -224,7 +209,7 @@ export default function StudentClassAttendance({
                   </div>
 
                   {session?.description ? (
-                    <div className="rounded-2xl border border-slate-200/80 bg-white p-4 text-sm leading-6 text-slate-600 dark:border-slate-800 dark:bg-slate-950/80 dark:text-slate-300">
+                    <div className="rounded-2xl border border-slate-200/80 bg-slate-50/70 p-3 text-sm leading-6 text-slate-600 dark:border-slate-800 dark:bg-slate-900/50 dark:text-slate-300">
                       <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">
                         Description
                       </p>
@@ -295,12 +280,25 @@ function formatReadableDateTime(value) {
 
 function TimeField({ icon: Icon, label, value }) {
   return (
-    <div className="rounded-2xl border border-slate-200/80 bg-slate-50/80 p-4 dark:border-slate-800 dark:bg-slate-900/60">
-      <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">
+    <div className="rounded-2xl border border-slate-200/80 bg-slate-50/80 p-3 dark:border-slate-800 dark:bg-slate-900/60">
+      <p className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">
         <Icon className="size-4" />
         {label}
       </p>
-      <p className="mt-2 text-sm font-medium leading-6 text-slate-900 dark:text-slate-100">
+      <p className="mt-1.5 text-sm font-medium leading-6 text-slate-900 dark:text-slate-100">
+        {value}
+      </p>
+    </div>
+  );
+}
+
+function MiniInfoCard({ label, value }) {
+  return (
+    <div className="rounded-2xl border border-slate-200/80 bg-slate-50/80 px-3 py-2.5 dark:border-slate-800 dark:bg-slate-900/60">
+      <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">
+        {label}
+      </p>
+      <p className="mt-1 text-sm font-medium text-slate-900 dark:text-slate-100">
         {value}
       </p>
     </div>
