@@ -14,6 +14,15 @@ export const PUT = auth(async function PUT(req, { params }) {
             status: 401
         })
     }
+    const userId = req?.auth?.user?.id;
+    const { classesId, attendanceId } = await params;
+    if (!userId?.trim() || !classesId?.trim() || !attendanceId?.trim()) {
+        return NextResponse.json({
+            error: "Invalid Parameters"
+        }, {
+            status: 400
+        })
+    }
     return NextResponse.json({
         message: "Attendance marked successfully"
     })
