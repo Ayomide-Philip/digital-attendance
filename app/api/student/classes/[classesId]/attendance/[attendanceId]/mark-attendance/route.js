@@ -16,7 +16,7 @@ export const PUT = auth(async function PUT(req, { params }) {
     // }
     // const userId = req?.auth?.user?.id;
     const { classesId, attendanceId } = await params;
-    const { userId } = await req.json()
+    const { userId, studentsCoords } = await req.json()
     if (!userId?.trim() || !classesId?.trim() || !attendanceId?.trim()) {
         return NextResponse.json({
             error: "Invalid Parameters"
