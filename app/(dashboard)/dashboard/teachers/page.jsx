@@ -78,6 +78,28 @@ export default function TeachersDashboardPage() {
         ]);
         const trendDataResponse = await trendDataRequest.json();
         const classDataResponse = await classDataRequest.json();
+
+        if (!trendDataRequest?.ok || trendDataResponse?.error) {
+          setFetchDataError((prev) => {
+            return {
+              ...prev,
+              trendData:
+                trendDataResponse?.error || "Unable to fetch attendance data",
+            };
+          });
+        }
+
+        if (!classDataRequest?.ok || classDataResponse?.error) {
+          setFetchDataError((prev) => {
+            return {
+              ...prev,
+              trendData:
+                classDataResponse?.error || "Unable to fetch attendance data",
+            };
+          });
+        }
+        setTrendData(trendDataResponse?.stats?.attendance || []);
+        setClassData(trendDataResponse?.stats?.classes || []);
       } catch (error) {
         return setFetchDataError({
           trendData: "Unable to Fetch Attendance Data details",
