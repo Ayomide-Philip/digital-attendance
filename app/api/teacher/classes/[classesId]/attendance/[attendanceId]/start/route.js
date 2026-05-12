@@ -82,7 +82,7 @@ export const PUT = auth(async function PUT(req, { params }) {
   ) {
     return NextResponse.json(
       {
-        error: "Invalid Parameters",
+        error: "Invalid Input Data",
       },
       {
         status: 400,
