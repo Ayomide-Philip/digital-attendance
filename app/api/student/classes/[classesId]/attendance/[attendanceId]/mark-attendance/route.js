@@ -7,15 +7,16 @@ import Attandance from "@/lib/models/attendance.model";
 import { connectDatabase } from "@/lib/database/connectdb";
 
 export const PUT = auth(async function PUT(req, { params }) {
-    if (!req?.auth || !req?.auth?.user) {
-        return NextResponse.json({
-            error: "Unauthorized Access"
-        }, {
-            status: 401
-        })
-    }
-    const userId = req?.auth?.user?.id;
+    // if (!req?.auth || !req?.auth?.user) {
+    //     return NextResponse.json({
+    //         error: "Unauthorized Access"
+    //     }, {
+    //         status: 401
+    //     })
+    // }
+    // const userId = req?.auth?.user?.id;
     const { classesId, attendanceId } = await params;
+    const { userId } = await req.json()
     if (!userId?.trim() || !classesId?.trim() || !attendanceId?.trim()) {
         return NextResponse.json({
             error: "Invalid Parameters"
