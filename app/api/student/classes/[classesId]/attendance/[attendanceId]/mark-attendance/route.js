@@ -49,7 +49,7 @@ export const PUT = auth(async function PUT(req, { params }) {
         .map((sample) => parseAndValidateSample(sample))
         .filter(Boolean);
     // if the valaild number of student coords is < 5 return an error
-    if (validateStudentsCoords?.length < 3 || studentsCoords?.length < 5) {
+    if (validateStudentsCoords?.length < 3 || studentsCoords?.length < 3) {
         return NextResponse.json({
             error: "Unable to gather valid location data"
         }, {
@@ -57,7 +57,16 @@ export const PUT = auth(async function PUT(req, { params }) {
         })
     }
 
-    return NextResponse.json({
-        message: "Attendance marked successfully"
-    })
+    try {
+        return NextResponse.json({
+            message: "Attendance marked successfully"
+        })
+    } catch (err) {
+        console.log(err);
+        return NextResponse.json({
+            error: "Unable to take attendnace"
+        }, {
+            status: 500
+        })
+    }
 })
