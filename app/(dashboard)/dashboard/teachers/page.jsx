@@ -21,6 +21,12 @@ import { useRouter } from "next/navigation";
 export default function TeachersDashboardPage() {
   const [teacherStats, setTeacherStats] = useState(null);
   const [statsLoading, setStatsLoading] = useState(true);
+  const [trendData, setTrendData] = useState([]);
+  const [classData, setClassData] = useState([]);
+  const [fetchDataError, setFetchDataError] = useState({
+    trendData: "",
+    classData: "",
+  });
   const router = useRouter();
 
   useEffect(() => {
@@ -49,6 +55,37 @@ export default function TeachersDashboardPage() {
     }
     getTeacherStats();
   }, [router]);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const [trendDataRequest, classDataRequest] = await Promise.all([
+          fetch(`/api/teacher/attendance/stats`, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            credentials: "include",
+            cache: "no-cache",
+          }),
+          fetch(`/api/teacher/attendance/stats?query=weekly`, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            credentials: "include",
+          }),
+        ]);
+        const trendDataResponse = await trendDataRequest.json();
+        const classDataResponse = await classDataRequest.json();
+      } catch (error) {
+        return setFetchDataError({
+          trendData: "Unable to Fetch Attendance Data details",
+          classData: "Unable to fetch data of all teacher classes",
+        });
+      }
+    }
+  }, []);
 
   const summaryCards = [
     {
