@@ -6,6 +6,11 @@ import Classes from "@/lib/models/classes.model";
 import Attandance from "@/lib/models/attendance.model";
 import { connectDatabase } from "@/lib/database/connectdb";
 import { parseAndValidateSample } from "@/app/api/teacher/classes/[classesId]/attendance/[attendanceId]/start/route";
+import {
+  MAX_ALLOWED_STUDENTS_ACCURACY,
+  STUDENT_CLUSTER_RADIUS,
+} from "@/lib/database/config";
+import haversineDistanceCalculation from "@/lib/utility/haversineDistanceCalculation";
 
 export const PUT = auth(async function PUT(req, { params }) {
   // if (!req?.auth || !req?.auth?.user) {
@@ -175,9 +180,47 @@ export const PUT = auth(async function PUT(req, { params }) {
       );
     }
 
+    if (attendanceExist?.location?.coordinates?.length !== 2) {
+      // if teacher hasnt registered location for class
+      return NextResponse.json(
+        {
+          error:
+            "Teacher hasn't started registered the location for this class",
+        },
+        {
+          status: 400,
+        },
+      );
+    }
+
+    // logic about the coords passed by the students
+    let approvedStudentCoords = validateStudentsCoords.filter(
+      (c) => c?.coords?.accuracy <= Number(MAX_ALLOWED_STUDENTS_ACCURACY),
+    );
+
+    approvedStudentCoords = [...approvedStudentCoords].sort(
+      (a, b) => b?.timestamp - a?.timestamp,
+    );
+
+    if (approvedStudentCoords?.length < 3) {
+      return NextResponse.json(
+        {
+          error: "Unable to mark attendance due to insufficent validation data",
+        },
+        {
+          status: 400,
+        },
+      );
+    }
+
+    let violationScore = 0;
+
     return NextResponse.json({
       message: "Attendance marked successfully",
-      attendanceExist,
+      //   attendanceExist,
+      //   approvedStudentCoords,
+      studentAnchorPoint,
+      violationScore,
     });
   } catch (err) {
     console.log(err);
