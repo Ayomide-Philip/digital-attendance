@@ -111,7 +111,6 @@ export default function DashboardCharts({ trendData = [], classData = [] }) {
         </div>
       </Card>
 
-      {/* Bar chart */}
       <Card className="min-w-0 rounded-2xl p-5">
         <div className="mb-4">
           <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">
@@ -144,7 +143,7 @@ export default function DashboardCharts({ trendData = [], classData = [] }) {
                   tickLine={false}
                   axisLine={false}
                   width={isMobile ? 36 : 42}
-                  tickFormatter={(v) => `${v}%`}
+                  tickFormatter={(v) => `${v}`}
                 />
                 <Tooltip {...tooltipStyle} />
                 <Bar

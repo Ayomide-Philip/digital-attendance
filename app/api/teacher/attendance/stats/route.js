@@ -112,10 +112,8 @@ export const GET = auth(async function GET(req, { params }) {
         (s) => s.classId === cls._id.toString(),
       );
       return {
-        classId: cls._id,
         name: cls.name,
-        code: cls.code,
-        totalSessions: summary ? summary.totalSessions : 0,
+        attendance: summary ? summary.totalSessions : 0,
       };
     });
     return NextResponse.json({
@@ -191,7 +189,6 @@ function getWeeklyAttendanceStats(sessions = []) {
     return {
       name: bucket.name,
       attendance: totalPresent,
-      totalSessions: bucket.sessions.length,
     };
   });
 }

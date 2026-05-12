@@ -59,7 +59,7 @@ export default function TeachersDashboardPage() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const [trendDataRequest, classDataRequest] = await Promise.all([
+        const [classDataRequest, trendDataRequest] = await Promise.all([
           fetch(`/api/teacher/attendance/stats`, {
             method: "GET",
             headers: {
@@ -99,7 +99,8 @@ export default function TeachersDashboardPage() {
           });
         }
         setTrendData(trendDataResponse?.stats?.attendance || []);
-        setClassData(trendDataResponse?.stats?.classes || []);
+        setClassData(classDataResponse?.stats?.classes || []);
+        return;
       } catch (error) {
         return setFetchDataError({
           trendData: "Unable to Fetch Attendance Data details",
@@ -107,6 +108,7 @@ export default function TeachersDashboardPage() {
         });
       }
     }
+    fetchData();
   }, []);
 
   const summaryCards = [
@@ -178,10 +180,7 @@ export default function TeachersDashboardPage() {
         ))}
       </section>
 
-      <DashboardCharts
-        trendData={dashboardAttendanceTrend}
-        classData={attendancePerClassData}
-      />
+      <DashboardCharts trendData={trendData} classData={classData} />
 
       <Card className="rounded-2xl p-5">
         <div className="mb-4">
