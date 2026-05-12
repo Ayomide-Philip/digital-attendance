@@ -138,6 +138,17 @@ export const PUT = auth(async function PUT(req, { params }) {
     );
   }
 
+  if (teacherCords.length < 5) {
+    return NextResponse.json(
+      {
+        error: "Unable to gather enough location data.",
+      },
+      {
+        status: 400,
+      },
+    );
+  }
+
   const validatedTeacherCords = teacherCords
     .map((sample) => parseAndValidateSample(sample))
     .filter(Boolean);
@@ -146,17 +157,6 @@ export const PUT = auth(async function PUT(req, { params }) {
     return NextResponse.json(
       {
         error: "Unable to gather valid location data.",
-      },
-      {
-        status: 400,
-      },
-    );
-  }
-
-  if (teacherCords.length < 5) {
-    return NextResponse.json(
-      {
-        error: "Unable to gather enough location data.",
       },
       {
         status: 400,

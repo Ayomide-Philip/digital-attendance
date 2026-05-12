@@ -18,6 +18,7 @@ export const PUT = auth(async function PUT(req, { params }) {
     // const userId = req?.auth?.user?.id;
     const { classesId, attendanceId } = await params;
     const { userId, studentsCoords } = await req.json()
+    // Validation of parameters
     if (!userId?.trim() || !classesId?.trim() || !attendanceId?.trim()) {
         return NextResponse.json({
             error: "Invalid Parameters"
@@ -25,7 +26,7 @@ export const PUT = auth(async function PUT(req, { params }) {
             status: 400
         })
     }
-
+    // Validation of studentsCoords if its an array and its length is > 0
     if (!Array.isArray(studentsCoords) || studentsCoords?.length === 0) {
         return NextResponse.json({
             error: "Invalid GPS coordinates"
@@ -33,17 +34,28 @@ export const PUT = auth(async function PUT(req, { params }) {
             status: 400
         })
     }
-
-    if (!mongoose.Types.ObjectId.isValid(userId.trim()) || !mongoose.Types.ObjectId.isValid(classesId.trim()) || !mongoose.Types.ObjectId.isValid(attendanceId.trim())) {
+    // check if all the parameters are valid ObjectIds
+    if (!mongoose.Types.ObjectId.isValid(userId.trim()) ||
+        !mongoose.Types.ObjectId.isValid(classesId.trim()) ||
+        !mongoose.Types.ObjectId.isValid(attendanceId.trim())) {
         return NextResponse.json({
             error: "Invalid Parameters"
         }, {
             status: 400
         })
     }
-
-    const validateStudentsCoords = studentsCoords.map((sample) => parseAndValidateSample(sample)).filter(Boolean);
-
+    // validate each sample in studentsCoords and filter out the invalid ones
+    const validateStudentsCoords = studentsCoords
+        .map((sample) => parseAndValidateSample(sample))
+        .filter(Boolean);
+    // if the valaild number of student coords is < 5 return an error
+    if (validateStudentsCoords?.length < 3 || studentsCoords?.length < 5) {
+        return NextResponse.json({
+            error: "Unable to gather valid location data"
+        }, {
+            status: 400
+        })
+    }
 
     return NextResponse.json({
         message: "Attendance marked successfully"
