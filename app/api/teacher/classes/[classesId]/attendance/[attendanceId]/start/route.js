@@ -12,7 +12,7 @@ import Attandance from "@/lib/models/attendance.model";
 import haversineDistanceCalculation from "@/lib/utility/haversineDistanceCalculation";
 import { auth } from "@/auth";
 
-function parseAndValidateSample(sample) {
+export function parseAndValidateSample(sample) {
   const latitude = Number(sample?.coords?.latitude);
   const longitude = Number(sample?.coords?.longitude);
   const accuracy = Number(sample?.coords?.accuracy);
