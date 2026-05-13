@@ -62,54 +62,56 @@ export default function AttendanceIdBody({
         </div>
       </div>
 
-      <div className="mt-4 space-y-3">
-        {visibleStudents.map((student, idx) => {
-          const tone = getStudentStatusTone(student.status);
+      <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        {visibleStudents.length > 0 ? (
+          visibleStudents.map((student, idx) => {
+            const tone = getStudentStatusTone(student.status);
 
-          return (
-            <div
-              key={student?.studentId?._id || idx}
-              className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-200/70 p-3 transition hover:bg-slate-50/80 dark:border-slate-800 dark:hover:bg-slate-900/60"
-            >
-              <div className="min-w-0">
-                <div className="inline-flex items-center gap-2">
-                  <span className={`size-2 rounded-full ${tone.dot}`} />
-                  <p className="font-medium text-slate-900 dark:text-slate-100">
-                    {student?.studentId?.name}
-                  </p>
+            return (
+              <div
+                key={student?.studentId?._id || idx}
+                className="group flex flex-col gap-3 rounded-xl border border-slate-200/70 p-3 transition hover:border-slate-300/70 hover:shadow-md dark:border-slate-800 dark:hover:border-slate-700 dark:hover:shadow-slate-900/30 bg-white/50 dark:bg-slate-900/30"
+              >
+                <div className="flex items-start gap-3">
+                  <span
+                    className={`size-2 rounded-full shrink-0 mt-1.5 ${tone.dot}`}
+                  />
+                  <div className="min-w-0 flex-1">
+                    <p className="font-medium text-slate-900 dark:text-slate-100 text-sm truncate">
+                      {student?.studentId?.name}
+                    </p>
+                    {Object?.keys(student?.reason || {})?.length > 0 ? (
+                      <p className="mt-1 text-xs text-amber-700 dark:text-amber-300 truncate">
+                        {student?.reason?.notInClass}
+                      </p>
+                    ) : null}
+                  </div>
+                  <span
+                    className={`inline-flex capitalize rounded-full border px-2 py-0.5 text-xs font-semibold shrink-0 ${tone.badge}`}
+                  >
+                    {student?.status}
+                  </span>
                 </div>
-                {Object?.keys(student?.reason || {})?.length > 0 ? (
-                  <p className="mt-1 text-xs text-amber-700 dark:text-amber-300">
-                    Reason: {student?.reason?.notInClass}
-                  </p>
-                ) : null}
-              </div>
 
-              <div className="inline-flex items-center gap-2">
-                <span
-                  className={`inline-flex rounded-full border px-2.5 py-1 text-xs font-semibold ${tone.badge}`}
-                >
-                  {student?.status}
-                </span>
-                <span className="inline-flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400">
+                <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
                   <Clock3 className="size-3.5" />
-                  {student?.timestamp
-                    ? new Date(student.timestamp).toLocaleString("en-US", {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })
-                    : "N/A"}
-                </span>
+                  <span>
+                    {student?.timestamp
+                      ? new Date(student.timestamp).toLocaleString("en-US", {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })
+                      : "N/A"}
+                  </span>
+                </div>
               </div>
-            </div>
-          );
-        })}
-
-        {visibleStudents.length === 0 ? (
-          <div className="rounded-xl border border-dashed border-slate-300 py-8 text-center text-sm text-slate-500 dark:border-slate-700 dark:text-slate-400">
+            );
+          })
+        ) : (
+          <div className="rounded-xl border border-dashed border-slate-300 py-8 text-center text-sm text-slate-500 dark:border-slate-700 dark:text-slate-400 sm:col-span-2 lg:col-span-3">
             No students in this tab.
           </div>
-        ) : null}
+        )}
       </div>
     </Card>
   );
