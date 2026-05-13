@@ -215,20 +215,30 @@ export const PUT = auth(async function PUT(req, { params }) {
     // decleared a universal violation score to calculate the overall violation score for the attendance session
     // based on different factors like distance from teacher, distance from student cluster and accuracy of the coords
     let universalViolationScore = 0;
+    let universalViolationMessage = {
+      distanceViolationMessage: "",
+      speedViolationMessage: "",
+      timeStampViolationMessage: "",
+      timeIntervalViolationMessage: "",
+      speedIntervalViolationMessage: "",
+      timeIntervalTooUniformViolationMessage: "",
+      speedIntervalTooUniformViolationMessage: "",
+      identicalCoordsViolationMessage: "",
+    };
 
     // calculate the anchor point of the student cluster using the median of the latitude and longitude of the
     // approved student coords to minimize the effect of outliers
     const anchorLat = median(
-      approvedStudentCoords.map((c) => c?.coords?.latitude),
+      approvedStudentCoords?.map((c) => c?.coords?.latitude),
     );
     const anchorLng = median(
-      approvedStudentCoords.map((c) => c?.coords?.longitude),
+      approvedStudentCoords?.map((c) => c?.coords?.longitude),
     );
 
     // calculate distance of the students coords from eachother to detect a spike or an anomaly in the data which
     // can indicate a potential cheating attempt
     let distanceViolationScores = 0;
-    approvedStudentCoords.forEach((c) => {
+    approvedStudentCoords?.forEach((c) => {
       const distance = haversineDistanceCalculation(
         anchorLat,
         anchorLng,
@@ -340,15 +350,15 @@ export const PUT = auth(async function PUT(req, { params }) {
       universalViolationScore++;
     }
 
-    // unidentical coords detection, it check if alot of coords are the same and not unique
+    // ununique coords detection, it check if alot of coords are the same and not unique
     const uniqueCoords = new Set(
-      approvedStudentCoords.map(
+      approvedStudentCoords?.map(
         (c) =>
           `${c.coords.latitude.toFixed(5)}-${c.coords.longitude.toFixed(5)}`,
       ),
     );
 
-    if (uniqueCoords.size / approvedStudentCoords.length < 0.6) {
+    if (uniqueCoords?.size / approvedStudentCoords?.length < 0.6) {
       universalViolationScore++;
     }
 
