@@ -370,16 +370,22 @@ export const PUT = auth(async function PUT(req, { params }) {
       anchorLng,
     );
 
+    if (
+      Number(teacherStudentDistance) > Number(attendanceExist?.allowedRadius)
+    ) {
+      // do this
+    }
+
     return NextResponse.json({
       message: "Attendance marked successfully",
-      anchorLat,
-      anchorLng,
       universalViolationScore,
       timeSpan,
       timeInterval,
       speedInterval,
       universalViolationMessage,
       teacherStudentDistance,
+      teacherCoords: attendanceExist?.location?.coordinates,
+      studentCoords: [anchorLat, anchorLng],
     });
   } catch (err) {
     console.log(err);
