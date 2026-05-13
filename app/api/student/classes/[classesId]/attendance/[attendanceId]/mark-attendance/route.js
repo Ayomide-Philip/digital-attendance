@@ -305,9 +305,6 @@ export const PUT = auth(async function PUT(req, { params }) {
 
     return NextResponse.json({
       message: "Attendance marked successfully",
-      //   attendanceExist,
-      //   approvedStudentCoords,
-      //   studentAnchorPoint,
       anchorLat,
       anchorLng,
       universalViolationScore,
