@@ -17,14 +17,14 @@ export default function AttendanceIdBody({
   if (new Date() > new Date(endTime)) {
     TotalVisableStudents = TotalVisableStudents.map((student) => {
       if (!student?.status) {
-        return { ...student, status: "Absent" };
+        return { studentId: { ...student }, status: "Absent" };
       }
       return student;
     });
   } else {
     TotalVisableStudents = TotalVisableStudents.map((student) => {
       if (!student?.status) {
-        return { ...student, status: "Pending" };
+        return { studentId: { ...student }, status: "Pending" };
       }
       return student;
     });
@@ -33,8 +33,10 @@ export default function AttendanceIdBody({
     selectedTab === "All"
       ? TotalVisableStudents
       : TotalVisableStudents.filter(
-          (student) => student.status === selectedTab,
+          (student) =>
+            student.status.toLowerCase() === selectedTab?.toLowerCase(),
         );
+  console.log(visibleStudents);
   return (
     <Card className="rounded-2xl border border-slate-200/70 bg-white/85 p-5 shadow-sm dark:border-slate-800 dark:bg-slate-950/70">
       <div className="flex flex-wrap items-center justify-between gap-3">
@@ -61,26 +63,24 @@ export default function AttendanceIdBody({
       </div>
 
       <div className="mt-4 space-y-3">
-        {visibleStudents.map((student) => {
+        {visibleStudents.map((student, idx) => {
           const tone = getStudentStatusTone(student.status);
-          const showFlagReason =
-            selectedTab === "Flagged" && Boolean(student?.reason?.trim());
 
           return (
             <div
-              key={student._id}
+              key={student?.studentId?._id || idx}
               className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-200/70 p-3 transition hover:bg-slate-50/80 dark:border-slate-800 dark:hover:bg-slate-900/60"
             >
               <div className="min-w-0">
                 <div className="inline-flex items-center gap-2">
                   <span className={`size-2 rounded-full ${tone.dot}`} />
                   <p className="font-medium text-slate-900 dark:text-slate-100">
-                    {student?.name}
+                    {student?.studentId?.name}
                   </p>
                 </div>
-                {showFlagReason ? (
+                {Object?.keys(student?.reason || {})?.length > 0 ? (
                   <p className="mt-1 text-xs text-amber-700 dark:text-amber-300">
-                    Reason: {student?.reason}
+                    Reason: {student?.reason?.notInClass}
                   </p>
                 ) : null}
               </div>

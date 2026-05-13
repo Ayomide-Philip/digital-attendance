@@ -42,10 +42,10 @@ export default function AttendanceStudentStats({
   }
 
   const presentCount = attendanceStudentList.filter(
-    (s) => s.status === "Present",
+    (s) => s.status === "present",
   ).length;
   let absentStudent = attendanceStudentList.filter(
-    (s) => s.status === "Absent",
+    (s) => s.status === "absent",
   );
   if (nowTime > 0 && Number.isFinite(endMs) && nowTime > endMs) {
     absentStudent = absentStudent.concat(
@@ -57,7 +57,7 @@ export default function AttendanceStudentStats({
     );
   }
   const flaggedCount = attendanceStudentList.filter(
-    (s) => s.status === "Flagged",
+    (s) => s.status === "flagged",
   ).length;
 
   return (

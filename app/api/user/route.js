@@ -165,6 +165,22 @@ export const PUT = async function PUT(req) {
         },
       );
     }
+    // check if a user already has the same matric number in the school before
+    const userExistWithMatricNo = await User.findOne({
+      matricNo: matricNo.trim().toLowerCase(),
+      school: school.trim().toLowerCase(),
+    }).select("matricNo school -_id");
+
+    if (userExistWithMatricNo) {
+      return NextResponse.json(
+        {
+          error: "A user in the school already has this matric number",
+        },
+        {
+          status: 400,
+        },
+      );
+    }
 
     // update user information
     let updatingInfo = false;

@@ -212,10 +212,6 @@ export const PUT = auth(async function PUT(req, { params }) {
         },
       );
     }
-    // decleared a universal violation score to calculate the overall violation score for the attendance session
-    // based on different factors like distance from teacher, distance from student cluster and accuracy of the coords
-    let universalViolationScore = 0;
-    let universalViolationMessage = {};
 
     // calculate the anchor point of the student cluster using the median of the latitude and longitude of the
     // approved student coords to minimize the effect of outliers
@@ -225,6 +221,59 @@ export const PUT = auth(async function PUT(req, { params }) {
     const anchorLng = median(
       approvedStudentCoords?.map((c) => c?.coords?.longitude),
     );
+
+    // calculating distance between teacher and student
+    const teacherStudentDistance = haversineDistanceCalculation(
+      attendanceExist?.location?.coordinates?.[1],
+      attendanceExist?.location?.coordinates?.[0],
+      anchorLat,
+      anchorLng,
+    );
+
+    if (
+      Number(teacherStudentDistance) > Number(attendanceExist?.allowedRadius)
+    ) {
+      const markAttendance = await Attandance.findOneAndUpdate(
+        {
+          _id: new mongoose.Types.ObjectId(attendanceId),
+          classesId: new mongoose.Types.ObjectId(classesId),
+          teacherId: new mongoose.Types.ObjectId(classExist?.teacher),
+        },
+        {
+          $push: {
+            students: {
+              studentId: new mongoose.Types.ObjectId(userId),
+              status: "absent",
+              location: {
+                coordinates: [anchorLng, anchorLat],
+                type: "Point",
+              },
+              reason: {
+                notInClass: "Student is not within the class location",
+              },
+              accuracy:
+                approvedStudentCoords[approvedStudentCoords?.length - 1]?.coords
+                  ?.accuracy,
+            },
+          },
+        },
+      );
+      console.log(markAttendance);
+      return NextResponse.json(
+        {
+          message:
+            "You are not within the class location, attendance marked as absent",
+        },
+        {
+          status: 200,
+        },
+      );
+    }
+
+    // decleared a universal violation score to calculate the overall violation score for the attendance session
+    // based on different factors like distance from teacher, distance from student cluster and accuracy of the coords
+    let universalViolationScore = 0;
+    let universalViolationMessage = {};
 
     // calculate distance of the students coords from eachother to detect a spike or an anomaly in the data which
     // can indicate a potential cheating attempt
@@ -360,20 +409,6 @@ export const PUT = auth(async function PUT(req, { params }) {
       universalViolationMessage.identicalCoordsViolationMessage =
         "More than 60% of the coords are identical which is nearly impossible";
       universalViolationScore++;
-    }
-
-    // calculating distance between teacher and student
-    const teacherStudentDistance = haversineDistanceCalculation(
-      attendanceExist?.location?.coordinates?.[1],
-      attendanceExist?.location?.coordinates?.[0],
-      anchorLat,
-      anchorLng,
-    );
-
-    if (
-      Number(teacherStudentDistance) > Number(attendanceExist?.allowedRadius)
-    ) {
-      // do this
     }
 
     return NextResponse.json({
