@@ -126,44 +126,6 @@ export default function AttendanceDetailsPage() {
             </p>
           </div>
         </div>
-
-        <p className="mt-4 text-sm leading-relaxed text-slate-600 dark:text-slate-300">
-          {attendanceList?.description ||
-            "No description provided for this attendance session."}
-        </p>
-
-        <div className="mt-4 grid gap-3 text-sm sm:grid-cols-2">
-          <div className="rounded-xl border border-slate-200/70 p-3 dark:border-slate-800">
-            <p className="text-xs text-slate-500 dark:text-slate-400">
-              Start Time
-            </p>
-            <p className="mt-1 font-medium text-slate-900 dark:text-slate-100">
-              {new Date(attendanceList?.startTime).toLocaleString("en-US", {
-                month: "short",
-                day: "numeric",
-                year: "numeric",
-                hour: "numeric",
-                minute: "numeric",
-                hour12: true,
-              })}
-            </p>
-          </div>
-          <div className="rounded-xl border border-slate-200/70 p-3 dark:border-slate-800">
-            <p className="text-xs text-slate-500 dark:text-slate-400">
-              End Time
-            </p>
-            <p className="mt-1 font-medium text-slate-900 dark:text-slate-100">
-              {new Date(attendanceList?.endTime).toLocaleString("en-US", {
-                month: "short",
-                day: "numeric",
-                year: "numeric",
-                hour: "numeric",
-                minute: "numeric",
-                hour12: true,
-              })}
-            </p>
-          </div>
-        </div>
       </Card>
 
       <AttendanceStudentStats
