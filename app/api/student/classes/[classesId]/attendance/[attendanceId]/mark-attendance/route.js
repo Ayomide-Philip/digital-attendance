@@ -317,6 +317,18 @@ export const PUT = auth(async function PUT(req, { params }) {
       universalViolationScore++;
     }
 
+    // identical coords detection
+    const uniqueCoords = new Set(
+      approvedStudentCoords.map(
+        (c) =>
+          `${c.coords.latitude.toFixed(5)}-${c.coords.longitude.toFixed(5)}`,
+      ),
+    );
+    console.log(uniqueCoords, approvedStudentCoords.length);
+    if (uniqueCoords.size / approvedStudentCoords.length < 0.6) {
+      universalViolationScore++;
+    }
+
     return NextResponse.json({
       message: "Attendance marked successfully",
       anchorLat,
