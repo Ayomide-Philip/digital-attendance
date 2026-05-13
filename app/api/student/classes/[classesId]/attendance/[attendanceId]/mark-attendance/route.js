@@ -224,6 +224,7 @@ export const PUT = auth(async function PUT(req, { params }) {
       timeIntervalTooUniformViolationMessage: "",
       speedIntervalTooUniformViolationMessage: "",
       identicalCoordsViolationMessage: "",
+      timeSpanViolationMessage: "",
     };
 
     // calculate the anchor point of the student cluster using the median of the latitude and longitude of the
@@ -254,6 +255,7 @@ export const PUT = auth(async function PUT(req, { params }) {
       distanceViolationScores / approvedStudentCoords.length;
 
     if (distanceViolationRatio > 0.4) {
+      universalViolationMessage.distanceViolationMessage = `40% of distance are more than ${STUDENT_CLUSTER_RADIUS}m away from each other`;
       universalViolationScore += 1;
     }
 
@@ -299,10 +301,14 @@ export const PUT = auth(async function PUT(req, { params }) {
       timestampViolationScores / (approvedStudentCoords?.length - 1);
 
     if (speedViolationRatio > 0.3) {
+      universalViolationMessage.speedViolationMessage =
+        "30% of user movement within the time frame are impossible";
       universalViolationScore += 1;
     }
 
     if (timestampViolationRatio > 0.3) {
+      universalViolationMessage.timeStampViolationMessage =
+        " 30% of user coords are generated at the same time which is nearly impossible";
       universalViolationScore += 1;
     }
     // time interval between all the coords generated
@@ -315,6 +321,8 @@ export const PUT = auth(async function PUT(req, { params }) {
       ).length;
 
       if (tooUniformCount / timeInterval.length > 0.8) {
+        universalViolationMessage.timeIntervalViolationMessage =
+          "80% of user time interval are uniformly which indicate a bot action";
         universalViolationScore += 1;
       }
     }
@@ -347,6 +355,8 @@ export const PUT = auth(async function PUT(req, { params }) {
     );
 
     if (timeSpan < 10000) {
+      universalViolationMessage.timeSpanViolationMessage =
+        "Total time used to generate total coords is too short";
       universalViolationScore++;
     }
 
@@ -359,6 +369,8 @@ export const PUT = auth(async function PUT(req, { params }) {
     );
 
     if (uniqueCoords?.size / approvedStudentCoords?.length < 0.6) {
+      universalViolationMessage.identicalCoordsViolationMessage =
+        "More than 40% of the coords are identical which is nearly impossible";
       universalViolationScore++;
     }
 
@@ -370,6 +382,7 @@ export const PUT = auth(async function PUT(req, { params }) {
       timeSpan,
       timeInterval,
       speedInterval,
+      universalViolationMessage,
     });
   } catch (err) {
     console.log(err);
