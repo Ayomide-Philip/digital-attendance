@@ -253,6 +253,7 @@ export const PUT = auth(async function PUT(req, { params }) {
     let speedViolationScores = 0;
     let timestampViolationScores = 0;
 
+    const timeInterval = [];
     for (let i = 1; i < approvedStudentCoords?.length; i++) {
       const prevCoords = approvedStudentCoords[i - 1];
       const currentCoords = approvedStudentCoords[i];
@@ -271,7 +272,7 @@ export const PUT = auth(async function PUT(req, { params }) {
         timestampViolationScores += 1;
         continue;
       }
-
+      timeInterval.push(timeDifference);
       const speed = Math.abs(distance) / Math.abs(timeDifference);
 
       if (speed > 10) {
@@ -291,6 +292,19 @@ export const PUT = auth(async function PUT(req, { params }) {
 
     if (timestampViolationRatio > 0.3) {
       universalViolationScore += 1;
+    }
+    // time interval between all the coords generated
+    if (timeInterval?.length > 2) {
+      const avgInterval =
+        timeInterval.reduce((sum, t) => sum + t, 0) / timeInterval.length;
+
+      const tooUniformCount = timeInterval.filter(
+        (t) => Math.abs(t - avgInterval) < 0.05,
+      ).length;
+
+      if (tooUniformCount / timeInterval.length > 0.8) {
+        universalViolationScore += 1;
+      }
     }
 
     // checking the total number of seconds used to generate the total number of coords passed
