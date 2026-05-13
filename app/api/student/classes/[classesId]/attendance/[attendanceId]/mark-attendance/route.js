@@ -254,6 +254,7 @@ export const PUT = auth(async function PUT(req, { params }) {
     let timestampViolationScores = 0;
 
     const timeInterval = [];
+    const speedInterval = [];
     for (let i = 1; i < approvedStudentCoords?.length; i++) {
       const prevCoords = approvedStudentCoords[i - 1];
       const currentCoords = approvedStudentCoords[i];
@@ -274,9 +275,26 @@ export const PUT = auth(async function PUT(req, { params }) {
       }
       timeInterval.push(timeDifference);
       const speed = Math.abs(distance) / Math.abs(timeDifference);
-
       if (speed > 10) {
         speedViolationScores++;
+        continue;
+      }
+      speedInterval.push(speed);
+    }
+
+    if (speedInterval.length > 0) {
+      const avgSpeed =
+        speedInterval.reduce((sum, s) => sum + s, 0) / speedInterval.length;
+
+      // check if speeds are suspiciously uniform
+      const tooUniformSpeeds = speedInterval.filter(
+        (s) => Math.abs(s - avgSpeed) < 0.01,
+      ).length;
+
+      const uniformSpeedRatio = tooUniformSpeeds / speedInterval.length;
+
+      if (uniformSpeedRatio > 0.8) {
+        universalViolationScore++;
       }
     }
 
@@ -317,14 +335,14 @@ export const PUT = auth(async function PUT(req, { params }) {
       universalViolationScore++;
     }
 
-    // identical coords detection
+    // unidentical coords detection, it check if alot of coords are the same and not unique
     const uniqueCoords = new Set(
       approvedStudentCoords.map(
         (c) =>
           `${c.coords.latitude.toFixed(5)}-${c.coords.longitude.toFixed(5)}`,
       ),
     );
-    console.log(uniqueCoords, approvedStudentCoords.length);
+
     if (uniqueCoords.size / approvedStudentCoords.length < 0.6) {
       universalViolationScore++;
     }
