@@ -215,17 +215,7 @@ export const PUT = auth(async function PUT(req, { params }) {
     // decleared a universal violation score to calculate the overall violation score for the attendance session
     // based on different factors like distance from teacher, distance from student cluster and accuracy of the coords
     let universalViolationScore = 0;
-    let universalViolationMessage = {
-      distanceViolationMessage: "",
-      speedViolationMessage: "",
-      timeStampViolationMessage: "",
-      timeIntervalViolationMessage: "",
-      speedIntervalViolationMessage: "",
-      timeIntervalTooUniformViolationMessage: "",
-      speedIntervalTooUniformViolationMessage: "",
-      identicalCoordsViolationMessage: "",
-      timeSpanViolationMessage: "",
-    };
+    let universalViolationMessage = {};
 
     // calculate the anchor point of the student cluster using the median of the latitude and longitude of the
     // approved student coords to minimize the effect of outliers
@@ -289,13 +279,12 @@ export const PUT = auth(async function PUT(req, { params }) {
       const speed = Math.abs(distance) / Math.abs(timeDifference);
       if (speed > 10) {
         speedViolationScores++;
-        continue;
       }
       speedInterval.push(speed);
     }
 
     const speedViolationRatio =
-      speedViolationScores / (approvedStudentCoords?.length - 1);
+      speedViolationScores / (timeInterval?.length - 1);
 
     const timestampViolationRatio =
       timestampViolationScores / (approvedStudentCoords?.length - 1);
@@ -312,7 +301,7 @@ export const PUT = auth(async function PUT(req, { params }) {
       universalViolationScore += 1;
     }
     // time interval between all the coords generated
-    if (timeInterval?.length > 2) {
+    if (timeInterval?.length >= 2) {
       const avgInterval =
         timeInterval.reduce((sum, t) => sum + t, 0) / timeInterval.length;
 
@@ -321,7 +310,7 @@ export const PUT = auth(async function PUT(req, { params }) {
       ).length;
 
       if (tooUniformCount / timeInterval.length > 0.8) {
-        universalViolationMessage.timeIntervalViolationMessage =
+        universalViolationMessage.timeIntervalTooUniformViolationMessage =
           "80% of user time interval are uniformly which indicate a bot action";
         universalViolationScore += 1;
       }
@@ -336,14 +325,13 @@ export const PUT = auth(async function PUT(req, { params }) {
         speedInterval.length;
       const stdDev = Math.sqrt(variance);
 
-      if (stdDev < 0.1) {
-        universalViolationScore++;
-      }
       const maxSpeed = Math.max(...speedInterval);
       const minSpeed = Math.min(...speedInterval);
       const range = maxSpeed - minSpeed;
 
-      if (range < 0.2) {
+      if (stdDev < 0.1 || range < 0.2) {
+        universalViolationMessage.speedUniformityViolationMessage =
+          "Speed pattern is unnaturally consistent indicating spoofed movement";
         universalViolationScore++;
       }
     }
@@ -370,9 +358,17 @@ export const PUT = auth(async function PUT(req, { params }) {
 
     if (uniqueCoords?.size / approvedStudentCoords?.length < 0.6) {
       universalViolationMessage.identicalCoordsViolationMessage =
-        "More than 40% of the coords are identical which is nearly impossible";
+        "More than 60% of the coords are identical which is nearly impossible";
       universalViolationScore++;
     }
+
+    // calculating distance between teacher and student
+    const teacherStudentDistance = haversineDistanceCalculation(
+      attendanceExist?.location?.coordinates?.[1],
+      attendanceExist?.location?.coordinates?.[0],
+      anchorLat,
+      anchorLng,
+    );
 
     return NextResponse.json({
       message: "Attendance marked successfully",
@@ -383,6 +379,7 @@ export const PUT = auth(async function PUT(req, { params }) {
       timeInterval,
       speedInterval,
       universalViolationMessage,
+      teacherStudentDistance,
     });
   } catch (err) {
     console.log(err);
