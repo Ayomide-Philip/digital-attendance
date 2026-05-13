@@ -299,7 +299,7 @@ export const PUT = auth(async function PUT(req, { params }) {
         timeInterval.reduce((sum, t) => sum + t, 0) / timeInterval.length;
 
       const tooUniformCount = timeInterval.filter(
-        (t) => Math.abs(t - avgInterval) < 0.05,
+        (t) => Math.abs(t - avgInterval) < 0.1,
       ).length;
 
       if (tooUniformCount / timeInterval.length > 0.8) {
@@ -323,6 +323,7 @@ export const PUT = auth(async function PUT(req, { params }) {
       anchorLng,
       universalViolationScore,
       timeSpan,
+      timeInterval,
     });
   } catch (err) {
     console.log(err);
