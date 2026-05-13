@@ -282,22 +282,6 @@ export const PUT = auth(async function PUT(req, { params }) {
       speedInterval.push(speed);
     }
 
-    if (speedInterval.length > 0) {
-      const avgSpeed =
-        speedInterval.reduce((sum, s) => sum + s, 0) / speedInterval.length;
-
-      // check if speeds are suspiciously uniform
-      const tooUniformSpeeds = speedInterval.filter(
-        (s) => Math.abs(s - avgSpeed) < 0.01,
-      ).length;
-
-      const uniformSpeedRatio = tooUniformSpeeds / speedInterval.length;
-
-      if (uniformSpeedRatio > 0.8) {
-        universalViolationScore++;
-      }
-    }
-
     const speedViolationRatio =
       speedViolationScores / (approvedStudentCoords?.length - 1);
 
@@ -322,6 +306,27 @@ export const PUT = auth(async function PUT(req, { params }) {
 
       if (tooUniformCount / timeInterval.length > 0.8) {
         universalViolationScore += 1;
+      }
+    }
+
+    // checking abnormality in speed intervals
+    if (speedInterval.length > 0) {
+      const avgSpeed =
+        speedInterval.reduce((sum, s) => sum + s, 0) / speedInterval.length;
+      const variance =
+        speedInterval.reduce((sum, s) => sum + Math.pow(s - avgSpeed, 2), 0) /
+        speedInterval.length;
+      const stdDev = Math.sqrt(variance);
+
+      if (stdDev < 0.1) {
+        universalViolationScore++;
+      }
+      const maxSpeed = Math.max(...speedInterval);
+      const minSpeed = Math.min(...speedInterval);
+      const range = maxSpeed - minSpeed;
+
+      if (range < 0.2) {
+        universalViolationScore++;
       }
     }
 
@@ -354,6 +359,7 @@ export const PUT = auth(async function PUT(req, { params }) {
       universalViolationScore,
       timeSpan,
       timeInterval,
+      speedInterval,
     });
   } catch (err) {
     console.log(err);
