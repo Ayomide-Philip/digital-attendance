@@ -53,18 +53,17 @@ export default function TeacherAttendanceMap({ attendance, handleTabChange }) {
 
       <div className="mt-4 overflow-hidden rounded-xl border border-slate-200/70 dark:border-slate-800">
         {attendance?.location?.coordinates?.length >= 2 ? (
-          <div className="w-full h-56 sm:h-72 md:h-90 lg:h-96">
+          <div className="w-full h-56 sm:h-72 md:h-100 lg:h-110">
             <Map center={centerCoords} zoom={15}>
               <MapControls
                 position="top-right"
                 showZoom
                 showCompass
-                showLocate
                 showFullscreen
               />
               <MapMarker longitude={centerCoords[0]} latitude={centerCoords[1]}>
                 <MarkerContent>
-                  <div className="size-5 cursor-pointer rounded-full border-2 border-white bg-rose-500 shadow-lg transition-transform hover:scale-110" />
+                  <div className="size-5 cursor-pointer rounded-full border-2 border-white bg-blue-500 shadow-lg transition-transform hover:scale-110" />
                 </MarkerContent>
                 <MarkerTooltip>Teacher Location</MarkerTooltip>
                 <MarkerPopup>
@@ -103,7 +102,7 @@ export default function TeacherAttendanceMap({ attendance, handleTabChange }) {
                               </p>
                             </div>
 
-                            <span className="ml-auto inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-200">
+                            <span className="ml-auto capitalize inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-200">
                               {location?.status || "unknown"}
                             </span>
                           </div>
