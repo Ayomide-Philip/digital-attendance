@@ -61,7 +61,7 @@ export default function AttendanceIdBody({
         </div>
       </div>
 
-      <div className="mt-4 grid items-start gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="mt-4 grid items-start gap-3 grid-cols-1 md:grid-cols-2 2xl:grid-cols-3">
         {visibleStudents.length > 0 ? (
           visibleStudents.map((student, idx) => {
             const tone = getStudentStatusTone(student.status);
@@ -89,7 +89,7 @@ export default function AttendanceIdBody({
                     </div>
 
                     {reasonEntries.length > 0 ? (
-                      <div className={`mt-2 w-full space-y-1 text-xs  `}>
+                      <div className="mt-2 max-h-30 w-full space-y-1 overflow-y-auto pr-1 text-xs text-amber-700 dark:text-amber-300">
                         <p>Reasons:</p>
                         {reasonEntries.map(([reasonKey, reasonValue]) => (
                           <p key={reasonKey} className="leading-snug">
@@ -116,7 +116,7 @@ export default function AttendanceIdBody({
             );
           })
         ) : (
-          <div className="rounded-xl border border-dashed border-slate-300 py-8 text-center text-sm text-slate-500 dark:border-slate-700 dark:text-slate-400 sm:col-span-2 lg:col-span-3">
+          <div className="rounded-xl border border-dashed border-slate-300 py-8 text-center text-sm text-slate-500 dark:border-slate-700 dark:text-slate-400 col-span-1 md:col-span-2 2xl:col-span-3">
             No students in this tab.
           </div>
         )}
@@ -161,7 +161,8 @@ function formatReasonText(key, value) {
 }
 
 function getStudentStatusTone(status) {
-  if (status === "present") {
+  const s = String(status || "").toLowerCase();
+  if (s === "present") {
     return {
       dot: "bg-emerald-500",
       badge:
@@ -169,7 +170,7 @@ function getStudentStatusTone(status) {
     };
   }
 
-  if (status === "flagged") {
+  if (s === "flagged") {
     return {
       dot: "bg-amber-500",
       badge:
@@ -177,7 +178,7 @@ function getStudentStatusTone(status) {
     };
   }
 
-  if (status === "pending") {
+  if (s === "pending") {
     return {
       dot: "bg-amber-500",
       badge:
