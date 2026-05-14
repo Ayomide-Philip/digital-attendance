@@ -173,7 +173,7 @@ export const GET = auth(async function GET(req, { params }) {
       teacherId: new mongoose.Types.ObjectId(userId),
     })
       .sort({ createdAt: -1 })
-      .populate("classesId", "name code")
+      .populate("classesId", "name code students")
       .populate("teacherId", "name email");
 
     return NextResponse.json(
