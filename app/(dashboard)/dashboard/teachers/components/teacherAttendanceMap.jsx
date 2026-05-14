@@ -1,6 +1,8 @@
 import Card from "@/components/ui/card";
+import { Map } from "@/components/ui/map";
 
 export default function TeacherAttendanceMap({ attendance, handleTabChange }) {
+  console.log(attendance);
   const attendanceCoordinates = attendance?.location?.coordinates || [];
 
   const mapCenter =
@@ -35,12 +37,9 @@ export default function TeacherAttendanceMap({ attendance, handleTabChange }) {
 
       <div className="mt-4 overflow-hidden rounded-xl border border-slate-200/70 dark:border-slate-800">
         {openStreetMapSrc ? (
-          <iframe
-            title="Attendance map"
-            src={openStreetMapSrc}
-            className="h-80 w-full bg-slate-100 dark:bg-slate-900"
-            loading="lazy"
-          />
+          <div className="h-105 w-full">
+            <Map center={attendance?.location?.coordinates} zoom={12} />
+          </div>
         ) : (
           <div className="flex h-80 items-center justify-center px-4 text-center text-sm text-slate-500 dark:text-slate-400">
             No map location is available for this attendance session yet.
