@@ -374,8 +374,7 @@ export const PUT = auth(async function PUT(req, { params }) {
       speedInterval.push(speed);
     }
 
-    const speedViolationRatio =
-      speedViolationScores / (timeInterval?.length - 1);
+    const speedViolationRatio = speedViolationScores / timeInterval?.length;
 
     const timestampViolationRatio =
       timestampViolationScores / (approvedStudentCoords?.length - 1);
