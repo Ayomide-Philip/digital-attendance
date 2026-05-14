@@ -67,10 +67,10 @@ export const GET = auth(async function GET(req, { params }) {
         select: "name code students",
         populate: {
           path: "students",
-          select: "name",
+          select: "name departement",
         },
       })
-      .populate("students.studentId", "name")
+      .populate("students.studentId", "name department matricNo")
       .lean();
 
     if (!attendanceData) {
@@ -97,95 +97,126 @@ export const GET = auth(async function GET(req, { params }) {
 
 export const DELETE = auth(async function DELETE(req, { params }) {
   if (!req?.auth || !req?.auth?.user) {
-    return NextResponse.json({
-      error: "Unauthorized Access"
-    }, {
-      status: 401
-    })
+    return NextResponse.json(
+      {
+        error: "Unauthorized Access",
+      },
+      {
+        status: 401,
+      },
+    );
   }
 
   const userId = req?.auth?.user?.id;
   const { classesId, attendanceId } = await params;
 
   if (!userId.trim() || !classesId.trim() || !attendanceId.trim()) {
-    return NextResponse.json({
-      error: "Invalid Parameters"
-    }, {
-      status: 400
-    });
+    return NextResponse.json(
+      {
+        error: "Invalid Parameters",
+      },
+      {
+        status: 400,
+      },
+    );
   }
 
   try {
     await connectDatabase();
-    const user = await User.findById(new mongoose.Types.ObjectId(userId)).select("role").lean();
+    const user = await User.findById(new mongoose.Types.ObjectId(userId))
+      .select("role")
+      .lean();
     if (!user) {
-      return NextResponse.json({
-        error: "Unauthorized Access"
-      }, {
-        status: 401
-      })
+      return NextResponse.json(
+        {
+          error: "Unauthorized Access",
+        },
+        {
+          status: 401,
+        },
+      );
     }
 
     if (user.role !== "teacher") {
-      return NextResponse.json({
-        error: "Forbidden Access"
-      }, {
-        status: 403
-      })
+      return NextResponse.json(
+        {
+          error: "Forbidden Access",
+        },
+        {
+          status: 403,
+        },
+      );
     }
 
     const classData = await Classes.findOne({
       _id: new mongoose.Types.ObjectId(classesId),
-      teacher: new mongoose.Types.ObjectId(userId)
-    }).select("name").lean();
+      teacher: new mongoose.Types.ObjectId(userId),
+    })
+      .select("name")
+      .lean();
 
     if (!classData) {
-      return NextResponse.json({
-        error: "Class not found or unauthorized access"
-      }, {
-        status: 404
-      })
+      return NextResponse.json(
+        {
+          error: "Class not found or unauthorized access",
+        },
+        {
+          status: 404,
+        },
+      );
     }
 
     const attendanceData = await Attandance.findOne({
       _id: new mongoose.Types.ObjectId(attendanceId),
       classesId: new mongoose.Types.ObjectId(classesId),
-      teacherId: new mongoose.Types.ObjectId(userId)
+      teacherId: new mongoose.Types.ObjectId(userId),
     }).lean();
 
     if (!attendanceData) {
-      return NextResponse.json({
-        error: "Attendance record not found or unauthorized access"
-      }, {
-        status: 404
-      })
+      return NextResponse.json(
+        {
+          error: "Attendance record not found or unauthorized access",
+        },
+        {
+          status: 404,
+        },
+      );
     }
 
     const deleteResult = await Attandance.deleteOne({
       _id: new mongoose.Types.ObjectId(attendanceId),
       classesId: new mongoose.Types.ObjectId(classesId),
-      teacherId: new mongoose.Types.ObjectId(userId)
+      teacherId: new mongoose.Types.ObjectId(userId),
     });
 
     if (deleteResult.deletedCount === 0) {
-      return NextResponse.json({
-        error: "Failed to delete attendance record"
-      }, {
-        status: 500
-      })
+      return NextResponse.json(
+        {
+          error: "Failed to delete attendance record",
+        },
+        {
+          status: 500,
+        },
+      );
     }
 
-    return NextResponse.json({
-      message: `Successfully deleted attendance record for class ${classData?.name}`
-    }, {
-      status: 200
-    })
+    return NextResponse.json(
+      {
+        message: `Successfully deleted attendance record for class ${classData?.name}`,
+      },
+      {
+        status: 200,
+      },
+    );
   } catch (err) {
     console.log(err);
-    return NextResponse.json({
-      error: "Unable to delete attendance record"
-    }, {
-      status: 500
-    })
+    return NextResponse.json(
+      {
+        error: "Unable to delete attendance record",
+      },
+      {
+        status: 500,
+      },
+    );
   }
-})
+});

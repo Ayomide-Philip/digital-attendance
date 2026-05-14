@@ -18,6 +18,7 @@ export default function TeacherAttendanceMap({ attendance, handleTabChange }) {
           name: s?.studentId?.name,
           lng: s.location.coordinates[0],
           lat: s.location.coordinates[1],
+          status: s?.status,
         };
       }
     })
@@ -27,22 +28,7 @@ export default function TeacherAttendanceMap({ attendance, handleTabChange }) {
     absent: "bg-red-500",
     flagged: "bg-amber-500",
   };
-  console.log(studentsLocation);
-  const locations = [
-    {
-      id: 1,
-      name: "Empire State Building",
-      lng: -73.9857,
-      lat: 40.7484,
-    },
-    {
-      id: 2,
-      name: "Central Park",
-      lng: -73.9654,
-      lat: 40.7829,
-    },
-    { id: 3, name: "Times Square", lng: -73.9855, lat: 40.758 },
-  ];
+
   return (
     <Card className="rounded-2xl border border-slate-200/70 bg-white/85 p-4 shadow-sm dark:border-slate-800 dark:bg-slate-950/70 sm:p-6">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
@@ -97,7 +83,9 @@ export default function TeacherAttendanceMap({ attendance, handleTabChange }) {
                   latitude={location?.lat}
                 >
                   <MarkerContent>
-                    <div className="size-5 cursor-pointer rounded-full border-2 border-white bg-rose-500 shadow-lg transition-transform hover:scale-110" />
+                    <div
+                      className={`size-5 cursor-pointer rounded-full border-2 border-white ${statusColor[location?.status] || "bg-gray-500"} shadow-lg transition-transform hover:scale-110`}
+                    />
                   </MarkerContent>
                   <MarkerTooltip>{location?.name}</MarkerTooltip>
                   <MarkerPopup>
