@@ -5,20 +5,23 @@ import {
   MarkerContent,
   MarkerPopup,
   MarkerTooltip,
+  MapControls,
 } from "@/components/ui/map";
 
 export default function TeacherAttendanceMap({ attendance, handleTabChange }) {
   const centerCoords = attendance?.location?.coordinates;
-  const studentsLocation = attendance?.students?.map((s, idx) => {
-    if (s?.location?.coordinates?.length === 2) {
-      return {
-        id: s?.studentId?._id,
-        name: s?.studentId?.name,
-        lng: s.location.coordinates[0],
-        lat: s.location.coordinates[1],
-      };
-    }
-  });
+  const studentsLocation = attendance?.students
+    ?.map((s, idx) => {
+      if (s?.location?.coordinates?.length === 2) {
+        return {
+          id: s?.studentId?._id,
+          name: s?.studentId?.name,
+          lng: s.location.coordinates[0],
+          lat: s.location.coordinates[1],
+        };
+      }
+    })
+    .filter(Boolean);
   console.log(studentsLocation);
   const locations = [
     {
@@ -57,25 +60,48 @@ export default function TeacherAttendanceMap({ attendance, handleTabChange }) {
 
       <div className="mt-4 overflow-hidden rounded-xl border border-slate-200/70 dark:border-slate-800">
         {attendance?.location?.coordinates?.length >= 2 ? (
-          <div className="w-full h-56 sm:h-72 md:h-80 lg:h-96">
-            <Map center={[-73.98, 40.76]} zoom={12}>
-              {locations.map((location) => (
+          <div className="w-full h-56 sm:h-72 md:h-90 lg:h-96">
+            <Map center={centerCoords} zoom={15}>
+              <MapControls
+                position="top-right"
+                showZoom
+                showCompass
+                showLocate
+                showFullscreen
+              />
+              <MapMarker longitude={centerCoords[0]} latitude={centerCoords[1]}>
+                <MarkerContent>
+                  <div className="size-5 cursor-pointer rounded-full border-2 border-white bg-rose-500 shadow-lg transition-transform hover:scale-110" />
+                </MarkerContent>
+                <MarkerTooltip>Teacher Location</MarkerTooltip>
+                <MarkerPopup>
+                  <div className="space-y-1">
+                    <p className="text-foreground font-medium">
+                      {`Registered Location`}
+                    </p>
+                    <p className="text-muted-foreground text-xs">
+                      {centerCoords[1].toFixed(4)}, {centerCoords[0].toFixed(4)}
+                    </p>
+                  </div>
+                </MarkerPopup>
+              </MapMarker>
+              {studentsLocation?.map((location) => (
                 <MapMarker
-                  key={location.id}
-                  longitude={location.lng}
-                  latitude={location.lat}
+                  key={location?.id}
+                  longitude={location?.lng}
+                  latitude={location?.lat}
                 >
                   <MarkerContent>
-                    <div className="bg-primary size-4 rounded-full border-2 border-white shadow-lg" />
+                    <div className="size-5 cursor-pointer rounded-full border-2 border-white bg-rose-500 shadow-lg transition-transform hover:scale-110" />
                   </MarkerContent>
-                  <MarkerTooltip>{location.name}</MarkerTooltip>
+                  <MarkerTooltip>{location?.name}</MarkerTooltip>
                   <MarkerPopup>
                     <div className="space-y-1">
                       <p className="text-foreground font-medium">
-                        {location.name}
+                        {location?.name}
                       </p>
                       <p className="text-muted-foreground text-xs">
-                        {location.lat.toFixed(4)}, {location.lng.toFixed(4)}
+                        {location?.lat?.toFixed(4)}, {location?.lng?.toFixed(4)}
                       </p>
                     </div>
                   </MarkerPopup>
