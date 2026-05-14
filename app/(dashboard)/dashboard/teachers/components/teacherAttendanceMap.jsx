@@ -6,6 +6,7 @@ import {
   MarkerPopup,
   MarkerTooltip,
   MapControls,
+  MapRadius,
 } from "@/components/ui/map";
 
 export default function TeacherAttendanceMap({ attendance, handleTabChange }) {
@@ -41,6 +42,12 @@ export default function TeacherAttendanceMap({ attendance, handleTabChange }) {
           <p className="text-sm text-slate-500 dark:text-slate-400">
             Teacher location and allowed radius for this session.
           </p>
+          <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+            Radius:{" "}
+            {attendance?.allowedRadius
+              ? `${attendance.allowedRadius} m`
+              : "(not set)"}
+          </p>
         </div>
         <button
           type="button"
@@ -54,13 +61,45 @@ export default function TeacherAttendanceMap({ attendance, handleTabChange }) {
       <div className="mt-4 overflow-hidden rounded-xl border border-slate-200/70 dark:border-slate-800">
         {attendance?.location?.coordinates?.length >= 2 ? (
           <div className="w-full h-56 sm:h-72 md:h-100 lg:h-110">
-            <Map center={centerCoords} zoom={15}>
+            <Map center={centerCoords} zoom={18}>
               <MapControls
                 position="top-right"
                 showZoom
                 showCompass
                 showFullscreen
               />
+              <MapRadius
+                coordinates={centerCoords}
+                radiusMeters={attendance?.allowedRadius}
+                fillColor="#2563eb"
+                fillOpacity={0.14}
+                strokeColor="#2563eb"
+                strokeOpacity={0.7}
+                strokeWidth={2}
+              />
+              {attendance?.allowedRadius > 0 &&
+                (() => {
+                  const [lng, lat] = centerCoords;
+                  const deltaLat = (attendance.allowedRadius / 111320) * 0;
+                  const deltaLng =
+                    attendance.allowedRadius /
+                      (111320 * Math.cos((lat * Math.PI) / 180)) || 0;
+                  const edgeLng = lng + deltaLng;
+                  const edgeLat = lat + deltaLat;
+
+                  return (
+                    <MapMarker longitude={edgeLng} latitude={edgeLat}>
+                      <MarkerContent>
+                        <div className="h-3 w-3 rounded-full bg-white border-2 border-sky-600 shadow-lg" />
+                      </MarkerContent>
+                      <MarkerPopup>
+                        <div className="text-xs">
+                          Radius test point — {attendance.allowedRadius} m
+                        </div>
+                      </MarkerPopup>
+                    </MapMarker>
+                  );
+                })()}
               <MapMarker longitude={centerCoords[0]} latitude={centerCoords[1]}>
                 <MarkerContent>
                   <div className="size-5 cursor-pointer rounded-full border-2 border-white bg-blue-500 shadow-lg transition-transform hover:scale-110" />

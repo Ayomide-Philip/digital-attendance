@@ -15,7 +15,6 @@ import {
 } from "react";
 import { createPortal } from "react-dom";
 import { X, Minus, Plus, Locate, Maximize, Loader2 } from "lucide-react";
-
 import { cn } from "@/lib/utils";
 
 const defaultStyles = {
@@ -1509,6 +1508,118 @@ function MapClusterLayer({
   return null;
 }
 
+function generateCircle(lng, lat, radiusInMeters, steps = 64) {
+  const coords = [];
+  for (let i = 0; i < steps; i++) {
+    const angle = (i * 360) / steps;
+    const rad = (angle * Math.PI) / 180;
+    const deltaLat = (radiusInMeters / 111320) * Math.cos(rad);
+    const deltaLng =
+      (radiusInMeters / (111320 * Math.cos((lat * Math.PI) / 180))) *
+      Math.sin(rad);
+    coords.push([lng + deltaLng, lat + deltaLat]);
+  }
+  coords.push(coords[0]); // close the polygon
+  return {
+    type: "Feature",
+    geometry: { type: "Polygon", coordinates: [coords] },
+  };
+}
+
+function MapRadius({
+  coordinates, // [lng, lat]
+  radiusMeters = 50,
+  fillColor = "#2563eb",
+  fillOpacity = 0.14,
+  strokeColor = "#2563eb",
+  strokeOpacity = 0.7,
+  strokeWidth = 2,
+  haloColor = "#ffffff",
+  haloOpacity = 0.95,
+  haloWidth = 8,
+}) {
+  const { map, isLoaded } = useMap();
+  const id = useId();
+  const sourceId = `radius-source-${id}`;
+  const fillLayerId = `radius-fill-${id}`;
+  const haloLayerId = `radius-halo-${id}`;
+  const strokeLayerId = `radius-stroke-${id}`;
+
+  useEffect(() => {
+    if (!isLoaded || !map || coordinates?.length !== 2) return;
+
+    const [lng, lat] = coordinates;
+    const circleData = generateCircle(lng, lat, radiusMeters);
+
+    map.addSource(sourceId, { type: "geojson", data: circleData });
+
+    map.addLayer({
+      id: fillLayerId,
+      type: "fill",
+      source: sourceId,
+      paint: {
+        "fill-color": fillColor,
+        "fill-opacity": fillOpacity,
+      },
+    });
+
+    // visible halo behind the main stroke to increase contrast
+    map.addLayer({
+      id: haloLayerId,
+      type: "line",
+      source: sourceId,
+      paint: {
+        "line-color": haloColor,
+        "line-width": haloWidth,
+        "line-opacity": haloOpacity,
+      },
+    });
+
+    // main stroke on top of halo
+    map.addLayer({
+      id: strokeLayerId,
+      type: "line",
+      source: sourceId,
+      paint: {
+        "line-color": "#ef4444",
+        "line-width": Math.max(3, strokeWidth),
+        "line-opacity": 0.95,
+        "line-dasharray": [2, 2],
+      },
+    });
+
+    return () => {
+      try {
+        if (map.getLayer(fillLayerId)) map.removeLayer(fillLayerId);
+        if (map.getLayer(haloLayerId)) map.removeLayer(haloLayerId);
+        if (map.getLayer(strokeLayerId)) map.removeLayer(strokeLayerId);
+        if (map.getSource(sourceId)) map.removeSource(sourceId);
+      } catch {
+        // ignore
+      }
+    };
+  }, [
+    isLoaded,
+    map,
+    sourceId,
+    fillLayerId,
+    haloLayerId,
+    strokeLayerId,
+    coordinates,
+    radiusMeters,
+    fillColor,
+    fillOpacity,
+    haloColor,
+    haloOpacity,
+    haloWidth,
+    strokeColor,
+    strokeOpacity,
+    strokeWidth,
+  ]);
+
+  return null;
+}
+
 export {
   Map,
   useMap,
@@ -1522,4 +1633,5 @@ export {
   MapRoute,
   MapArc,
   MapClusterLayer,
+  MapRadius,
 };
