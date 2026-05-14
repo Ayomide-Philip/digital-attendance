@@ -81,9 +81,18 @@ export default function AttendanceIdBody({
                       {student?.studentId?.name}
                     </p>
                     {Object?.keys(student?.reason || {})?.length > 0 ? (
-                      <p className="mt-1 text-xs text-amber-700 dark:text-amber-300 truncate">
-                        {student?.reason?.notInClass}
-                      </p>
+                      <>
+                        {student?.reason?.notInClass ? (
+                          <p className="mt-1 text-xs text-amber-700 dark:text-amber-300 truncate">
+                            {student?.reason?.notInClass}
+                          </p>
+                        ) : null}
+                        {student?.reason?.spoofedCoords ? (
+                          <p className="mt-1 text-xs text-amber-700 dark:text-amber-300">
+                            {student?.reason?.spoofedCoords}
+                          </p>
+                        ) : null}
+                      </>
                     ) : null}
                   </div>
                   <span

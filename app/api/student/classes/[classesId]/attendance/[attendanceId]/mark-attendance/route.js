@@ -230,45 +230,45 @@ export const PUT = auth(async function PUT(req, { params }) {
       anchorLng,
     );
 
-    if (
-      Number(teacherStudentDistance) > Number(attendanceExist?.allowedRadius)
-    ) {
-      await Attandance.findOneAndUpdate(
-        {
-          _id: new mongoose.Types.ObjectId(attendanceId),
-          classesId: new mongoose.Types.ObjectId(classesId),
-          teacherId: new mongoose.Types.ObjectId(classExist?.teacher),
-        },
-        {
-          $push: {
-            students: {
-              studentId: new mongoose.Types.ObjectId(userId),
-              status: "absent",
-              location: {
-                coordinates: [anchorLng, anchorLat],
-                type: "Point",
-              },
-              reason: {
-                notInClass: `Student is ${Number(teacherStudentDistance.toFixed(2)) - Number(attendanceExist?.allowedRadius)}m away from class`,
-              },
-              accuracy:
-                approvedStudentCoords[approvedStudentCoords?.length - 1]?.coords
-                  ?.accuracy,
-            },
-          },
-        },
-      );
-      return NextResponse.json(
-        {
-          message: `You are ${Number(teacherStudentDistance.toFixed(2)) - Number(attendanceExist?.allowedRadius)}m away from class`,
-        },
-        {
-          status: 200,
-        },
-      );
-    }
+    // if (
+    //   Number(teacherStudentDistance) > Number(attendanceExist?.allowedRadius)
+    // ) {
+    //   await Attandance.findOneAndUpdate(
+    //     {
+    //       _id: new mongoose.Types.ObjectId(attendanceId),
+    //       classesId: new mongoose.Types.ObjectId(classesId),
+    //       teacherId: new mongoose.Types.ObjectId(classExist?.teacher),
+    //     },
+    //     {
+    //       $push: {
+    //         students: {
+    //           studentId: new mongoose.Types.ObjectId(userId),
+    //           status: "absent",
+    //           location: {
+    //             coordinates: [anchorLng, anchorLat],
+    //             type: "Point",
+    //           },
+    //           reason: {
+    //             notInClass: `Student is ${Number(teacherStudentDistance.toFixed(2)) - Number(attendanceExist?.allowedRadius)}m away from class`,
+    //           },
+    //           accuracy:
+    //             approvedStudentCoords[approvedStudentCoords?.length - 1]?.coords
+    //               ?.accuracy,
+    //         },
+    //       },
+    //     },
+    //   );
+    //   return NextResponse.json(
+    //     {
+    //       message: `You are ${Number(teacherStudentDistance.toFixed(2)) - Number(attendanceExist?.allowedRadius)}m away from class`,
+    //     },
+    //     {
+    //       status: 200,
+    //     },
+    //   );
+    // }
 
-    const currentTime = new Date.now();
+    const currentTime = Date.now();
     const startTime = new Date(attendanceExist?.startTime).getTime();
     const endTime = new Date(attendanceExist?.endTime).getTime();
 
@@ -292,12 +292,22 @@ export const PUT = auth(async function PUT(req, { params }) {
             students: {
               studentId: new mongoose.Types.ObjectId(userId),
               status: "flagged",
-            },
-            reason: {
-              spoofedCoords:
-                "Timestamp from the coords proved the user is using mocked location or there is some issue with the device time",
+              reason: {
+                spoofedCoords:
+                  "Timestamp from the coords proved the user is using mocked location or there is some issue with the device time",
+              },
             },
           },
+        },
+      );
+
+      return NextResponse.json(
+        {
+          message:
+            "Attendance marked with a flag due to invalid timestamps in the location data",
+        },
+        {
+          status: 200,
         },
       );
     }
@@ -453,6 +463,7 @@ export const PUT = auth(async function PUT(req, { params }) {
       teacherStudentDistance,
       teacherCoords: attendanceExist?.location?.coordinates,
       studentCoords: [anchorLat, anchorLng],
+      invalidTimeStamp,
     });
   } catch (err) {
     console.log(err);
