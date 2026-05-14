@@ -19,6 +19,8 @@ export default function TeacherAttendanceMap({ attendance, handleTabChange }) {
           lng: s.location.coordinates[0],
           lat: s.location.coordinates[1],
           status: s?.status,
+          matricNo: s?.studentId?.matricNo,
+          department: s?.studentId?.department,
         };
       }
     })
@@ -92,6 +94,12 @@ export default function TeacherAttendanceMap({ attendance, handleTabChange }) {
                     <div className="space-y-1">
                       <p className="text-foreground font-medium">
                         {location?.name}
+                      </p>
+                      <p className="text-foreground font-medium">
+                        {location?.matricNo}
+                      </p>
+                      <p className="text-foreground font-medium">
+                        {location?.department}
                       </p>
                       <p className="text-muted-foreground text-xs">
                         {location?.lat?.toFixed(4)}, {location?.lng?.toFixed(4)}
