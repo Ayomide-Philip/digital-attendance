@@ -178,17 +178,17 @@ function getWeeklyAttendanceStats(sessions = []) {
   }
 
   return buckets.map((bucket) => {
-    const totalPresent = bucket?.sessions?.reduce((sum, session) => {
-      const presentStudents = session?.students?.filter(
-        (student) => student?.status === "present",
+    const totalStatusPresent = bucket?.sessions?.reduce((sum, session) => {
+      const studentMarkedAttendance = session?.students?.filter(
+        (student) => student?.status,
       ).length;
 
-      return sum + presentStudents;
+      return sum + studentMarkedAttendance;
     }, 0);
 
     return {
       name: bucket.name,
-      attendance: totalPresent,
+      attendance: totalStatusPresent,
     };
   });
 }

@@ -233,7 +233,7 @@ export const PUT = auth(async function PUT(req, { params }) {
     if (
       Number(teacherStudentDistance) > Number(attendanceExist?.allowedRadius)
     ) {
-      const markAttendance = await Attandance.findOneAndUpdate(
+      await Attandance.findOneAndUpdate(
         {
           _id: new mongoose.Types.ObjectId(attendanceId),
           classesId: new mongoose.Types.ObjectId(classesId),
