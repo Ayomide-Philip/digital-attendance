@@ -78,58 +78,60 @@ export default function TeacherAttendanceMap({ attendance, handleTabChange }) {
                   </div>
                 </MarkerPopup>
               </MapMarker>
-              {studentsLocation?.map((location) => (
-                <MapMarker
-                  key={location?.id}
-                  longitude={location?.lng}
-                  latitude={location?.lat}
-                >
-                  <MarkerContent>
-                    <div
-                      className={`size-5 cursor-pointer rounded-full border-2 border-white ${statusColor[location?.status] || "bg-gray-500"} shadow-lg transition-transform hover:scale-110`}
-                    />
-                  </MarkerContent>
-                  <MarkerTooltip>{location?.name}</MarkerTooltip>
-                  <MarkerPopup>
-                    <div className="max-w-xs rounded-md p-3 bg-white text-slate-900 border border-slate-200 shadow-md dark:bg-slate-900 dark:text-slate-100 dark:border-slate-800">
-                      <div className="flex items-center gap-3">
-                        <div className="min-w-0">
-                          <p className="text-sm font-semibold truncate">
-                            {location?.name || "Unknown Student"}
-                          </p>
-                          <p className="text-xs text-slate-500 dark:text-slate-400 truncate">
-                            {location?.department || "—"}
-                          </p>
-                        </div>
+              {studentsLocation?.length > 0
+                ? studentsLocation?.map((location) => (
+                    <MapMarker
+                      key={location?.id}
+                      longitude={location?.lng}
+                      latitude={location?.lat}
+                    >
+                      <MarkerContent>
+                        <div
+                          className={`size-5 cursor-pointer rounded-full border-2 border-white ${statusColor[location?.status] || "bg-gray-500"} shadow-lg transition-transform hover:scale-110`}
+                        />
+                      </MarkerContent>
+                      <MarkerTooltip>{location?.name}</MarkerTooltip>
+                      <MarkerPopup>
+                        <div className="max-w-xs bg-white text-slate-900 dark:bg-slate-900">
+                          <div className="flex items-center gap-3">
+                            <div className="min-w-0">
+                              <p className="text-sm font-semibold truncate dark:text-white">
+                                {location?.name || "Unknown Student"}
+                              </p>
+                              <p className="text-xs text-slate-500 dark:text-slate-400 truncate">
+                                {location?.department || "—"}
+                              </p>
+                            </div>
 
-                        <span className="ml-auto inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-200">
-                          {location?.status || "unknown"}
-                        </span>
-                      </div>
+                            <span className="ml-auto inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-200">
+                              {location?.status || "unknown"}
+                            </span>
+                          </div>
 
-                      <div className="mt-2 text-xs text-slate-500 dark:text-slate-400">
-                        <div>
-                          <span className="text-slate-600 dark:text-slate-200 font-medium">
-                            Matric:
-                          </span>
-                          <span className="ml-2">
-                            {location?.matricNo || "—"}
-                          </span>
+                          <div className="mt-2 text-xs text-slate-500 dark:text-slate-400">
+                            <div>
+                              <span className="text-slate-600 dark:text-slate-200 font-medium">
+                                Matric:
+                              </span>
+                              <span className="ml-2">
+                                {location?.matricNo || "—"}
+                              </span>
+                            </div>
+                            <div className="mt-1">
+                              <span className="text-slate-600 dark:text-slate-200 font-medium">
+                                Coords:
+                              </span>
+                              <span className="ml-2 font-mono">
+                                {location?.lat?.toFixed(4) || "—"},{" "}
+                                {location?.lng?.toFixed(4) || "—"}
+                              </span>
+                            </div>
+                          </div>
                         </div>
-                        <div className="mt-1">
-                          <span className="text-slate-600 dark:text-slate-200 font-medium">
-                            Coords:
-                          </span>
-                          <span className="ml-2 font-mono">
-                            {location?.lat?.toFixed(4) || "—"},{" "}
-                            {location?.lng?.toFixed(4) || "—"}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </MarkerPopup>
-                </MapMarker>
-              ))}
+                      </MarkerPopup>
+                    </MapMarker>
+                  ))
+                : null}
             </Map>
           </div>
         ) : (
