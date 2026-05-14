@@ -8,6 +8,18 @@ import {
 } from "@/components/ui/map";
 
 export default function TeacherAttendanceMap({ attendance, handleTabChange }) {
+  const centerCoords = attendance?.location?.coordinates;
+  const studentsLocation = attendance?.students?.map((s, idx) => {
+    if (s?.location?.coordinates?.length === 2) {
+      return {
+        id: s?.studentId?._id,
+        name: s?.studentId?.name,
+        lng: s.location.coordinates[0],
+        lat: s.location.coordinates[1],
+      };
+    }
+  });
+  console.log(studentsLocation);
   const locations = [
     {
       id: 1,
