@@ -152,7 +152,7 @@ export default function AttendanceDetailsPage() {
           <button
             type="button"
             onClick={() => handleTabChange("students")}
-            className={`rounded-full px-3 py-1.5 text-xs font-medium transition ${
+            className={`rounded-full px-3 py-1.5 cursor-pointer text-xs font-medium transition ${
               activeTab === "students"
                 ? "bg-sky-500 text-white shadow-sm"
                 : "text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800"
@@ -163,7 +163,7 @@ export default function AttendanceDetailsPage() {
           <button
             type="button"
             onClick={() => handleTabChange("map")}
-            className={`rounded-full px-3 py-1.5 text-xs font-medium transition ${
+            className={`rounded-full px-3 cursor-pointer py-1.5 text-xs font-medium transition ${
               activeTab === "map"
                 ? "bg-sky-500 text-white shadow-sm"
                 : "text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800"

@@ -249,7 +249,7 @@ export const PUT = auth(async function PUT(req, { params }) {
                 type: "Point",
               },
               reason: {
-                notInClass: "Student is not within the class location",
+                notInClass: `Student is ${teacherStudentDistance.toFixed(2)}m away from class`,
               },
               accuracy:
                 approvedStudentCoords[approvedStudentCoords?.length - 1]?.coords
@@ -258,11 +258,9 @@ export const PUT = auth(async function PUT(req, { params }) {
           },
         },
       );
-      console.log(markAttendance);
       return NextResponse.json(
         {
-          message:
-            "You are not within the class location, attendance marked as absent",
+          message: ` You are ${teacherStudentDistance.toFixed(2)}m away from class`,
         },
         {
           status: 200,
