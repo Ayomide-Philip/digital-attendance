@@ -78,11 +78,19 @@ export default function AttendanceIdBody({
                     className={`size-2 rounded-full shrink-0 mt-1.5 ${tone.dot}`}
                   />
                   <div className="min-w-0 flex-1">
-                    <p className="font-medium text-slate-900 dark:text-slate-100 text-sm truncate">
-                      {student?.studentId?.name}
-                    </p>
+                    <div className="flex min-w-0 items-center gap-2">
+                      <p className="min-w-0 flex-1 truncate text-sm font-medium text-slate-900 dark:text-slate-100">
+                        {student?.studentId?.name}
+                      </p>
+                      <span
+                        className={`inline-flex shrink-0 capitalize rounded-full border px-2 py-0.5 text-xs font-semibold ${tone.badge}`}
+                      >
+                        {student?.status}
+                      </span>
+                    </div>
+
                     {reasonEntries.length > 0 ? (
-                      <div className="mt-2 min-h-0 flex-1 space-y-1 overflow-y-auto pr-1 text-xs text-amber-700 dark:text-amber-300">
+                      <div className="mt-2 w-full space-y-1 text-xs text-amber-700 dark:text-amber-300">
                         {reasonEntries.map(([reasonKey, reasonValue]) => (
                           <p key={reasonKey} className="leading-snug">
                             {formatReasonText(reasonKey, reasonValue)}
@@ -91,11 +99,6 @@ export default function AttendanceIdBody({
                       </div>
                     ) : null}
                   </div>
-                  <span
-                    className={`inline-flex capitalize rounded-full border px-2 py-0.5 text-xs font-semibold shrink-0 ${tone.badge}`}
-                  >
-                    {student?.status}
-                  </span>
                 </div>
 
                 <div className="mt-auto flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">

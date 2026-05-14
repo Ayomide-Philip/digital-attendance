@@ -434,8 +434,7 @@ export const PUT = auth(async function PUT(req, { params }) {
     );
 
     if (timeSpan < 10000) {
-      universalViolationMessage.timeSpanViolationMessage =
-        "Total time used to generate total coords is too short";
+      universalViolationMessage.timeSpanViolationMessage = `User used ${timeSpan / 1000}s to generate all coords, which is suspicious`;
       universalViolationScore++;
     }
 
@@ -453,6 +452,64 @@ export const PUT = auth(async function PUT(req, { params }) {
       universalViolationScore++;
     }
 
+    if (universalViolationScore >= 3) {
+      await Attandance.findOneAndUpdate(
+        {
+          _id: new mongoose.Types.ObjectId(attendanceId),
+          classesId: new mongoose.Types.ObjectId(classesId),
+          teacherId: new mongoose.Types.ObjectId(classExist?.teacher),
+        },
+        {
+          $push: {
+            students: {
+              studentId: new mongoose.Types.ObjectId(userId),
+              status: "flagged",
+              location: {
+                coordinates: [anchorLng, anchorLat],
+                type: "Point",
+              },
+              reason: universalViolationMessage,
+              accuracy:
+                approvedStudentCoords[approvedStudentCoords?.length - 1]?.coords
+                  ?.accuracy,
+            },
+          },
+        },
+      );
+      return NextResponse.json(
+        {
+          message: "Attendance marked but flagged for potential cheating",
+        },
+        {
+          status: 200,
+        },
+      );
+    }
+
+    await Attendance.findOneAndUpdate(
+      {
+        _id: new mongoose.Types.ObjectId(attendanceId),
+        classesId: new mongoose.Types.ObjectId(classesId),
+        teacherId: new mongoose.Types.ObjectId(classExist?.teacher),
+      },
+      {
+        $push: {
+          students: {
+            studentId: new mongoose.Types.ObjectId(userId),
+            status: "present",
+            location: {
+              coordinates: [anchorLng, anchorLat],
+              type: "Point",
+            },
+            reason: {...universalViolationMessage, whyMarkPresent: `User violated ${universalViolationScore}/7, probably due ` },
+            accuracy:
+              approvedStudentCoords[approvedStudentCoords?.length - 1]?.coords
+                ?.accuracy,
+          },
+        },
+      },
+    );
+
     return NextResponse.json({
       message: "Attendance marked successfully",
       universalViolationScore,
@@ -463,7 +520,6 @@ export const PUT = auth(async function PUT(req, { params }) {
       teacherStudentDistance,
       teacherCoords: attendanceExist?.location?.coordinates,
       studentCoords: [anchorLat, anchorLng],
-      invalidTimeStamp,
     });
   } catch (err) {
     console.log(err);
