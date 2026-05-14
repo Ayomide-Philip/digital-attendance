@@ -230,43 +230,43 @@ export const PUT = auth(async function PUT(req, { params }) {
       anchorLng,
     );
 
-    // if (
-    //   Number(teacherStudentDistance) > Number(attendanceExist?.allowedRadius)
-    // ) {
-    //   await Attandance.findOneAndUpdate(
-    //     {
-    //       _id: new mongoose.Types.ObjectId(attendanceId),
-    //       classesId: new mongoose.Types.ObjectId(classesId),
-    //       teacherId: new mongoose.Types.ObjectId(classExist?.teacher),
-    //     },
-    //     {
-    //       $push: {
-    //         students: {
-    //           studentId: new mongoose.Types.ObjectId(userId),
-    //           status: "absent",
-    //           location: {
-    //             coordinates: [anchorLng, anchorLat],
-    //             type: "Point",
-    //           },
-    //           reason: {
-    //             notInClass: `Student is ${Number(teacherStudentDistance.toFixed(2)) - Number(attendanceExist?.allowedRadius)}m away from class`,
-    //           },
-    //           accuracy:
-    //             approvedStudentCoords[approvedStudentCoords?.length - 1]?.coords
-    //               ?.accuracy,
-    //         },
-    //       },
-    //     },
-    //   );
-    //   return NextResponse.json(
-    //     {
-    //       message: `You are ${Number(teacherStudentDistance.toFixed(2)) - Number(attendanceExist?.allowedRadius)}m away from class`,
-    //     },
-    //     {
-    //       status: 200,
-    //     },
-    //   );
-    // }
+    if (
+      Number(teacherStudentDistance) > Number(attendanceExist?.allowedRadius)
+    ) {
+      await Attandance.findOneAndUpdate(
+        {
+          _id: new mongoose.Types.ObjectId(attendanceId),
+          classesId: new mongoose.Types.ObjectId(classesId),
+          teacherId: new mongoose.Types.ObjectId(classExist?.teacher),
+        },
+        {
+          $push: {
+            students: {
+              studentId: new mongoose.Types.ObjectId(userId),
+              status: "absent",
+              location: {
+                coordinates: [anchorLng, anchorLat],
+                type: "Point",
+              },
+              reason: {
+                notInClass: `Student is ${Number(teacherStudentDistance.toFixed(2)) - Number(attendanceExist?.allowedRadius)}m away from class`,
+              },
+              accuracy:
+                approvedStudentCoords[approvedStudentCoords?.length - 1]?.coords
+                  ?.accuracy,
+            },
+          },
+        },
+      );
+      return NextResponse.json(
+        {
+          message: `You are ${Number(teacherStudentDistance.toFixed(2)) - Number(attendanceExist?.allowedRadius)}m away from class`,
+        },
+        {
+          status: 200,
+        },
+      );
+    }
 
     const currentTime = Date.now();
     const startTime = new Date(attendanceExist?.startTime).getTime();
@@ -304,7 +304,7 @@ export const PUT = auth(async function PUT(req, { params }) {
       return NextResponse.json(
         {
           message:
-            "Attendance marked with a flag due to invalid timestamps in the location data",
+            "Attendance verification failed due to invalid GPS timestamps.",
         },
         {
           status: 200,

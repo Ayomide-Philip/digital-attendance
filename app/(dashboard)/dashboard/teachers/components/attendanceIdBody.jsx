@@ -62,15 +62,16 @@ export default function AttendanceIdBody({
         </div>
       </div>
 
-      <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="mt-4 grid items-start gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {visibleStudents.length > 0 ? (
           visibleStudents.map((student, idx) => {
             const tone = getStudentStatusTone(student.status);
+            const reasonEntries = getReasonEntries(student?.reason);
 
             return (
               <div
                 key={student?.studentId?._id || idx}
-                className="group flex flex-col gap-3 rounded-xl border border-slate-200/70 p-3 transition hover:border-slate-300/70 hover:shadow-md dark:border-slate-800 dark:hover:border-slate-700 dark:hover:shadow-slate-900/30 bg-white/50 dark:bg-slate-900/30"
+                className="group flex h-full self-start flex-col gap-3 rounded-xl border border-slate-200/70 bg-white/50 p-3 transition hover:border-slate-300/70 hover:shadow-md dark:border-slate-800 dark:bg-slate-900/30 dark:hover:border-slate-700 dark:hover:shadow-slate-900/30"
               >
                 <div className="flex items-start gap-3">
                   <span
@@ -80,19 +81,14 @@ export default function AttendanceIdBody({
                     <p className="font-medium text-slate-900 dark:text-slate-100 text-sm truncate">
                       {student?.studentId?.name}
                     </p>
-                    {Object?.keys(student?.reason || {})?.length > 0 ? (
-                      <>
-                        {student?.reason?.notInClass ? (
-                          <p className="mt-1 text-xs text-amber-700 dark:text-amber-300 truncate">
-                            {student?.reason?.notInClass}
+                    {reasonEntries.length > 0 ? (
+                      <div className="mt-2 min-h-0 flex-1 space-y-1 overflow-y-auto pr-1 text-xs text-amber-700 dark:text-amber-300">
+                        {reasonEntries.map(([reasonKey, reasonValue]) => (
+                          <p key={reasonKey} className="leading-snug">
+                            {formatReasonText(reasonKey, reasonValue)}
                           </p>
-                        ) : null}
-                        {student?.reason?.spoofedCoords ? (
-                          <p className="mt-1 text-xs text-amber-700 dark:text-amber-300">
-                            {student?.reason?.spoofedCoords}
-                          </p>
-                        ) : null}
-                      </>
+                        ))}
+                      </div>
                     ) : null}
                   </div>
                   <span
@@ -102,7 +98,7 @@ export default function AttendanceIdBody({
                   </span>
                 </div>
 
-                <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+                <div className="mt-auto flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
                   <Clock3 className="size-3.5" />
                   <span>
                     {student?.timestamp
@@ -124,6 +120,41 @@ export default function AttendanceIdBody({
       </div>
     </Card>
   );
+}
+
+function getReasonEntries(reason) {
+  return Object.entries(reason || {}).filter(([, value]) => {
+    if (value === null || value === undefined || value === "") {
+      return false;
+    }
+
+    if (Array.isArray(value)) {
+      return value.length > 0;
+    }
+
+    return true;
+  });
+}
+
+function formatReasonText(key, value) {
+  const label = key
+    .replace(/([a-z0-9])([A-Z])/g, "$1 $2")
+    .replace(/[_-]+/g, " ")
+    .replace(/\b\w/g, (character) => character.toUpperCase());
+
+  if (value === true) {
+    return label;
+  }
+
+  if (Array.isArray(value)) {
+    return `${label}: ${value.join(", ")}`;
+  }
+
+  if (value && typeof value === "object") {
+    return `${label}: ${JSON.stringify(value)}`;
+  }
+
+  return `${label}: ${value}`;
 }
 
 function getStudentStatusTone(status) {
