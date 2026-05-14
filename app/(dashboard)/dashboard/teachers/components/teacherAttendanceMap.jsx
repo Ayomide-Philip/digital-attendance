@@ -11,7 +11,7 @@ import {
 export default function TeacherAttendanceMap({ attendance, handleTabChange }) {
   const centerCoords = attendance?.location?.coordinates;
   const studentsLocation = attendance?.students
-    ?.map((s, idx) => {
+    ?.map((s) => {
       if (s?.location?.coordinates?.length === 2) {
         return {
           id: s?.studentId?._id,
@@ -22,6 +22,11 @@ export default function TeacherAttendanceMap({ attendance, handleTabChange }) {
       }
     })
     .filter(Boolean);
+  const statusColor = {
+    present: "bg-green-500",
+    absent: "bg-red-500",
+    flagged: "bg-amber-500",
+  };
   console.log(studentsLocation);
   const locations = [
     {

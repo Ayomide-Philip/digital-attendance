@@ -486,15 +486,22 @@ function MarkerPopup({
 
   const handleClose = () => popup.remove();
 
-  return createPortal(<div
-    className={cn(
-      "bg-popover text-popover-foreground relative max-w-62 rounded-md border p-3 shadow-md",
-      "animate-in fade-in-0 zoom-in-95 duration-200 ease-out",
-      className
-    )}>
-    {closeButton && <PopupCloseButton onClick={handleClose} />}
-    {children}
-  </div>, container);
+  return createPortal(
+    <div
+      className={cn(
+        // explicit slate-based popup background + dark mode variants
+        "relative max-w-62 rounded-md border p-3 shadow-md",
+        "bg-white text-slate-900 border-slate-200/70",
+        "dark:bg-slate-900 dark:text-slate-100 dark:border-slate-800",
+        "animate-in fade-in-0 zoom-in-95 duration-200 ease-out",
+        className,
+      )}
+    >
+      {closeButton && <PopupCloseButton onClick={handleClose} />}
+      {children}
+    </div>,
+    container,
+  );
 }
 
 function MarkerTooltip({
@@ -552,14 +559,21 @@ function MarkerTooltip({
     prevTooltipOptions.current = popupOptions;
   }
 
-  return createPortal(<div
-    className={cn(
-      "bg-foreground text-background pointer-events-none rounded-md px-2 py-1 text-xs text-balance shadow-md",
-      "animate-in fade-in-0 zoom-in-95 duration-200 ease-out",
-      className
-    )}>
-    {children}
-  </div>, container);
+  return createPortal(
+    <div
+      className={cn(
+        // explicit tooltip styling (dark tooltip with slight variant for dark mode)
+        "pointer-events-none rounded-md px-2 py-1 text-xs shadow-md",
+        "bg-slate-900 text-white",
+        "dark:bg-slate-700 dark:text-white",
+        "animate-in fade-in-0 zoom-in-95 duration-200 ease-out",
+        className,
+      )}
+    >
+      {children}
+    </div>,
+    container,
+  );
 }
 
 function MarkerLabel({
