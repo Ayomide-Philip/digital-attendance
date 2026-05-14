@@ -36,7 +36,6 @@ export default function AttendanceIdBody({
           (student) =>
             student.status.toLowerCase() === selectedTab?.toLowerCase(),
         );
-  console.log(visibleStudents);
   return (
     <Card className="rounded-2xl border border-slate-200/70 bg-white/85 p-5 shadow-sm dark:border-slate-800 dark:bg-slate-950/70">
       <div className="flex flex-wrap items-center justify-between gap-3">
@@ -90,7 +89,8 @@ export default function AttendanceIdBody({
                     </div>
 
                     {reasonEntries.length > 0 ? (
-                      <div className="mt-2 w-full space-y-1 text-xs text-amber-700 dark:text-amber-300">
+                      <div className={`mt-2 w-full space-y-1 text-xs  `}>
+                        <p>Reasons:</p>
                         {reasonEntries.map(([reasonKey, reasonValue]) => (
                           <p key={reasonKey} className="leading-snug">
                             {formatReasonText(reasonKey, reasonValue)}
@@ -161,7 +161,7 @@ function formatReasonText(key, value) {
 }
 
 function getStudentStatusTone(status) {
-  if (status === "Present") {
+  if (status === "present") {
     return {
       dot: "bg-emerald-500",
       badge:
@@ -169,7 +169,7 @@ function getStudentStatusTone(status) {
     };
   }
 
-  if (status === "Flagged") {
+  if (status === "flagged") {
     return {
       dot: "bg-amber-500",
       badge:
@@ -177,7 +177,7 @@ function getStudentStatusTone(status) {
     };
   }
 
-  if (status === "Pending") {
+  if (status === "pending") {
     return {
       dot: "bg-amber-500",
       badge:

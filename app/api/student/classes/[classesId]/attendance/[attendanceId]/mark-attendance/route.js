@@ -486,7 +486,7 @@ export const PUT = auth(async function PUT(req, { params }) {
       );
     }
 
-    await Attendance.findOneAndUpdate(
+    await Attandance.findOneAndUpdate(
       {
         _id: new mongoose.Types.ObjectId(attendanceId),
         classesId: new mongoose.Types.ObjectId(classesId),
@@ -501,7 +501,10 @@ export const PUT = auth(async function PUT(req, { params }) {
               coordinates: [anchorLng, anchorLat],
               type: "Point",
             },
-            reason: {...universalViolationMessage, whyMarkPresent: `User violated ${universalViolationScore}/7, probably due ` },
+            reason: {
+              ...universalViolationMessage,
+              whyMarkPresent: `User violated ${universalViolationScore}/7, which means it might be just a little error cause`,
+            },
             accuracy:
               approvedStudentCoords[approvedStudentCoords?.length - 1]?.coords
                 ?.accuracy,
@@ -510,17 +513,14 @@ export const PUT = auth(async function PUT(req, { params }) {
       },
     );
 
-    return NextResponse.json({
-      message: "Attendance marked successfully",
-      universalViolationScore,
-      timeSpan,
-      timeInterval,
-      speedInterval,
-      universalViolationMessage,
-      teacherStudentDistance,
-      teacherCoords: attendanceExist?.location?.coordinates,
-      studentCoords: [anchorLat, anchorLng],
-    });
+    return NextResponse.json(
+      {
+        message: "Attendance marked successfully",
+      },
+      {
+        status: 200,
+      },
+    );
   } catch (err) {
     console.log(err);
     return NextResponse.json(
