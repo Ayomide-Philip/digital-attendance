@@ -94,8 +94,9 @@ export const PUT = auth(async function PUT(req, { params }) {
       },
     );
   }
+  const userId = req?.auth?.user?.id;
   const { classesId } = await params;
-  const { userId, emailSuffix, departmentCodes } = await req.json();
+  const { emailSuffix, departmentCodes } = await req.json();
 
   if (
     !classesId.trim() ||

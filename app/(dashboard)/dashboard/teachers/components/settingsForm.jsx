@@ -31,7 +31,6 @@ export default function SettingsForm({ settings, classId }) {
 
   async function handleSave(event) {
     event.preventDefault();
-    toast.success("Settings saved locally.");
     if (!rules?.emailSuffix.trim() && rules?.departmentCodes?.length === 0) {
       return toast.error(
         "No changes detected in class rules. Please modify the rules before submitting.",
@@ -164,7 +163,7 @@ export default function SettingsForm({ settings, classId }) {
                         ),
                       }));
                     }}
-                    className="rounded-full p-0.5 transition hover:bg-sky-200 dark:hover:bg-sky-900/60"
+                    className="rounded-full p-0.5 cursor-pointer transition hover:bg-sky-200 dark:hover:bg-sky-900/60"
                     aria-label={`Remove ${code}`}
                   >
                     <X className="size-3.5" />
@@ -184,11 +183,8 @@ export default function SettingsForm({ settings, classId }) {
             <p className="text-sm font-medium text-slate-900 dark:text-slate-100">
               Save changes
             </p>
-            <p className="text-xs text-slate-500 dark:text-slate-400">
-              Local-only state update.
-            </p>
           </div>
-          <Button type="submit" className="h-10 rounded-xl px-4">
+          <Button type="submit" className="h-10 rounded-xl px-4 cursor-pointer">
             <Save className="size-4" />
             Save Settings
           </Button>
