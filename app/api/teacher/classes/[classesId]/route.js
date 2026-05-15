@@ -90,8 +90,8 @@ export const PUT = auth(async function PUT(req, { params }) {
   if (
     !classesId.trim() ||
     !userId.trim() ||
-    !new mongoose.Types.ObjectId(classesId) ||
-    !new mongoose.Types.ObjectId(userId)
+    !mongoose.Types.ObjectId.isValid(classesId) ||
+    !mongoose.Types.ObjectId.isValid(userId)
   ) {
     return NextResponse.json(
       {
@@ -220,8 +220,8 @@ export const PUT = auth(async function PUT(req, { params }) {
       classExists?.rules?.emailSuffix?.toLowerCase() ===
         emailSuffix?.trim()?.toLowerCase() &&
       checkDepartmentCodeMatch(
-        departmentCodes,
-        classExists?.rules?.departmentCode,
+        uniqueDepartmentCodes,
+        classExists?.rules?.departmentCode ?? [],
       )
     ) {
       return NextResponse.json(
@@ -235,9 +235,27 @@ export const PUT = auth(async function PUT(req, { params }) {
       );
     }
 
+    await Classes.findOneAndUpdate(
+      {
+        _id: new mongoose.Types.ObjectId(classesId),
+        teacher: new mongoose.Types.ObjectId(userId),
+      },
+      {
+        $set: {
+          rules: {
+            emailSuffix: emailSuffix.trim(),
+            departmentCode:
+              uniqueDepartmentCodes.length > 0
+                ? uniqueDepartmentCodes
+                : classExists?.rules?.departmentCode,
+          },
+        },
+      },
+    );
+
     return NextResponse.json(
       {
-        message: "Update class endpoint - To be implemented",
+        message: "Class rules updated successfully",
         rules: classExists,
         uniqueDepartmentCodes,
       },
