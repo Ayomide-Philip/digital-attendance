@@ -207,7 +207,9 @@ export default function OverviewTab({ overview, classId }) {
           </div>
         </Card>
 
-        <Card className={`rounded-2xl border border-slate-200/70 bg-white/85 p-6 shadow-sm dark:border-slate-800 dark:bg-slate-950/70 ${recentActivity?.length === 0 ? "flex flex-col" : ""}`}>
+        <Card
+          className={`rounded-2xl border border-slate-200/70 bg-white/85 p-6 shadow-sm dark:border-slate-800 dark:bg-slate-950/70 ${recentActivity?.length === 0 ? "flex flex-col" : ""}`}
+        >
           <div className="mb-4 flex items-center gap-2">
             <Clock3 className="size-4 text-sky-600 dark:text-sky-300" />
             <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">
