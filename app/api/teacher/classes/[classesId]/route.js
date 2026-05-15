@@ -129,6 +129,17 @@ export const PUT = auth(async function PUT(req, { params }) {
     );
   }
 
+  if (!/@([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}$/.test(emailSuffix.trim())) {
+    return NextResponse.json(
+      {
+        error: "Invalid Email Suffix",
+      },
+      {
+        status: 400,
+      },
+    );
+  }
+
   if (
     !Array.isArray(departmentCodes) ||
     departmentCodes.some(

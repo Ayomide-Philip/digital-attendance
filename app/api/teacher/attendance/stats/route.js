@@ -158,37 +158,32 @@ function getWeeklyAttendanceStats(sessions = []) {
   const buckets = days.map((name, i) => {
     const date = new Date(monday);
     date.setDate(monday.getDate() + i);
-    return { name, date, sessions: [] };
+    return { name, date, totalPresent: 0 };
   });
 
   for (const session of sessions) {
-    const sessionDate = new Date(session?.startTime);
-    if (sessionDate < monday || sessionDate > sunday) continue;
+    for (const student of session?.students ?? []) {
+      const studentDate = new Date(student?.timestamp);
 
-    const bucket = buckets.find((b) => {
-      const bDate = b.date;
-      return (
-        sessionDate.getFullYear() === bDate.getFullYear() &&
-        sessionDate.getMonth() === bDate.getMonth() &&
-        sessionDate.getDate() === bDate.getDate()
-      );
-    });
+      if (studentDate < monday || studentDate > sunday) continue;
 
-    if (bucket) bucket.sessions.push(session);
+      const bucket = buckets.find((b) => {
+        const bDate = b.date;
+        return (
+          studentDate.getFullYear() === bDate.getFullYear() &&
+          studentDate.getMonth() === bDate.getMonth() &&
+          studentDate.getDate() === bDate.getDate()
+        );
+      });
+
+      if (bucket && student?.status) {
+        bucket.totalPresent += 1;
+      }
+    }
   }
 
-  return buckets.map((bucket) => {
-    const totalStatusPresent = bucket?.sessions?.reduce((sum, session) => {
-      const studentMarkedAttendance = session?.students?.filter(
-        (student) => student?.status,
-      ).length;
-
-      return sum + studentMarkedAttendance;
-    }, 0);
-
-    return {
-      name: bucket.name,
-      attendance: totalStatusPresent,
-    };
-  });
+  return buckets.map((bucket) => ({
+    name: bucket.name,
+    attendance: bucket.totalPresent,
+  }));
 }
