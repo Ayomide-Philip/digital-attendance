@@ -37,6 +37,23 @@ export default function SettingsForm({ settings }) {
         "No changes detected in class rules. Please modify the rules before submitting.",
       );
     }
+    if (!rules?.emailSuffix && rules?.departmentCodes?.length > 0) {
+      return toast.error(
+        "Email suffix is required when adding department codes.",
+      );
+    }
+    if (
+      rules.emailSuffix &&
+      typeof rules.emailSuffix === "string" &&
+      rules.emailSuffix.trim()
+    ) {
+      if (
+        !rules.emailSuffix.startsWith("@") ||
+        !rules.emailSuffix.includes(".")
+      ) {
+        return toast.error("Invalid Email Suffix");
+      }
+    }
   }
   return (
     <SettingsCard
