@@ -32,6 +32,11 @@ export default function SettingsForm({ settings }) {
   function handleSave(event) {
     event.preventDefault();
     toast.success("Settings saved locally.");
+    if (!rules?.emailSuffix.trim() && rules?.departmentCodes?.length === 0) {
+      return toast.error(
+        "No changes detected in class rules. Please modify the rules before submitting.",
+      );
+    }
   }
   return (
     <SettingsCard

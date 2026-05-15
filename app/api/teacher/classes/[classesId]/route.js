@@ -113,7 +113,7 @@ export const PUT = auth(async function PUT(req, { params }) {
     );
   }
 
-  if (!emailSuffix?.trim && departmentCodes?.length === 0) {
+  if (!emailSuffix?.trim() && departmentCodes?.length === 0) {
     return NextResponse.json(
       {
         error:
@@ -151,6 +151,17 @@ export const PUT = auth(async function PUT(req, { params }) {
         },
       );
     }
+  }
+
+  if (!emailSuffix?.trim() && departmentCodes?.length > 0) {
+    return NextResponse.json(
+      {
+        error: "Email suffix is required when adding department codes.",
+      },
+      {
+        status: 400,
+      },
+    );
   }
 
   if (
