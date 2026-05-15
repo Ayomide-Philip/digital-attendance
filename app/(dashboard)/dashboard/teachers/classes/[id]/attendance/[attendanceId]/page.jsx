@@ -173,7 +173,7 @@ export default function AttendanceDetailsPage() {
             <button
               type="button"
               onClick={handleDeleteAttendance}
-              className="inline-flex items-center gap-2 rounded-lg bg-red-500/10 px-3 py-1.5 text-xs font-medium text-red-700 transition hover:bg-red-500/20 dark:bg-red-500/20 dark:text-red-300 dark:hover:bg-red-500/30"
+              className="inline-flex cursor-pointer items-center gap-2 rounded-lg bg-red-500/10 px-3 py-1.5 text-xs font-medium text-red-700 transition hover:bg-red-500/20 dark:bg-red-500/20 dark:text-red-300 dark:hover:bg-red-500/30"
             >
               <Trash2 className="size-3.5" />
               Delete

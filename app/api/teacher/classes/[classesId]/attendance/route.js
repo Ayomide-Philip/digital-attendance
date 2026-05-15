@@ -137,7 +137,13 @@ export const GET = auth(async function GET(req, { params }) {
   }
   const userId = req?.auth?.user?.id;
   const { classesId } = await params;
-
+  const query = req.nextUrl.searchParams.get("query") || "all";
+  if (!["upcoming", "all"].includes(query)) {
+    return NextResponse.json(
+      { error: "Invalid query parameter" },
+      { status: 400 },
+    );
+  }
   try {
     await connectDatabase();
     const user = await User.findById(new mongoose.Types.ObjectId(userId));

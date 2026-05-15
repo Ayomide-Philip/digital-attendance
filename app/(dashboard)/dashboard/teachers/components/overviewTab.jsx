@@ -83,7 +83,7 @@ export default function OverviewTab({ overview, classId }) {
         const response = await request.json();
         if (request?.ok && response?.attendance) {
           const activity = response.attendance.map((item) => ({
-            title: `Attendance: ${item.title}`,
+            title: `Attendance: ${item?.title}`,
             time: formatRelativeTime(item.createdAt),
             icon: CheckCircle2,
           }));
@@ -215,26 +215,34 @@ export default function OverviewTab({ overview, classId }) {
             </h3>
           </div>
 
-          <div className="space-y-3">
-            {recentActivity.map((item, idx) => (
-              <div
-                key={idx}
-                className="flex items-start gap-3 rounded-xl border border-slate-200/70 p-3 dark:border-slate-800"
-              >
-                <div className="rounded-lg bg-sky-500/10 p-2 text-sky-700 dark:text-sky-300">
-                  <item.icon className="size-4" />
+          {recentActivity?.length > 0 ? (
+            <div className="space-y-3">
+              {recentActivity.map((item, idx) => (
+                <div
+                  key={idx}
+                  className="flex items-start gap-3 rounded-xl border border-slate-200/70 p-3 dark:border-slate-800"
+                >
+                  <div className="rounded-lg bg-sky-500/10 p-2 text-sky-700 dark:text-sky-300">
+                    <item.icon className="size-4" />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-sm font-medium text-slate-900 dark:text-slate-100">
+                      {item?.title}
+                    </p>
+                    <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                      {item?.time}
+                    </p>
+                  </div>
                 </div>
-                <div className="min-w-0">
-                  <p className="text-sm font-medium text-slate-900 dark:text-slate-100">
-                    {item?.title}
-                  </p>
-                  <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-                    {item?.time}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <div className="w-full flex flex-col items-center justify-center gap-3 py-6 rounded-xl border border-dashed border-slate-200/60 text-center dark:border-slate-800">
+              <Clock3 className="size-6 text-slate-400 dark:text-slate-500" />
+              <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">No recent activity</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400">You have not created any attendance sessions recently.</p>
+            </div>
+          )}
         </Card>
       </div>
 
