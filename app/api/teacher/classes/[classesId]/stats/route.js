@@ -77,7 +77,12 @@ export const GET = auth(async function GET(req, { params }) {
       teacherId: new mongoose.Types.ObjectId(userId),
     });
 
-    const totalNumberOfStudentsWhoAttended = attendance.reduce(
+    const currentTime = new Date();
+    const attendanceBeforeToday = attendance.filter((att) => {
+      return new Date(att?.startTime) <= currentTime;
+    });
+
+    const totalNumberOfStudentsWhoAttended = attendanceBeforeToday?.reduce(
       (total, records) => {
         const presentStudents = records?.students?.filter(
           (student) => student?.status === "present",
@@ -88,7 +93,7 @@ export const GET = auth(async function GET(req, { params }) {
     );
 
     const totalRecordsExpected =
-      classExists?.students?.length * attendance?.length;
+      classExists?.students?.length * attendanceBeforeToday?.length;
     return NextResponse.json(
       {
         message: `Stats for class ${classExists?.name} fetched successfully.`,

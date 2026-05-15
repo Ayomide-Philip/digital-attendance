@@ -500,10 +500,13 @@ export const PUT = auth(async function PUT(req, { params }) {
               coordinates: [anchorLng, anchorLat],
               type: "Point",
             },
-            reason: {
-              ...universalViolationMessage,
-              whyMarkPresent: `User violated ${universalViolationScore}/7 of the anti-cheat rules but still marked present because the violation score didnt reach the threshold`,
-            },
+            reason:
+              universalViolationScore > 0
+                ? {
+                    ...universalViolationMessage,
+                    whyMarkPresent: `User violated ${universalViolationScore}/7 of the anti-cheat rules but still marked present because the violation score didnt reach the threshold`,
+                  }
+                : {},
             accuracy:
               approvedStudentCoords[approvedStudentCoords?.length - 1]?.coords
                 ?.accuracy,
