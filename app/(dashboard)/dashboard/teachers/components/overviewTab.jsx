@@ -11,24 +11,6 @@ import Card from "@/components/ui/card";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
-const upcomingSessions = [
-  {
-    topic: "Matrix Transformations",
-    date: "Apr 24, 2026",
-    time: "10:00 AM - 12:00 PM",
-  },
-  {
-    topic: "Linear Optimization",
-    date: "Apr 27, 2026",
-    time: "09:00 AM - 11:00 AM",
-  },
-  {
-    topic: "Revision & Quiz",
-    date: "Apr 30, 2026",
-    time: "01:00 PM - 02:30 PM",
-  },
-];
-
 export default function OverviewTab({ overview, classId }) {
   const [stats, setStats] = useState(null);
   const [loadingStats, setLoadingStats] = useState(true);

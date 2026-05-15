@@ -72,40 +72,46 @@ export default function StudentList({ students = [], classId }) {
   return (
     <div className="space-y-5">
       <div className="space-y-4">
-        <div className="flex flex-col gap-4 rounded-2xl border border-slate-200/70 bg-white/80 p-5 shadow-sm dark:border-slate-800 dark:bg-slate-950/70 lg:flex-row lg:items-center lg:justify-between">
-          <div className="flex items-start gap-4">
-            <div className="grid size-11 shrink-0 place-items-center rounded-2xl bg-sky-500/15 text-sky-600 dark:text-sky-300">
-              <Users className="size-5" />
-            </div>
-            <div>
-              <p className="text-sm font-medium text-sky-600 dark:text-sky-300">
-                Class Students
-              </p>
-              <h2 className="mt-1 text-lg font-semibold text-slate-900 dark:text-slate-100">
-                Students in Class
-              </h2>
-              <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-                Total: {studentList.length} enrolled student
-                {studentList.length !== 1 ? "s" : ""}
-              </p>
+        <div className="rounded-2xl border border-slate-200/70 bg-white/80 p-6 shadow-sm dark:border-slate-800 dark:bg-slate-950/70">
+          <div className="mb-6 flex flex-col gap-2">
+            <div className="flex items-center gap-3">
+              <div className="grid size-10 shrink-0 place-items-center rounded-xl bg-sky-500/15 text-sky-600 dark:text-sky-300">
+                <Users className="size-5" />
+              </div>
+              <div>
+                <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
+                  Class Students
+                </h2>
+                <p className="text-xs text-slate-500 dark:text-slate-400">
+                  Manage and view all enrolled students
+                </p>
+              </div>
             </div>
           </div>
 
-          <div className="flex flex-wrap gap-2 lg:gap-3">
-            <div className="flex flex-col rounded-xl border border-slate-200 bg-sky-50/80 px-3 py-2 dark:border-slate-800 dark:bg-sky-950/20">
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-3">
+            <div className="rounded-xl border border-sky-200/50 bg-linear-to-br from-sky-50 to-sky-50/60 p-4 dark:border-sky-900/40 dark:from-sky-950/40 dark:to-sky-950/20">
               <p className="text-xs font-medium text-slate-500 dark:text-slate-400">
                 Total Students
               </p>
-              <p className="mt-1 text-lg font-bold text-sky-600 dark:text-sky-300">
+              <p className="mt-2 text-2xl font-bold text-sky-600 dark:text-sky-300">
                 {studentList.length}
               </p>
             </div>
-            <div className="flex flex-col rounded-xl border border-slate-200 bg-sky-50/80 px-3 py-2 dark:border-slate-800 dark:bg-sky-950/20">
+            <div className="rounded-xl border border-emerald-200/50 bg-linear-to-br from-emerald-50 to-emerald-50/60 p-4 dark:border-emerald-900/40 dark:from-emerald-950/40 dark:to-emerald-950/20">
               <p className="text-xs font-medium text-slate-500 dark:text-slate-400">
                 Departments
               </p>
-              <p className="mt-1 text-lg font-bold text-sky-600 dark:text-sky-300">
+              <p className="mt-2 text-2xl font-bold text-emerald-600 dark:text-emerald-300">
                 {departments.length - 1}
+              </p>
+            </div>
+            <div className="rounded-xl border border-violet-200/50 bg-linear-to-br from-violet-50 to-violet-50/60 p-4 dark:border-violet-900/40 dark:from-violet-950/40 dark:to-violet-950/20">
+              <p className="text-xs font-medium text-slate-500 dark:text-slate-400">
+                Enrolled
+              </p>
+              <p className="mt-2 text-2xl font-bold text-violet-600 dark:text-violet-300">
+                {studentList.length}
               </p>
             </div>
           </div>

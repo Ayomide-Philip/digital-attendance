@@ -1,5 +1,3 @@
-import { Plus, Upload } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import StudentList from "./StudentList";
 
 export default function StudentsTab({ students, classId }) {
