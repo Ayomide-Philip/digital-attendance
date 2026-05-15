@@ -174,6 +174,27 @@ export const GET = auth(async function GET(req, { params }) {
       );
     }
 
+    if (query === "upcoming") {
+      const attendanceRecords = await Attandance.find({
+        classesId: new mongoose.Types.ObjectId(classesId),
+        teacherId: new mongoose.Types.ObjectId(userId),
+        startTime: { $gt: new Date() },
+      })
+        .sort({ createdAt: -1 })
+        .populate("classesId", "name code students")
+        .populate("teacherId", "name email");
+
+      return NextResponse.json(
+        {
+          message: "GET upcoming attendance for class",
+          attendance: attendanceRecords,
+        },
+        {
+          status: 200,
+        },
+      );
+    }
+
     const attendanceRecords = await Attandance.find({
       classesId: new mongoose.Types.ObjectId(classesId),
       teacherId: new mongoose.Types.ObjectId(userId),

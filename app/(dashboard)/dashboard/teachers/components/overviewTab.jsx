@@ -207,7 +207,7 @@ export default function OverviewTab({ overview, classId }) {
           </div>
         </Card>
 
-        <Card className="rounded-2xl border border-slate-200/70 bg-white/85 p-6 shadow-sm dark:border-slate-800 dark:bg-slate-950/70">
+        <Card className={`rounded-2xl border border-slate-200/70 bg-white/85 p-6 shadow-sm dark:border-slate-800 dark:bg-slate-950/70 ${recentActivity?.length === 0 ? "flex flex-col" : ""}`}>
           <div className="mb-4 flex items-center gap-2">
             <Clock3 className="size-4 text-sky-600 dark:text-sky-300" />
             <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">
@@ -237,10 +237,14 @@ export default function OverviewTab({ overview, classId }) {
               ))}
             </div>
           ) : (
-            <div className="w-full flex flex-col items-center justify-center gap-3 py-6 rounded-xl border border-dashed border-slate-200/60 text-center dark:border-slate-800">
+            <div className="flex-1 flex flex-col items-center justify-center gap-3 py-6 rounded-xl border border-dashed border-slate-200/60 text-center dark:border-slate-800">
               <Clock3 className="size-6 text-slate-400 dark:text-slate-500" />
-              <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">No recent activity</p>
-              <p className="text-xs text-slate-500 dark:text-slate-400">You have not created any attendance sessions recently.</p>
+              <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">
+                No recent activity
+              </p>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                You have not created any attendance sessions recently.
+              </p>
             </div>
           )}
         </Card>
