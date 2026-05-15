@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import LoadingComponent from "../../../../components/loading";
 import AttendanceStudentStats from "../../../../components/attendanceStudentStats";
 import TeacherAttendanceMap from "../../../../components/teacherAttendanceMap";
+import { Trash2 } from "lucide-react";
 
 export default function AttendanceDetailsPage() {
   const { id, attendanceId } = useParams();
@@ -98,6 +99,33 @@ export default function AttendanceDetailsPage() {
     window.history.replaceState(null, "", `#${tab}`);
   };
 
+  async function handleDeleteAttendance() {
+    try {
+      const request = await fetch(
+        `/api/teacher/classes/${id}/attendance/${attendanceId}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+        },
+      );
+
+      const response = await request.json();
+
+      if (!request.ok || response?.error) {
+        toast.error(response?.error || "Failed to delete attendance");
+        return;
+      }
+      toast.success("Attendance deleted successfully");
+      router.push("/dashboard/teachers/attendance");
+    } catch (err) {
+      console.log(err);
+      toast.error("Failed to delete attendance. Please try again.");
+    }
+  }
+
   let sessionTimingStatus = "";
 
   if (currentTime === 0) {
@@ -142,6 +170,14 @@ export default function AttendanceDetailsPage() {
                 setIsStartModalOpen={setIsStartModalOpen}
               />
             ) : null}
+            <button
+              type="button"
+              onClick={handleDeleteAttendance}
+              className="inline-flex items-center gap-2 rounded-lg bg-red-500/10 px-3 py-1.5 text-xs font-medium text-red-700 transition hover:bg-red-500/20 dark:bg-red-500/20 dark:text-red-300 dark:hover:bg-red-500/30"
+            >
+              <Trash2 className="size-3.5" />
+              Delete
+            </button>
             <p className="wrap-break-word text-xs font-medium text-slate-500 dark:text-slate-400 lg:text-right">
               {sessionTimingStatus}
             </p>
