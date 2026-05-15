@@ -77,6 +77,12 @@ export default function SettingsForm({ settings, classId }) {
         }),
         credentials: "include",
       });
+      const response = await request.json();
+      if (!request?.ok || response?.error) {
+        return toast.error(response?.error || "Failed to save settings.");
+      }
+      toast.success(response?.message || "Settings saved successfully.");
+      window.location.reload();
     } catch (err) {
       return toast.error("Failed to save settings. Please try again.");
     }
