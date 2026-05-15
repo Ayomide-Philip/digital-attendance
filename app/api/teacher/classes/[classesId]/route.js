@@ -114,7 +114,11 @@ export const PUT = auth(async function PUT(req, { params }) {
     );
   }
 
-  if (!emailSuffix.startsWith("@") || emailSuffix?.trim().length < 5) {
+  if (
+    !emailSuffix.startsWith("@") ||
+    emailSuffix?.trim().length < 5 ||
+    !emailSuffix.includes(".")
+  ) {
     return NextResponse.json(
       {
         error: "Email Suffix did not start with @ or is too short",
@@ -137,7 +141,7 @@ export const PUT = auth(async function PUT(req, { params }) {
   ) {
     return NextResponse.json(
       {
-        error: "Invalid department codes",
+        error: "Invalid department codes or each code is less than 3 letters",
       },
       {
         status: 400,
@@ -145,12 +149,63 @@ export const PUT = auth(async function PUT(req, { params }) {
     );
   }
 
-  return NextResponse.json(
-    {
-      message: "Update class endpoint - To be implemented",
-    },
-    {
-      status: 200,
-    },
-  );
+  try {
+    await connectDatabase();
+    const user = await User.findById(new mongoose.Types.ObjectId(userId));
+    if (!user) {
+      return NextResponse.json(
+        {
+          error: "Unauthorized Access",
+        },
+        {
+          status: 401,
+        },
+      );
+    }
+
+    if (user?.role !== "teacher") {
+      return NextResponse.json(
+        {
+          error: "User does not have priviledge to perform action",
+        },
+        {
+          status: 403,
+        },
+      );
+    }
+    const classExists = await Classes.findOne({
+      _id: new mongoose.Types.ObjectId(classesId),
+      teacher: new mongoose.Types.ObjectId(userId),
+    });
+
+    if (!classExists) {
+      return NextResponse.json(
+        {
+          error: "Class not found or you do not have access to it",
+        },
+        {
+          status: 404,
+        },
+      );
+    }
+
+    return NextResponse.json(
+      {
+        message: "Update class endpoint - To be implemented",
+      },
+      {
+        status: 200,
+      },
+    );
+  } catch (err) {
+    console.log(err);
+    return NextResponse.json(
+      {
+        error: "Unable to update class rules. Please try again.",
+      },
+      {
+        status: 500,
+      },
+    );
+  }
 });
