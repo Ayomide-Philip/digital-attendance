@@ -33,6 +33,7 @@ export default function OverviewTab({ overview, classId }) {
   const [stats, setStats] = useState(null);
   const [loadingStats, setLoadingStats] = useState(true);
   const [recentActivity, setRecentActivity] = useState([]);
+  const [upcomingSession, setUpcomingSession] = useState([]);
 
   useEffect(() => {
     if (!classId) return;
@@ -71,7 +72,7 @@ export default function OverviewTab({ overview, classId }) {
     async function fetchActivity() {
       try {
         const request = await fetch(
-          `/api/teacher/classes/${classId}/attendance`,
+          `/api/teacher/classes/${classId}/attendance?limit=4`,
           {
             method: "GET",
             headers: {
@@ -87,13 +88,52 @@ export default function OverviewTab({ overview, classId }) {
             time: formatRelativeTime(item.createdAt),
             icon: CheckCircle2,
           }));
-          setRecentActivity(activity.slice(0, 3));
+          setRecentActivity(activity || []);
         }
       } catch (err) {
         console.error("Failed to load recent activity");
       }
     }
     fetchActivity();
+  }, [classId]);
+
+  useEffect(() => {
+    async function fetchUpcomingSessions() {
+      try {
+        const request = await fetch(
+          `/api/teacher/classes/${classId}/attendance?query=upcoming&limit=5`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            credentials: "include",
+          },
+        );
+        const response = await request.json();
+        if (!request?.ok || response?.error) {
+          setUpcomingSession([]);
+          return toast.error(
+            response?.error ||
+              "Failed to load upcoming sessions. Please try again later.",
+          );
+        }
+        const sessions = response.attendance.map((item) => {
+          return {
+            title: item?.title,
+            date: formatTimeRange(item?.startTime, item?.endTime),
+            time: formatRelativeTime(item?.createdAt),
+          };
+        });
+        setUpcomingSession(sessions || []);
+      } catch (err) {
+        setUpcomingSession([]);
+        return toast.error(
+          "Failed to load upcoming sessions. Please try again later.",
+        );
+      }
+    }
+    fetchUpcomingSessions();
   }, [classId]);
 
   const quickStats = [
@@ -127,8 +167,8 @@ export default function OverviewTab({ overview, classId }) {
 
   const infoItems = [
     { label: "Class Code", value: overview?.code.toUpperCase() || "" },
-    { label: "Department", value: overview?.teacher?.department || "" },
     { label: "Lecturer", value: overview?.teacher?.name || "" },
+    { label: "Department", value: overview?.teacher?.department || "" },
     { label: "School", value: overview?.school || "" },
     { label: "Created", value: formatDate(overview?.createdAt) },
   ];
@@ -261,21 +301,21 @@ export default function OverviewTab({ overview, classId }) {
         </div>
 
         <div className="space-y-3">
-          {upcomingSessions.map((session, idx) => (
+          {upcomingSession.map((session, idx) => (
             <div
               key={idx}
               className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-200/70 p-4 dark:border-slate-800"
             >
               <div>
                 <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">
-                  {session?.topic}
+                  {session?.title}
                 </p>
                 <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-                  {session?.date}
+                  Created: {session?.time}
                 </p>
               </div>
               <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700 dark:bg-slate-800 dark:text-slate-300">
-                {session?.time}
+                {session?.date}
               </span>
             </div>
           ))}
@@ -308,4 +348,23 @@ function formatRelativeTime(dateString) {
   if (days === 1) return "yesterday";
   if (days < 7) return `${days}d ago`;
   return formatDate(dateString);
+}
+
+function formatTimeRange(startTime, endTime) {
+  const start = new Date(startTime);
+  const end = new Date(endTime);
+
+  const startFormatted = start.toLocaleTimeString(undefined, {
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+  });
+
+  const endFormatted = end.toLocaleTimeString(undefined, {
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+  });
+
+  return `${startFormatted} - ${endFormatted}`;
 }

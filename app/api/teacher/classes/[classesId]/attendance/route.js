@@ -133,12 +133,18 @@ export const POST = auth(async function POST(req, { params }) {
 
 export const GET = auth(async function GET(req, { params }) {
   if (!req?.auth || !req?.auth?.user) {
-    return NextResponse.json({ error: "Unauthorized Access" }, { status: 401 });
+    return NextResponse.json(
+      {
+        error: "Unauthorized Access",
+      },
+      { status: 401 },
+    );
   }
   const userId = req?.auth?.user?.id;
   const { classesId } = await params;
   const reqParams = req.nextUrl.searchParams;
   const query = reqParams.get("query") || "all";
+  const limit = parseInt(reqParams.get("limit")) || 20;
   if (!["upcoming", "all"].includes(query)) {
     return NextResponse.json(
       { error: "Invalid query parameter" },
@@ -182,8 +188,12 @@ export const GET = auth(async function GET(req, { params }) {
         startTime: { $gt: new Date() },
       })
         .sort({ createdAt: -1 })
+        .select(
+          "teacherId classesId title description startTime endTime createdAt students.studentId students.status students.timestamp",
+        )
         .populate("classesId", "name code students")
-        .populate("teacherId", "name email");
+        .populate("teacherId", "name email")
+        .limit(limit);
 
       return NextResponse.json(
         {
@@ -201,8 +211,12 @@ export const GET = auth(async function GET(req, { params }) {
       teacherId: new mongoose.Types.ObjectId(userId),
     })
       .sort({ createdAt: -1 })
+      .select(
+        "teacherId classesId title description startTime endTime createdAt students.studentId students.status students.timestamp",
+      )
       .populate("classesId", "name code students")
-      .populate("teacherId", "name email");
+      .populate("teacherId", "name email")
+      .limit(limit);
 
     return NextResponse.json(
       {
