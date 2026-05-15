@@ -3,7 +3,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import SettingsCard from "./settingsCard";
-export default function SettingsForm({ settings }) {
+export default function SettingsForm({ settings, classId }) {
   const [rules, setRules] = useState({
     emailSuffix: settings?.rules?.emailSuffix || "",
     departmentCodes: settings?.rules?.departmentCode || [],
@@ -29,7 +29,7 @@ export default function SettingsForm({ settings }) {
     setDepartmentInput("");
   }
 
-  function handleSave(event) {
+  async function handleSave(event) {
     event.preventDefault();
     toast.success("Settings saved locally.");
     if (!rules?.emailSuffix.trim() && rules?.departmentCodes?.length === 0) {
@@ -53,6 +53,32 @@ export default function SettingsForm({ settings }) {
       ) {
         return toast.error("Invalid Email Suffix");
       }
+    }
+    if (rules?.departmentCodes?.length > 0) {
+      const codeLessThanThreeChar = rules.departmentCodes.filter(
+        (c) => c?.trim()?.length < 3,
+      );
+      if (codeLessThanThreeChar.length > 0) {
+        return toast.error(
+          "Department codes must be at least 3 characters long.",
+        );
+      }
+    }
+
+    try {
+      const request = await fetch(`/api/teacher/classes/${classId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          emailSuffix: rules.emailSuffix,
+          departmentCodes: rules.departmentCodes,
+        }),
+        credentials: "include",
+      });
+    } catch (err) {
+      return toast.error("Failed to save settings. Please try again.");
     }
   }
   return (

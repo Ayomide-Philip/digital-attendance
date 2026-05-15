@@ -50,7 +50,7 @@ export default function SettingsTab({ settings = {}, classId }) {
   return (
     <div className="space-y-5">
       <div className="grid gap-5 xl:grid-cols-[1.2fr_.8fr]">
-        <SettingsForm settings={settings} />
+        <SettingsForm settings={settings} classId={classId} />
 
         <div className="space-y-5">
           <SettingsCard
