@@ -149,6 +149,22 @@ export const PUT = auth(async function PUT(req, { params }) {
     );
   }
 
+  const uniqueDepartmentCodes = [
+    ...new Set(departmentCodes.map((code) => code.trim().toLowerCase())),
+  ];
+
+  if (uniqueDepartmentCodes?.length < departmentCodes?.length) {
+    return NextResponse.json(
+      {
+        error:
+          "Duplicate departmental code found. Please ensure all departmental codes are unique.",
+      },
+      {
+        status: 400,
+      },
+    );
+  }
+
   try {
     await connectDatabase();
     const user = await User.findById(new mongoose.Types.ObjectId(userId));
@@ -176,7 +192,7 @@ export const PUT = auth(async function PUT(req, { params }) {
     const classExists = await Classes.findOne({
       _id: new mongoose.Types.ObjectId(classesId),
       teacher: new mongoose.Types.ObjectId(userId),
-    });
+    }).select("rules");
 
     if (!classExists) {
       return NextResponse.json(
@@ -189,9 +205,30 @@ export const PUT = auth(async function PUT(req, { params }) {
       );
     }
 
+    if (
+      classExists?.rules?.emailSuffix?.toLowerCase() ===
+        emailSuffix?.trim()?.toLowerCase() &&
+      checkDepartmentCodeMatch(
+        departmentCodes,
+        classExists?.rules?.departmentCode,
+      )
+    ) {
+      return NextResponse.json(
+        {
+          error:
+            " No changes detected in class rules. Please modify the rules before submitting.",
+        },
+        {
+          status: 400,
+        },
+      );
+    }
+
     return NextResponse.json(
       {
         message: "Update class endpoint - To be implemented",
+        rules: classExists,
+        uniqueDepartmentCodes,
       },
       {
         status: 200,
@@ -209,3 +246,10 @@ export const PUT = auth(async function PUT(req, { params }) {
     );
   }
 });
+
+function checkDepartmentCodeMatch(newDepartmentCode, departmentCodes) {
+  if (newDepartmentCode.length !== departmentCodes.length) return false;
+  const sortedA = [...newDepartmentCode].sort();
+  const sortedB = [...departmentCodes].sort();
+  return sortedA.every((val, index) => val === sortedB[index]);
+}

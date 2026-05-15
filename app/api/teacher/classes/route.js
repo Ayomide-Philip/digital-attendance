@@ -153,10 +153,7 @@ export const POST = auth(async function POST(req) {
   }
 
   if (emailSuffix?.trim()) {
-    if (
-      !emailSuffix.trim().startsWith("@") ||
-      !emailSuffix.trim().includes("@")
-    ) {
+    if (!emailSuffix.trim().startsWith("@")) {
       return NextResponse.json(
         {
           error: "Email suffix needs or starts with @ to validate students",
