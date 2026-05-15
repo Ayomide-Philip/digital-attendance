@@ -103,41 +103,35 @@ export const PUT = auth(async function PUT(req, { params }) {
     );
   }
 
-  if (!emailSuffix || !emailSuffix.trim()) {
-    return NextResponse.json(
-      {
-        error: "Invalid email suffix",
-      },
-      {
-        status: 400,
-      },
-    );
+  if (!emailSuffix?.trim && departmentCodes?.length === 0) {
   }
 
-  if (
-    !emailSuffix.startsWith("@") ||
-    emailSuffix?.trim().length < 5 ||
-    !emailSuffix.includes(".")
-  ) {
-    return NextResponse.json(
-      {
-        error: "Email Suffix did not start with @ or is too short",
-      },
-      {
-        status: 400,
-      },
-    );
-  }
+  if (emailSuffix && typeof emailSuffix === "string" && emailSuffix.trim()) {
+    if (
+      !emailSuffix.startsWith("@") ||
+      emailSuffix?.trim().length < 5 ||
+      !emailSuffix.includes(".")
+    ) {
+      return NextResponse.json(
+        {
+          error: "Email Suffix did not start with @ or is too short",
+        },
+        {
+          status: 400,
+        },
+      );
+    }
 
-  if (!/@([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}$/.test(emailSuffix.trim())) {
-    return NextResponse.json(
-      {
-        error: "Invalid Email Suffix",
-      },
-      {
-        status: 400,
-      },
-    );
+    if (!/@([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}$/.test(emailSuffix.trim())) {
+      return NextResponse.json(
+        {
+          error: "Invalid Email Suffix",
+        },
+        {
+          status: 400,
+        },
+      );
+    }
   }
 
   if (
@@ -234,7 +228,6 @@ export const PUT = auth(async function PUT(req, { params }) {
         },
       );
     }
-
     await Classes.findOneAndUpdate(
       {
         _id: new mongoose.Types.ObjectId(classesId),
@@ -256,8 +249,6 @@ export const PUT = auth(async function PUT(req, { params }) {
     return NextResponse.json(
       {
         message: "Class rules updated successfully",
-        rules: classExists,
-        uniqueDepartmentCodes,
       },
       {
         status: 200,
