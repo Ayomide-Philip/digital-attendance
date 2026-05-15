@@ -82,3 +82,75 @@ export const GET = auth(async function GET(req, { params }) {
     );
   }
 });
+
+export const PUT = auth(async function PUT(req, { params }) {
+  const { classesId } = await params;
+  const { userId, emailSuffix, departmentCodes } = await req.json();
+
+  if (
+    !classesId.trim() ||
+    !userId.trim() ||
+    !new mongoose.Types.ObjectId(classesId) ||
+    !new mongoose.Types.ObjectId(userId)
+  ) {
+    return NextResponse.json(
+      {
+        error: "Invalid parameters",
+      },
+      {
+        status: 400,
+      },
+    );
+  }
+
+  if (!emailSuffix || !emailSuffix.trim()) {
+    return NextResponse.json(
+      {
+        error: "Invalid email suffix",
+      },
+      {
+        status: 400,
+      },
+    );
+  }
+
+  if (!emailSuffix.startsWith("@") || emailSuffix?.trim().length < 5) {
+    return NextResponse.json(
+      {
+        error: "Email Suffix did not start with @ or is too short",
+      },
+      {
+        status: 400,
+      },
+    );
+  }
+
+  if (
+    !Array.isArray(departmentCodes) ||
+    departmentCodes.some(
+      (code) =>
+        typeof code !== "string" ||
+        !code.trim() ||
+        code.includes(" ") ||
+        code?.trim().length <= 2,
+    )
+  ) {
+    return NextResponse.json(
+      {
+        error: "Invalid department codes",
+      },
+      {
+        status: 400,
+      },
+    );
+  }
+
+  return NextResponse.json(
+    {
+      message: "Update class endpoint - To be implemented",
+    },
+    {
+      status: 200,
+    },
+  );
+});
