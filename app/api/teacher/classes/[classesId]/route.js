@@ -84,6 +84,16 @@ export const GET = auth(async function GET(req, { params }) {
 });
 
 export const PUT = auth(async function PUT(req, { params }) {
+  if (!req?.auth || !req?.auth?.user) {
+    return NextResponse.json(
+      {
+        error: "Unauthorized Access",
+      },
+      {
+        status: 401,
+      },
+    );
+  }
   const { classesId } = await params;
   const { userId, emailSuffix, departmentCodes } = await req.json();
 
@@ -104,6 +114,15 @@ export const PUT = auth(async function PUT(req, { params }) {
   }
 
   if (!emailSuffix?.trim && departmentCodes?.length === 0) {
+    return NextResponse.json(
+      {
+        error:
+          "No changes detected in class rules. Please modify the rules before submitting.",
+      },
+      {
+        status: 400,
+      },
+    );
   }
 
   if (emailSuffix && typeof emailSuffix === "string" && emailSuffix.trim()) {
