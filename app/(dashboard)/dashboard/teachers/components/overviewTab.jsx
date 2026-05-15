@@ -239,7 +239,7 @@ export default function OverviewTab({ overview, classId }) {
                 <p className="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
                   {item.label}
                 </p>
-                <p className="mt-2 text-sm font-semibold text-slate-900 dark:text-slate-100">
+                <p className="mt-2 text-sm font-semibold text-slate-900 dark:text-slate-100 truncate">
                   {item.value}
                 </p>
               </div>
@@ -300,26 +300,38 @@ export default function OverviewTab({ overview, classId }) {
           </h3>
         </div>
 
-        <div className="space-y-3">
-          {upcomingSession.map((session, idx) => (
-            <div
-              key={idx}
-              className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-200/70 p-4 dark:border-slate-800"
-            >
-              <div>
-                <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">
-                  {session?.title}
-                </p>
-                <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-                  Created: {session?.time}
-                </p>
+        {upcomingSession?.length > 0 ? (
+          <div className="space-y-3">
+            {upcomingSession.map((session, idx) => (
+              <div
+                key={idx}
+                className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-200/70 p-4 dark:border-slate-800"
+              >
+                <div>
+                  <p className="text-sm font-semibold capitalize text-slate-900 dark:text-slate-100">
+                    {session?.title}
+                  </p>
+                  <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                    Created: {session?.time}
+                  </p>
+                </div>
+                <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700 dark:bg-slate-800 dark:text-slate-300">
+                  {session?.date}
+                </span>
               </div>
-              <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700 dark:bg-slate-800 dark:text-slate-300">
-                {session?.date}
-              </span>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        ) : (
+          <div className="flex flex-col items-center justify-center gap-3 py-8 rounded-xl border border-dashed border-slate-200/60 text-center dark:border-slate-800">
+            <BookOpen className="size-6 text-slate-400 dark:text-slate-500" />
+            <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">
+              No upcoming sessions
+            </p>
+            <p className="text-xs text-slate-500 dark:text-slate-400">
+              There are no scheduled sessions for this class at the moment.
+            </p>
+          </div>
+        )}
       </Card>
     </div>
   );
@@ -367,4 +379,8 @@ function formatTimeRange(startTime, endTime) {
   });
 
   return `${startFormatted} - ${endFormatted}`;
+}
+
+function CapitalizeAllFirstLetter(string) {
+  
 }
