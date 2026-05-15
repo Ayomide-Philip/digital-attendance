@@ -167,9 +167,18 @@ export default function OverviewTab({ overview, classId }) {
 
   const infoItems = [
     { label: "Class Code", value: overview?.code.toUpperCase() || "" },
-    { label: "Lecturer", value: overview?.teacher?.name || "" },
-    { label: "Department", value: overview?.teacher?.department || "" },
-    { label: "School", value: overview?.school || "" },
+    {
+      label: "Lecturer",
+      value: CapitalizeAllFirstLetter(overview?.teacher?.name) || "",
+    },
+    {
+      label: "Department",
+      value: CapitalizeAllFirstLetter(overview?.teacher?.department) || "",
+    },
+    {
+      label: "School",
+      value: CapitalizeAllFirstLetter(overview?.school) || "",
+    },
     { label: "Created", value: formatDate(overview?.createdAt) },
   ];
   return (
@@ -382,5 +391,8 @@ function formatTimeRange(startTime, endTime) {
 }
 
 function CapitalizeAllFirstLetter(string) {
-  
+  return string
+    .split(" ")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
 }
