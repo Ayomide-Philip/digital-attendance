@@ -28,6 +28,21 @@ export const GET = auth(async function GET(req, { params }) {
       },
     );
   }
+
+  const reqUrlParams = req.nextUrl.searchParams;
+  const query = reqUrlParams.get("query") || "all";
+  const limit = parseInt(reqUrlParams.get("limit")) || 0;
+
+  if (!["upcoming", "all"].includes(query)) {
+    return NextResponse.json(
+      {
+        error: "Invalid query parameter",
+      },
+      {
+        status: 400,
+      },
+    );
+  }
   try {
     await connectDatabase();
     const user = await User.findById(new mongoose.Types.ObjectId(userId));
@@ -58,7 +73,8 @@ export const GET = auth(async function GET(req, { params }) {
       .select(
         "startTime endTime classesId title students.status students.studentId",
       )
-      .populate("classesId", "name students");
+      .populate("classesId", "name students")
+      .limit(limit);
     return NextResponse.json({
       message: "GET all attendance sessions for teacher",
       attendance: attendanceData,
