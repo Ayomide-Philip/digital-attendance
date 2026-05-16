@@ -66,6 +66,22 @@ export const GET = auth(async function GET(req, { params }) {
         },
       );
     }
+    if (query === "upcoming") {
+      const now = new Date();
+      const attendanceData = await Attandance.find({
+        teacherId: new mongoose.Types.ObjectId(userId),
+        startTime: { $gte: now },
+      })
+        .sort({ startTime: 1 })
+        .select("startTime endTime classesId title")
+        .select("-students")
+        .populate("classesId", "name students")
+        .limit(limit);
+      return NextResponse.json({
+        message: "GET upcoming attendance sessions for teacher",
+        attendance: attendanceData,
+      });
+    }
     const attendanceData = await Attandance.find({
       teacherId: new mongoose.Types.ObjectId(userId),
     })
@@ -80,6 +96,7 @@ export const GET = auth(async function GET(req, { params }) {
       attendance: attendanceData,
     });
   } catch (err) {
+    console.error("Error fetching attendance data:", err);
     return NextResponse.json(
       {
         error: "Failed to fetch attendance data",
