@@ -17,7 +17,7 @@ export default async function ClassesPage() {
     },
   });
   const response = await request.json();
-  const classes = Array.isArray(response?.classes) ? response.classes : [];
+  const classes = Array?.isArray(response?.classes) ? response?.classes : [];
   return (
     <div className="space-y-5">
       <div className="rounded-2xl border border-slate-200/70 bg-white/80 p-5 shadow-sm dark:border-slate-800 dark:bg-slate-950/70">
@@ -42,7 +42,7 @@ export default async function ClassesPage() {
         </div>
       </div>
 
-      {classes.length === 0 ? (
+      {classes?.length === 0 ? (
         <section className="rounded-2xl border border-dashed border-slate-300 bg-white/70 p-8 text-center shadow-sm dark:border-slate-700 dark:bg-slate-950/50">
           <div className="mx-auto flex size-12 items-center justify-center rounded-xl bg-sky-100 text-sky-700 dark:bg-sky-950/50 dark:text-sky-300">
             <FolderOpen className="size-5" />

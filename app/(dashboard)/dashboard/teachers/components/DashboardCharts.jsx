@@ -89,7 +89,7 @@ export default function DashboardCharts({ trendData = [], classData = [] }) {
                   interval={isMobile ? 1 : 0}
                 />
                 <YAxis
-                  domain={["auto", "auto"]}
+                  domain={[0, "auto"]}
                   tick={axisStyle}
                   tickLine={false}
                   axisLine={false}
@@ -138,7 +138,7 @@ export default function DashboardCharts({ trendData = [], classData = [] }) {
                   interval={isMobile ? 1 : 0}
                 />
                 <YAxis
-                  domain={["auto", "auto"]}
+                  domain={[0, "auto"]}
                   tick={axisStyle}
                   tickLine={false}
                   axisLine={false}
