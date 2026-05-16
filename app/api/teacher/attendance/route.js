@@ -76,7 +76,9 @@ export const GET = auth(async function GET(req, { params }) {
         .select("startTime endTime classesId title")
         .select("-students")
         .populate("classesId", "name students")
-        .limit(limit);
+        .limit(limit)
+        .lean();
+
       return NextResponse.json({
         message: "GET upcoming attendance sessions for teacher",
         attendance: attendanceData,
@@ -90,7 +92,9 @@ export const GET = auth(async function GET(req, { params }) {
         "startTime endTime classesId title students.status students.studentId",
       )
       .populate("classesId", "name students")
-      .limit(limit);
+      .limit(limit)
+      .lean();
+
     return NextResponse.json({
       message: "GET all attendance sessions for teacher",
       attendance: attendanceData,
