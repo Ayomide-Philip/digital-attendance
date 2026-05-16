@@ -46,7 +46,6 @@ export default function AttendanceTab({ classId }) {
   }
   return (
     <div className="space-y-4">
-      <Button className="h-10 rounded-xl px-4">Take Attendance</Button>
       <AttendanceTable
         title="Attendance History"
         description="Recent attendance sessions for this class."

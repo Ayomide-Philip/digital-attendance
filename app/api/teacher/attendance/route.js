@@ -54,7 +54,10 @@ export const GET = auth(async function GET(req, { params }) {
     const attendanceData = await Attandance.find({
       teacherId: new mongoose.Types.ObjectId(userId),
     })
-      .sort({ createdAt: -1 })
+      .sort({ startTime: 1 })
+      .select(
+        "startTime endTime classesId title students.status students.studentId",
+      )
       .populate("classesId", "name students");
     return NextResponse.json({
       message: "GET all attendance sessions for teacher",

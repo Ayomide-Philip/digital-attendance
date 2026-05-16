@@ -63,6 +63,7 @@ export default function AttendanceTable({
             <TableHead>Class / Session</TableHead>
             <TableHead>Present</TableHead>
             <TableHead>Absent</TableHead>
+            <TableHead>Flagged</TableHead>
             <TableHead className="text-right">Status</TableHead>
           </TableRow>
         </TableHeader>
@@ -78,9 +79,8 @@ export default function AttendanceTable({
             </TableRow>
           ) : (
             rows.map((row, index) => {
-              const classId = row.classesId?._id || row.classId;
-              const className = row.classesId?.name || row.className || "-";
-              const date = formatSessionDate(row.startTime);
+              const className = row.classesId?.name || "-";
+              const date = formatSessionDate(row?.startTime);
               const status =
                 new Date() > new Date(row?.endTime)
                   ? "Completed"
@@ -92,11 +92,17 @@ export default function AttendanceTable({
                     (s) => String(s?.status || "").toLowerCase() === "present",
                   ).length
                 : 0;
+              const flaggedCount = Array.isArray(row.students)
+                ? row.students.filter(
+                    (s) => String(s?.status || "").toLowerCase() === "flagged",
+                  ).length
+                : 0;
               let absentStudent = Array.isArray(row.students)
                 ? row.students.filter(
                     (s) => String(s?.status || "").toLowerCase() === "absent",
                   )
                 : [];
+
               if (new Date() > new Date(row?.endTime)) {
                 absentStudent = absentStudent.concat(
                   row.classesId?.students?.filter((s) => {
@@ -108,7 +114,7 @@ export default function AttendanceTable({
 
               return (
                 <TableRow
-                  key={`${classId || "global"}-${row._id || row.id}-${index}`}
+                  key={index}
                   className={getRowHref ? "cursor-pointer" : undefined}
                   onClick={
                     getRowHref
@@ -126,6 +132,7 @@ export default function AttendanceTable({
                   <TableCell>{row.title}</TableCell>
                   <TableCell>{presentCount}</TableCell>
                   <TableCell>{absentCount}</TableCell>
+                  <TableCell>{flaggedCount}</TableCell>
                   <TableCell className="text-right">
                     <Badge variant={getStatusVariant(status)}>{status}</Badge>
                   </TableCell>
