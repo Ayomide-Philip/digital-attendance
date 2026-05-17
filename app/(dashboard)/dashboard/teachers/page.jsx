@@ -14,7 +14,6 @@ import { useRouter } from "next/navigation";
 
 export default function TeachersDashboardPage() {
   const [teacherStats, setTeacherStats] = useState(null);
-  const [statsLoading, setStatsLoading] = useState(true);
   const [loading, setLoading] = useState(true);
   const [trendData, setTrendData] = useState([]);
   const [classData, setClassData] = useState([]);
@@ -29,62 +28,26 @@ export default function TeachersDashboardPage() {
     async function getTeacherStatsAndUpcomingAttendance() {
       setLoading(true);
       try {
-        const [teacherStatsRequest, upcomingAttendanceRequest] =
-          await Promise.all([
-            fetch(`/api/teacher/stats`, {
-              method: "GET",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              credentials: "include",
-            }),
-            fetch(`/api/teacher/attendance?query=upcoming&limit=5`, {
-              method: "GET",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              credentials: "include",
-            }),
-          ]);
-
-        const teacherStatsResponse = await teacherStatsRequest.json();
-        const upcomingAttendanceResponse =
-          await upcomingAttendanceRequest.json();
-        if (!teacherStatsRequest?.ok || teacherStatsResponse?.error) {
-          toast.error(
-            teacherStatsResponse?.error || "Unable to fetch teacher stats",
-          );
-          return router.push("/dashboard");
-        }
-        if (
-          !upcomingAttendanceRequest?.ok ||
-          upcomingAttendanceResponse?.error
-        ) {
-          toast.error(
-            upcomingAttendanceResponse?.error ||
-              "Unable to fetch your upcoming attendance",
-          );
-          return router.push("/dashboard");
-        }
-        setTeacherStats(teacherStatsResponse?.stats || null);
-        setUpcomingAttendance(upcomingAttendanceResponse?.attendance || []);
-        setLoading(false);
-      } catch (err) {
-        toast.error(
-          "Unable to fetch teacher stats and upcoming attendance. Please try again later.",
-        );
-        return router.push("/dashboard");
-      } finally {
-        setLoading(false);
-      }
-    }
-    getTeacherStatsAndUpcomingAttendance();
-  }, [router]);
-
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const [classDataRequest, trendDataRequest] = await Promise.all([
+        const [
+          teacherStatsRequest,
+          upcomingAttendanceRequest,
+          classDataRequest,
+          trendDataRequest,
+        ] = await Promise.all([
+          fetch(`/api/teacher/stats`, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            credentials: "include",
+          }),
+          fetch(`/api/teacher/attendance?query=upcoming&limit=5`, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            credentials: "include",
+          }),
           fetch(`/api/teacher/attendance/stats`, {
             method: "GET",
             headers: {
@@ -101,6 +64,10 @@ export default function TeachersDashboardPage() {
             credentials: "include",
           }),
         ]);
+
+        const teacherStatsResponse = await teacherStatsRequest.json();
+        const upcomingAttendanceResponse =
+          await upcomingAttendanceRequest.json();
         const trendDataResponse = await trendDataRequest.json();
         const classDataResponse = await classDataRequest.json();
 
@@ -123,18 +90,43 @@ export default function TeachersDashboardPage() {
             };
           });
         }
+
+        if (!teacherStatsRequest?.ok || teacherStatsResponse?.error) {
+          toast.error(
+            teacherStatsResponse?.error || "Unable to fetch teacher stats",
+          );
+          return router.push("/dashboard");
+        }
+        if (
+          !upcomingAttendanceRequest?.ok ||
+          upcomingAttendanceResponse?.error
+        ) {
+          toast.error(
+            upcomingAttendanceResponse?.error ||
+              "Unable to fetch your upcoming attendance",
+          );
+          return router.push("/dashboard");
+        }
+        setTeacherStats(teacherStatsResponse?.stats || null);
+        setUpcomingAttendance(upcomingAttendanceResponse?.attendance || []);
         setTrendData(trendDataResponse?.stats?.attendance || []);
         setClassData(classDataResponse?.stats?.classes || []);
-        return;
-      } catch (error) {
-        return setFetchDataError({
+        setLoading(false);
+      } catch (err) {
+        toast.error(
+          "Unable to fetch teacher stats and upcoming attendance. Please try again later.",
+        );
+        setFetchDataError({
           trendData: "Unable to Fetch Attendance Data details",
           classData: "Unable to fetch data of all teacher classes",
         });
+        return router.push("/dashboard");
+      } finally {
+        setLoading(false);
       }
     }
-    fetchData();
-  }, []);
+    getTeacherStatsAndUpcomingAttendance();
+  }, [router]);
 
   const summaryCards = [
     {
