@@ -196,6 +196,7 @@ export default function TeachersDashboardPage() {
         trendData={trendData}
         classData={classData}
         fetchDataError={fetchDataError}
+        loading={loading}
       />
 
       <Card className="rounded-2xl p-5">

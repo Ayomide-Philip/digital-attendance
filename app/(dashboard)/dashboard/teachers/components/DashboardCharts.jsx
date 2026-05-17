@@ -37,7 +37,12 @@ const tooltipStyle = {
   itemStyle: { color: "#e2e8f0" },
 };
 
-export default function DashboardCharts({ trendData = [], classData = [] }) {
+export default function DashboardCharts({
+  trendData = [],
+  classData = [],
+  loading,
+  fetchDataError,
+}) {
   const [isChartReady, setIsChartReady] = useState(false);
   const width = useWindowWidth();
   const isMobile = width < 640;
