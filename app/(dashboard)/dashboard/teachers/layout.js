@@ -6,5 +6,5 @@ export default async function Layout({ children }) {
   if (!session || !session.user) return redirect("/login");
   if (session?.user?.role === "student") return redirect("/dashboard/students");
   if (session?.user?.role !== "teacher") return redirect("/dashboard");
-  return <DashboardShell>{children}</DashboardShell>;
+  return <DashboardShell session={session?.user}>{children}</DashboardShell>;
 }

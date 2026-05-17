@@ -42,7 +42,7 @@ function subscribeToSidebarPreference(callback) {
   };
 }
 
-export default function DashboardShell({ children }) {
+export default function DashboardShell({ children, session }) {
   const sidebarCollapsed = useSyncExternalStore(
     subscribeToSidebarPreference,
     () =>
@@ -111,6 +111,7 @@ export default function DashboardShell({ children }) {
             onMenuClick={() => setMobileOpen(true)}
             onToggleSidebar={handleToggleSidebar}
             sidebarCollapsed={sidebarCollapsed}
+            session={session}
           />
           <div className="pb-6">{children}</div>
         </main>
