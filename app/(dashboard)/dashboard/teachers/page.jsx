@@ -69,52 +69,56 @@ export default function TeachersDashboardPage() {
         const trendDataResponse = await trendDataRequest.json();
         const classDataResponse = await classDataRequest.json();
 
-        if (!trendDataRequest?.ok || trendDataResponse?.error) {
-          setFetchDataError((prev) => {
-            return {
-              ...prev,
-              trendData:
-                trendDataResponse?.error || "Unable to fetch attendance data",
-            };
-          });
-        }
-
-        if (!classDataRequest?.ok || classDataResponse?.error) {
-          setFetchDataError((prev) => {
-            return {
-              ...prev,
-              trendData:
-                classDataResponse?.error || "Unable to fetch attendance data",
-            };
-          });
-        }
-
         if (!teacherStatsRequest?.ok || teacherStatsResponse?.error) {
           toast.error(
             teacherStatsResponse?.error || "Unable to fetch teacher stats",
           );
+          setLoading(false);
+          return router.push("/dashboard");
         }
+
         if (!todayAttendanceRequest?.ok || todayAttendanceResponse?.error) {
           toast.error(
             todayAttendanceResponse?.error ||
               "Unable to fetch your today's attendance",
           );
+          setLoading(false);
+          return router.push("/dashboard");
         }
+
         setTeacherStats(teacherStatsResponse?.stats || null);
         setTodayAttendance(todayAttendanceResponse?.attendance || []);
-        setTrendData(trendDataResponse?.stats?.attendance || []);
-        setClassData(classDataResponse?.stats?.classes || []);
+
+        if (!trendDataRequest?.ok || trendDataResponse?.error) {
+          setFetchDataError((prev) => ({
+            ...prev,
+            trendData:
+              trendDataResponse?.error ||
+              "Unable to fetch attendance trend data",
+          }));
+        } else {
+          setTrendData(trendDataResponse?.stats?.attendance || []);
+        }
+
+        if (!classDataRequest?.ok || classDataResponse?.error) {
+          setFetchDataError((prev) => ({
+            ...prev,
+            classData:
+              classDataResponse?.error ||
+              "Unable to fetch class attendance data",
+          }));
+        } else {
+          setClassData(classDataResponse?.stats?.classes || []);
+        }
+
         setLoading(false);
       } catch (err) {
-        toast.error(
-          "Unable to fetch teacher stats and today's attendance. Please try again later.",
-        );
+        console.log("Error fetching dashboard data:", err);
+        toast.error("Unable to fetch dashboard data. Please try again later.");
         setFetchDataError({
-          trendData: "Unable to Fetch Attendance Data details",
-          classData: "Unable to fetch data of all teacher classes",
+          trendData: "Network error - Unable to fetch attendance data",
+          classData: "Network error - Unable to fetch class data",
         });
-        return;
-      } finally {
         setLoading(false);
       }
     }
