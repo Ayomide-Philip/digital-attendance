@@ -68,9 +68,19 @@ export const GET = auth(async function GET(req, { params }) {
     }
     if (query === "today") {
       const now = new Date();
+      const startOfDay = new Date(
+        now.getFullYear(),
+        now.getMonth(),
+        now.getDate(),
+      );
+      const endOfDay = new Date(
+        now.getFullYear(),
+        now.getMonth(),
+        now.getDate() + 1,
+      );
       const attendanceData = await Attandance.find({
         teacherId: new mongoose.Types.ObjectId(userId),
-        startTime: { $eq: now },
+        startTime: { $gte: startOfDay, $lt: endOfDay },
       })
         .sort({ startTime: 1 })
         .select("startTime endTime classesId title")
@@ -79,7 +89,7 @@ export const GET = auth(async function GET(req, { params }) {
         .limit(limit)
         .lean();
       return NextResponse.json({
-        message: "GET upcoming attendance sessions for teacher",
+        message: "GET today attendance sessions for teacher",
         attendance: attendanceData,
       });
     }

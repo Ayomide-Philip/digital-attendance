@@ -17,7 +17,7 @@ export default function TeachersDashboardPage() {
   const [loading, setLoading] = useState(true);
   const [trendData, setTrendData] = useState([]);
   const [classData, setClassData] = useState([]);
-  const [upcomingAttendance, setUpcomingAttendance] = useState([]);
+  const [todayAttendance, setTodayAttendance] = useState([]);
   const [fetchDataError, setFetchDataError] = useState({
     trendData: "",
     classData: "",
@@ -25,12 +25,12 @@ export default function TeachersDashboardPage() {
   const router = useRouter();
 
   useEffect(() => {
-    async function getTeacherStatsAndUpcomingAttendance() {
+    async function getTeacherStatsAndTodayAttendance() {
       setLoading(true);
       try {
         const [
           teacherStatsRequest,
-          upcomingAttendanceRequest,
+          todayAttendanceRequest,
           classDataRequest,
           trendDataRequest,
         ] = await Promise.all([
@@ -41,7 +41,7 @@ export default function TeachersDashboardPage() {
             },
             credentials: "include",
           }),
-          fetch(`/api/teacher/attendance?query=upcoming&limit=5`, {
+          fetch(`/api/teacher/attendance?query=today&limit=5`, {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
@@ -66,8 +66,7 @@ export default function TeachersDashboardPage() {
         ]);
 
         const teacherStatsResponse = await teacherStatsRequest.json();
-        const upcomingAttendanceResponse =
-          await upcomingAttendanceRequest.json();
+        const todayAttendanceResponse = await todayAttendanceRequest.json();
         const trendDataResponse = await trendDataRequest.json();
         const classDataResponse = await classDataRequest.json();
 
@@ -97,24 +96,21 @@ export default function TeachersDashboardPage() {
           );
           return router.push("/dashboard");
         }
-        if (
-          !upcomingAttendanceRequest?.ok ||
-          upcomingAttendanceResponse?.error
-        ) {
+        if (!todayAttendanceRequest?.ok || todayAttendanceResponse?.error) {
           toast.error(
-            upcomingAttendanceResponse?.error ||
-              "Unable to fetch your upcoming attendance",
+            todayAttendanceResponse?.error ||
+              "Unable to fetch your today's attendance",
           );
           return router.push("/dashboard");
         }
         setTeacherStats(teacherStatsResponse?.stats || null);
-        setUpcomingAttendance(upcomingAttendanceResponse?.attendance || []);
+        setTodayAttendance(todayAttendanceResponse?.attendance || []);
         setTrendData(trendDataResponse?.stats?.attendance || []);
         setClassData(classDataResponse?.stats?.classes || []);
         setLoading(false);
       } catch (err) {
         toast.error(
-          "Unable to fetch teacher stats and upcoming attendance. Please try again later.",
+          "Unable to fetch teacher stats and today's attendance. Please try again later.",
         );
         setFetchDataError({
           trendData: "Unable to Fetch Attendance Data details",
@@ -125,7 +121,7 @@ export default function TeachersDashboardPage() {
         setLoading(false);
       }
     }
-    getTeacherStatsAndUpcomingAttendance();
+    getTeacherStatsAndTodayAttendance();
   }, [router]);
 
   const summaryCards = [
