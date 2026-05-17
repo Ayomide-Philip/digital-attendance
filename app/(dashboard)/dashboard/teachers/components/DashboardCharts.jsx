@@ -43,14 +43,8 @@ export default function DashboardCharts({
   loading,
   fetchDataError,
 }) {
-  const [isChartReady, setIsChartReady] = useState(false);
   const width = useWindowWidth();
   const isMobile = width < 640;
-
-  useEffect(() => {
-    const frameId = window.requestAnimationFrame(() => setIsChartReady(true));
-    return () => window.cancelAnimationFrame(frameId);
-  }, []);
 
   const axisStyle = {
     fontSize: isMobile ? 10 : 12,
@@ -62,7 +56,18 @@ export default function DashboardCharts({
     : { top: 10, right: 16, left: 8, bottom: 0 };
 
   const skeleton = (
-    <div className="h-72 w-full rounded-xl bg-slate-100/70 dark:bg-slate-900/60" />
+    <div className="h-72 w-full rounded-xl bg-slate-100/70 dark:bg-slate-900/60 animate-pulse" />
+  );
+
+  const errorState = (message) => (
+    <div className="h-72 w-full rounded-xl border border-dashed border-slate-200/60 dark:border-slate-800 flex flex-col items-center justify-center gap-3 bg-slate-50/50 dark:bg-slate-900/30">
+      <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">
+        Unable to load data
+      </p>
+      <p className="text-xs text-slate-500 dark:text-slate-400 text-center px-4">
+        {message || "Failed to fetch chart data"}
+      </p>
+    </div>
   );
 
   return (
@@ -77,8 +82,10 @@ export default function DashboardCharts({
           </p>
         </div>
         <div className="h-72 w-full min-w-0">
-          {!isChartReady ? (
+          {loading ? (
             skeleton
+          ) : fetchDataError?.trendData ? (
+            errorState(fetchDataError.trendData)
           ) : (
             <ResponsiveContainer width="100%" height="100%" debounce={50}>
               <LineChart data={trendData} margin={chartMargin}>
@@ -126,8 +133,10 @@ export default function DashboardCharts({
           </p>
         </div>
         <div className="h-72 w-full min-w-0">
-          {!isChartReady ? (
+          {loading ? (
             skeleton
+          ) : fetchDataError?.classData ? (
+            errorState(fetchDataError.classData)
           ) : (
             <ResponsiveContainer width="100%" height="100%" debounce={50}>
               <BarChart data={classData} margin={chartMargin}>

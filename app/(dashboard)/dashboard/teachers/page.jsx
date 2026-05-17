@@ -93,14 +93,12 @@ export default function TeachersDashboardPage() {
           toast.error(
             teacherStatsResponse?.error || "Unable to fetch teacher stats",
           );
-          return router.push("/dashboard");
         }
         if (!todayAttendanceRequest?.ok || todayAttendanceResponse?.error) {
           toast.error(
             todayAttendanceResponse?.error ||
               "Unable to fetch your today's attendance",
           );
-          return router.push("/dashboard");
         }
         setTeacherStats(teacherStatsResponse?.stats || null);
         setTodayAttendance(todayAttendanceResponse?.attendance || []);
@@ -115,7 +113,7 @@ export default function TeachersDashboardPage() {
           trendData: "Unable to Fetch Attendance Data details",
           classData: "Unable to fetch data of all teacher classes",
         });
-        return router.push("/dashboard");
+        return;
       } finally {
         setLoading(false);
       }
