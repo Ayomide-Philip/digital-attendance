@@ -15,7 +15,9 @@ export default function OverviewTab({ overview, classId }) {
   const [stats, setStats] = useState(null);
   const [loadingStats, setLoadingStats] = useState(true);
   const [recentActivity, setRecentActivity] = useState([]);
+  const [loadingRecentActivity, setLoadingRecentActivity] = useState(true);
   const [upcomingSession, setUpcomingSession] = useState([]);
+  const [loadingUpcoming, setLoadingUpcoming] = useState(true);
 
   useEffect(() => {
     if (!classId) return;
@@ -52,6 +54,7 @@ export default function OverviewTab({ overview, classId }) {
   useEffect(() => {
     if (!classId) return;
     async function fetchActivity() {
+      setLoadingRecentActivity(true);
       try {
         const request = await fetch(
           `/api/teacher/classes/${classId}/attendance?limit=4`,
@@ -74,6 +77,8 @@ export default function OverviewTab({ overview, classId }) {
         }
       } catch (err) {
         console.error("Failed to load recent activity");
+      } finally {
+        setLoadingRecentActivity(false);
       }
     }
     fetchActivity();
@@ -81,6 +86,7 @@ export default function OverviewTab({ overview, classId }) {
 
   useEffect(() => {
     async function fetchUpcomingSessions() {
+      setLoadingUpcoming(true);
       try {
         const request = await fetch(
           `/api/teacher/classes/${classId}/attendance?query=upcoming&limit=5`,
@@ -95,6 +101,7 @@ export default function OverviewTab({ overview, classId }) {
         const response = await request.json();
         if (!request?.ok || response?.error) {
           setUpcomingSession([]);
+          setLoadingUpcoming(false);
           return toast.error(
             response?.error ||
               "Failed to load upcoming sessions. Please try again later.",
@@ -113,9 +120,13 @@ export default function OverviewTab({ overview, classId }) {
         return toast.error(
           "Failed to load upcoming sessions. Please try again later.",
         );
+      } finally {
+        setLoadingUpcoming(false);
       }
     }
-    fetchUpcomingSessions();
+    if (classId) {
+      fetchUpcomingSessions();
+    }
   }, [classId]);
 
   const quickStats = [
@@ -239,7 +250,7 @@ export default function OverviewTab({ overview, classId }) {
         </Card>
 
         <Card
-          className={`rounded-2xl border border-slate-200/70 bg-white/85 p-6 shadow-sm dark:border-slate-800 dark:bg-slate-950/70 ${recentActivity?.length === 0 ? "flex flex-col" : ""}`}
+          className={`rounded-2xl border border-slate-200/70 bg-white/85 p-6 shadow-sm dark:border-slate-800 dark:bg-slate-950/70 ${recentActivity?.length === 0 && !loadingRecentActivity ? "flex flex-col" : ""}`}
         >
           <div className="mb-4 flex items-center gap-2">
             <Clock3 className="size-4 text-sky-600 dark:text-sky-300" />
@@ -248,7 +259,16 @@ export default function OverviewTab({ overview, classId }) {
             </h3>
           </div>
 
-          {recentActivity?.length > 0 ? (
+          {loadingRecentActivity ? (
+            <div className="space-y-3">
+              {[...Array(3)].map((_, idx) => (
+                <div
+                  key={idx}
+                  className="h-16 animate-pulse rounded-xl border border-slate-200/70 bg-slate-100 dark:border-slate-800 dark:bg-slate-800"
+                />
+              ))}
+            </div>
+          ) : recentActivity?.length > 0 ? (
             <div className="space-y-3">
               {recentActivity.map((item, idx) => (
                 <div
@@ -291,7 +311,16 @@ export default function OverviewTab({ overview, classId }) {
           </h3>
         </div>
 
-        {upcomingSession?.length > 0 ? (
+        {loadingUpcoming ? (
+          <div className="space-y-3">
+            {[...Array(3)].map((_, idx) => (
+              <div
+                key={idx}
+                className="h-20 animate-pulse rounded-xl border border-slate-200/70 bg-slate-100 dark:border-slate-800 dark:bg-slate-800"
+              />
+            ))}
+          </div>
+        ) : upcomingSession?.length > 0 ? (
           <div className="space-y-3">
             {upcomingSession.map((session, idx) => (
               <div
