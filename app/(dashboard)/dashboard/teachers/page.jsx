@@ -3,7 +3,6 @@
 import { BookCopy, CalendarCheck2, Plus, Users } from "lucide-react";
 import Link from "next/link";
 import DashboardCharts from "@/app/(dashboard)/dashboard/teachers/components/DashboardCharts";
-import { teacherClasses } from "@/app/(dashboard)/dashboard/teachers/components/mock-data";
 import StatsCard from "@/app/(dashboard)/dashboard/teachers/components/StatsCard";
 import { buttonVariants } from "@/components/ui/button";
 import Card from "@/components/ui/card";
@@ -210,29 +209,53 @@ export default function TeachersDashboardPage() {
         </div>
 
         <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
-          {teacherClasses.map((item) => (
-            <div
-              key={item.id}
-              className="rounded-xl border border-slate-200/70 bg-slate-50/70 p-4 transition hover:-translate-y-0.5 hover:bg-slate-100/70 dark:border-slate-800 dark:bg-slate-900/50 dark:hover:bg-slate-900"
-            >
-              <div className="flex items-start justify-between gap-3">
-                <div>
-                  <p className="font-medium text-slate-900 dark:text-slate-100">
-                    {item.name}
-                  </p>
-                  <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-                    {item.todaysSession}
-                  </p>
+          {loading ? (
+            [...Array(3)].map((_, idx) => (
+              <div
+                key={idx}
+                className="h-32 animate-pulse rounded-xl border border-slate-200/70 bg-slate-100 dark:border-slate-800 dark:bg-slate-800"
+              />
+            ))
+          ) : todayAttendance?.length > 0 ? (
+            todayAttendance.map((item) => (
+              <div
+                key={item._id}
+                className="rounded-xl border border-slate-200/70 bg-slate-50/70 p-4 transition hover:-translate-y-0.5 hover:bg-slate-100/70 dark:border-slate-800 dark:bg-slate-900/50 dark:hover:bg-slate-900"
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <p className="font-medium text-slate-900 dark:text-slate-100">
+                      {item.classesId?.name}
+                    </p>
+                    <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+                      {item.title}
+                    </p>
+                  </div>
+                  <span className="rounded-full bg-emerald-500/15 px-2.5 py-1 text-xs font-semibold text-emerald-700 dark:text-emerald-300">
+                    {item.classesId?.students?.length || 0} Students
+                  </span>
                 </div>
-                <span className="rounded-full bg-emerald-500/15 px-2.5 py-1 text-xs font-semibold text-emerald-700 dark:text-emerald-300">
-                  {item.attendanceRate}%
-                </span>
+                <p className="mt-3 text-xs text-slate-500 dark:text-slate-400">
+                  Time:{" "}
+                  {new Date(item.startTime).toLocaleTimeString(undefined, {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    hour12: true,
+                  })}
+                </p>
               </div>
-              <p className="mt-3 text-xs text-slate-500 dark:text-slate-400">
-                Last attendance: {item.lastAttendanceDate}
+            ))
+          ) : (
+            <div className="col-span-full flex flex-col items-center justify-center gap-3 py-12 rounded-xl border border-dashed border-slate-200/60 text-center dark:border-slate-800">
+              <CalendarCheck2 className="size-6 text-slate-400 dark:text-slate-500" />
+              <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">
+                No classes scheduled for today
+              </p>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                You don&apos;t have any attendance sessions scheduled for today.
               </p>
             </div>
-          ))}
+          )}
         </div>
       </Card>
     </div>
