@@ -224,24 +224,24 @@ export default function OverviewTab({ overview, classId }) {
         ))}
       </div>
 
-      <div className="grid gap-5 xl:grid-cols-[1.1fr_.9fr]">
-        <Card className="rounded-2xl border border-slate-200/70 bg-white/85 p-6 shadow-sm dark:border-slate-800 dark:bg-slate-950/70">
+      <div className="grid gap-3 md:gap-5 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-[1.1fr_.9fr]">
+        <Card className="rounded-2xl border border-slate-200/70 bg-white/85 p-4 md:p-6 shadow-sm dark:border-slate-800 dark:bg-slate-950/70">
           <div className="mb-4 flex items-center gap-2">
             <School className="size-4 text-sky-600 dark:text-sky-300" />
-            <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">
+            <h3 className="text-sm md:text-base font-semibold text-slate-900 dark:text-slate-100">
               Class Information
             </h3>
           </div>
-          <div className="grid gap-3 sm:grid-cols-2">
+          <div className="grid gap-2 md:gap-3 sm:grid-cols-2">
             {infoItems.map((item) => (
               <div
                 key={item.label}
-                className="rounded-xl border border-slate-200/70 bg-slate-50/70 p-4 dark:border-slate-800 dark:bg-slate-900/40"
+                className="rounded-xl border border-slate-200/70 bg-slate-50/70 p-3 md:p-4 dark:border-slate-800 dark:bg-slate-900/40"
               >
                 <p className="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
                   {item.label}
                 </p>
-                <p className="mt-2 text-sm font-semibold text-slate-900 dark:text-slate-100 truncate">
+                <p className="mt-2 text-xs md:text-sm font-semibold text-slate-900 dark:text-slate-100 truncate">
                   {item.value}
                 </p>
               </div>
@@ -250,39 +250,39 @@ export default function OverviewTab({ overview, classId }) {
         </Card>
 
         <Card
-          className={`rounded-2xl border border-slate-200/70 bg-white/85 p-6 shadow-sm dark:border-slate-800 dark:bg-slate-950/70 ${recentActivity?.length === 0 && !loadingRecentActivity ? "flex flex-col" : ""}`}
+          className={`rounded-2xl border border-slate-200/70 bg-white/85 p-4 md:p-6 shadow-sm dark:border-slate-800 dark:bg-slate-950/70 ${recentActivity?.length === 0 && !loadingRecentActivity ? "flex flex-col" : ""}`}
         >
           <div className="mb-4 flex items-center gap-2">
             <Clock3 className="size-4 text-sky-600 dark:text-sky-300" />
-            <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">
+            <h3 className="text-sm md:text-base font-semibold text-slate-900 dark:text-slate-100">
               Recent Activity
             </h3>
           </div>
 
           {loadingRecentActivity ? (
-            <div className="space-y-3">
+            <div className="space-y-2 md:space-y-3">
               {[...Array(3)].map((_, idx) => (
                 <div
                   key={idx}
-                  className="h-16 animate-pulse rounded-xl border border-slate-200/70 bg-slate-100 dark:border-slate-800 dark:bg-slate-800"
+                  className="h-14 md:h-16 animate-pulse rounded-xl border border-slate-200/70 bg-slate-100 dark:border-slate-800 dark:bg-slate-800"
                 />
               ))}
             </div>
           ) : recentActivity?.length > 0 ? (
-            <div className="space-y-3">
+            <div className="space-y-2 md:space-y-3">
               {recentActivity.map((item, idx) => (
                 <div
                   key={idx}
-                  className="flex items-start gap-3 rounded-xl border border-slate-200/70 p-3 dark:border-slate-800"
+                  className="flex items-start gap-2 md:gap-3 rounded-xl border border-slate-200/70 p-2 md:p-3 dark:border-slate-800"
                 >
-                  <div className="rounded-lg bg-sky-500/10 p-2 text-sky-700 dark:text-sky-300">
+                  <div className="rounded-lg bg-sky-500/10 p-2 text-sky-700 dark:text-sky-300 shrink-0">
                     <item.icon className="size-4" />
                   </div>
                   <div className="min-w-0">
-                    <p className="text-sm font-medium text-slate-900 dark:text-slate-100">
+                    <p className="text-xs md:text-sm font-medium text-slate-900 dark:text-slate-100 line-clamp-2">
                       {item?.title}
                     </p>
-                    <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                    <p className="mt-0.5 md:mt-1 text-xs text-slate-500 dark:text-slate-400">
                       {item?.time}
                     </p>
                   </div>
@@ -290,9 +290,9 @@ export default function OverviewTab({ overview, classId }) {
               ))}
             </div>
           ) : (
-            <div className="flex-1 flex flex-col items-center justify-center gap-3 py-6 rounded-xl border border-dashed border-slate-200/60 text-center dark:border-slate-800">
-              <Clock3 className="size-6 text-slate-400 dark:text-slate-500" />
-              <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">
+            <div className="flex-1 flex flex-col items-center justify-center gap-2 md:gap-3 py-4 md:py-6 rounded-xl border border-dashed border-slate-200/60 text-center dark:border-slate-800">
+              <Clock3 className="size-5 md:size-6 text-slate-400 dark:text-slate-500" />
+              <p className="text-xs md:text-sm font-semibold text-slate-900 dark:text-slate-100">
                 No recent activity
               </p>
               <p className="text-xs text-slate-500 dark:text-slate-400">

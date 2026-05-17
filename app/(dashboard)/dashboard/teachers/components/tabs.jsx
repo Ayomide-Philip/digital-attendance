@@ -42,7 +42,7 @@ export default function Tabs({ activeTab, setActiveTab, tabs = [] }) {
   };
 
   return (
-    <div className="sticky top-4 z-30 rounded-2xl border border-slate-200/70 bg-white/85 p-2 shadow-sm backdrop-blur-xl dark:border-slate-800 dark:bg-slate-950/75">
+    <div className="top-4 z-30 rounded-2xl border border-slate-200/70 bg-white/85 p-2 shadow-sm backdrop-blur-xl dark:border-slate-800 dark:bg-slate-950/75">
       <div className="flex flex-wrap gap-2 px-1">
         {tabs.map((tab) => (
           <button

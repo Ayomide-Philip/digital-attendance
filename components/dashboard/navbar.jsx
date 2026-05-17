@@ -138,7 +138,7 @@ export default function Navbar({
           </button>
 
           {isDropdownOpen && (
-            <div className="absolute right-0 mt-2 w-48 rounded-xl border border-slate-200/70 bg-white shadow-lg dark:border-slate-800 dark:bg-slate-950 z-50">
+            <div className="absolute right-0 mt-2 w-48 rounded-xl border border-slate-200/70 bg-white shadow-lg dark:border-slate-800 dark:bg-slate-950 z-100">
               <div className="px-4 py-3 border-b border-slate-200/70 dark:border-slate-800">
                 <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">
                   Teacher Account
