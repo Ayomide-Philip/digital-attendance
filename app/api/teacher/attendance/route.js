@@ -33,7 +33,7 @@ export const GET = auth(async function GET(req, { params }) {
   const query = reqUrlParams.get("query") || "all";
   const limit = parseInt(reqUrlParams.get("limit")) || 0;
 
-  if (!["upcoming", "all"].includes(query)) {
+  if (!["upcoming", "all", "today"].includes(query)) {
     return NextResponse.json(
       {
         error: "Invalid query parameter",
@@ -65,6 +65,23 @@ export const GET = auth(async function GET(req, { params }) {
           status: 403,
         },
       );
+    }
+    if (query === "today") {
+      const now = new Date();
+      const attendanceData = await Attandance.find({
+        teacherId: new mongoose.Types.ObjectId(userId),
+        startTime: { $eq: now },
+      })
+        .sort({ startTime: 1 })
+        .select("startTime endTime classesId title")
+        .select("-students")
+        .populate("classesId", "name students")
+        .limit(limit)
+        .lean();
+      return NextResponse.json({
+        message: "GET upcoming attendance sessions for teacher",
+        attendance: attendanceData,
+      });
     }
     if (query === "upcoming") {
       const now = new Date();

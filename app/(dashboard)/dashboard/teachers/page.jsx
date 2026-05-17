@@ -185,7 +185,7 @@ export default function TeachersDashboardPage() {
       </div>
 
       <section className="grid grid-cols-1 gap-4 md:grid-cols-3">
-        {summaryCards.map((item) => (
+        {summaryCards?.map((item) => (
           <StatsCard
             key={item.title}
             title={item.title}
