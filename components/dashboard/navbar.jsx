@@ -10,7 +10,6 @@ import {
   User,
 } from "lucide-react";
 import { usePathname } from "next/navigation";
-import { useRouter } from "next/navigation";
 import { useState, useRef, useEffect } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -18,6 +17,7 @@ import Toggle from "@/components/toggle";
 import InstallAppButton from "@/components/pwa/install-app-button";
 import Link from "next/link";
 import getInitials from "@/lib/utility/getInitials";
+import { signOut } from "next-auth/react";
 
 function getTitle(pathname) {
   if (pathname === "/dashboard/teachers") return "Teacher Dashboard";
@@ -49,12 +49,11 @@ export default function Navbar({
   session,
 }) {
   const pathname = usePathname();
-  const router = useRouter();
   const title = getTitle(pathname);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
   const dropdownRef = useRef(null);
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -70,8 +69,15 @@ export default function Navbar({
   }, [isDropdownOpen]);
 
   const handleLogout = async () => {
-    await fetch("/api/auth/signout", { method: "POST" });
-    router.push("/login");
+    setIsLoggingOut(true);
+    try {
+      await signOut({ redirect: true, callbackUrl: "/login" });
+      setIsDropdownOpen(false);
+    } catch (err) {
+      console.error("Logout error:", err);
+    } finally {
+      setIsLoggingOut(false);
+    }
   };
 
   return (
@@ -164,14 +170,21 @@ export default function Navbar({
                 <div className="border-t border-slate-200/70 dark:border-slate-800 my-1"></div>
 
                 <button
-                  onClick={() => {
-                    setIsDropdownOpen(false);
-                    handleLogout();
-                  }}
-                  className="w-full flex items-center gap-3 px-4 py-2 text-sm text-red-700 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-950/30 transition-colors"
+                  onClick={handleLogout}
+                  disabled={isLoggingOut}
+                  className="w-full flex cursor-pointer items-center gap-3 px-4 py-2 text-sm text-red-700 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-950/30 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <LogOut className="size-4" />
-                  Logout
+                  {isLoggingOut ? (
+                    <>
+                      <div className="size-4 animate-spin rounded-full border 2 border-red-700 border-t-transparent dark:border-red-400 dark:border-t-transparent" />
+                      Logging out...
+                    </>
+                  ) : (
+                    <>
+                      <LogOut className="size-4" />
+                      Logout
+                    </>
+                  )}
                 </button>
               </div>
             </div>
