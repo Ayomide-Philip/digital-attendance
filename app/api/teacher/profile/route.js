@@ -233,7 +233,35 @@ export const PUT = auth(async function PUT(req) {
       );
     }
 
-    
+    // Check if any data is actually being updated (only check non-empty fields, case-insensitive)
+    const hasChanges =
+      (displayName?.trim() &&
+        displayName.trim().toLowerCase() !== user.displayName?.toLowerCase()) ||
+      (department?.trim() &&
+        department.trim().toLowerCase() !== user.department?.toLowerCase()) ||
+      (school?.trim() &&
+        school.trim().toLowerCase() !== user.school?.toLowerCase()) ||
+      (phone?.trim() &&
+        phone.trim().toLowerCase() !== user.phone?.toLowerCase()) ||
+      (qualifications?.trim() &&
+        qualifications.trim().toLowerCase() !==
+          user.qualifications?.toLowerCase()) ||
+      (experience?.trim() &&
+        experience.trim().toLowerCase() !== user.experience?.toLowerCase()) ||
+      (specialization?.trim() &&
+        specialization.trim().toLowerCase() !==
+          user.specialization?.toLowerCase());
+
+    if (!hasChanges) {
+      return NextResponse.json(
+        {
+          error: "Nothing to update. Please provide different data.",
+        },
+        {
+          status: 400,
+        },
+      );
+    }
 
     const updatedUser = await User.findByIdAndUpdate(
       new mongoose.Types.ObjectId(userId),
