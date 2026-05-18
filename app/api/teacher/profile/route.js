@@ -113,10 +113,13 @@ export const PUT = auth(async function PUT(req) {
     );
   }
 
-  if (displayName?.trim() && displayName?.trim()?.length < 5) {
+  if (
+    displayName?.trim() &&
+    (displayName?.trim()?.length < 5 || displayName?.trim()?.length > 50)
+  ) {
     return NextResponse.json(
       {
-        error: "Display name must be at least 5 characters long",
+        error: "Display name must be between 5 and 50 characters long",
       },
       {
         status: 400,
@@ -124,10 +127,13 @@ export const PUT = auth(async function PUT(req) {
     );
   }
 
-  if (department.trim() && department?.trim()?.length < 5) {
+  if (
+    department.trim() &&
+    (department?.trim()?.length < 5 || department?.trim()?.length > 100)
+  ) {
     return NextResponse.json(
       {
-        error: "Department can not be less than 5 character",
+        error: "Department must be between 5 and 100 characters long",
       },
       {
         status: 400,
@@ -135,10 +141,13 @@ export const PUT = auth(async function PUT(req) {
     );
   }
 
-  if (school?.trim() && school?.trim().length < 5) {
+  if (
+    school?.trim() &&
+    (school?.trim().length < 5 || school?.trim().length > 100)
+  ) {
     return NextResponse.json(
       {
-        error: "School name can not be less than 5 character",
+        error: "School name must be between 5 and 100 characters long",
       },
       {
         status: 400,
@@ -146,10 +155,52 @@ export const PUT = auth(async function PUT(req) {
     );
   }
 
-  if (phone.trim() && phone?.trim().length < 5) {
+  if (phone.trim() && (phone?.trim().length < 5 || phone?.trim().length > 20)) {
     return NextResponse.json(
       {
-        error: "Phone Number can not be less than 5 character",
+        error: "Phone Number must be between 5 and 20 characters long",
+      },
+      {
+        status: 400,
+      },
+    );
+  }
+
+  if (
+    qualifications.trim() &&
+    (qualifications?.trim().length < 5 || qualifications?.trim().length > 200)
+  ) {
+    return NextResponse.json(
+      {
+        error: "Qualifications must be between 5 and 200 characters long",
+      },
+      {
+        status: 400,
+      },
+    );
+  }
+
+  if (
+    experience.trim() &&
+    (experience?.trim().length < 5 || experience?.trim().length > 200)
+  ) {
+    return NextResponse.json(
+      {
+        error: "Experience must be between 5 and 200 characters long",
+      },
+      {
+        status: 400,
+      },
+    );
+  }
+
+  if (
+    specialization.trim() &&
+    (specialization?.trim().length < 5 || specialization?.trim().length > 100)
+  ) {
+    return NextResponse.json(
+      {
+        error: "Specialization must be between 5 and 100 characters long",
       },
       {
         status: 400,
