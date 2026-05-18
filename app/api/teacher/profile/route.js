@@ -29,9 +29,9 @@ export const GET = auth(async function GET(req) {
 
   try {
     await connectDatabase();
-    const user = await User.findById(
-      new mongoose.Types.ObjectId(userId),
-    ).lean();
+    const user = await User.findById(new mongoose.Types.ObjectId(userId))
+      .lean()
+      .select("-password -googleId -__v");
 
     if (!user) {
       return NextResponse.json(
@@ -233,7 +233,6 @@ export const PUT = auth(async function PUT(req) {
       );
     }
 
-    // Check if any data is actually being updated (only check non-empty fields, case-insensitive)
     const hasChanges =
       (displayName?.trim() &&
         displayName.trim().toLowerCase() !== user.displayName?.toLowerCase()) ||
@@ -281,8 +280,8 @@ export const PUT = auth(async function PUT(req) {
         },
       },
       {
-        new: true,
         runValidators: true,
+        returnDocument: "after",
       },
     );
     return NextResponse.json({
