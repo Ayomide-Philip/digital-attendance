@@ -208,7 +208,43 @@ export const PUT = auth(async function PUT(req) {
     );
   }
 
-  return NextResponse.json({
-    message: "Update User Profile Successfully",
-  });
+  try {
+    await connectDatabase();
+    const user = await User.findById(new mongoose.Types.ObjectId(userId));
+    if (!user) {
+      return NextResponse.json(
+        {
+          error: "Unauthorized Access",
+        },
+        {
+          status: 401,
+        },
+      );
+    }
+
+    if (user?.role !== "teacher") {
+      return NextResponse.json(
+        {
+          error: "User does not have privileges to perform this action",
+        },
+        {
+          status: 403,
+        },
+      );
+    }
+
+    return NextResponse.json({
+      message: "Update User Profile Successfully",
+    });
+  } catch (err) {
+    console.log(err);
+    return NextResponse.json(
+      {
+        error: "Unable to update teacher profile",
+      },
+      {
+        status: 500,
+      },
+    );
+  }
 });
