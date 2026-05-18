@@ -233,8 +233,33 @@ export const PUT = auth(async function PUT(req) {
       );
     }
 
+    
+
+    const updatedUser = await User.findByIdAndUpdate(
+      new mongoose.Types.ObjectId(userId),
+      {
+        $set: {
+          ...(displayName?.trim() && { displayName: displayName.trim() }),
+          ...(department?.trim() && { department: department.trim() }),
+          ...(school?.trim() && { school: school.trim() }),
+          ...(phone?.trim() && { phone: phone.trim() }),
+          ...(qualifications?.trim() && {
+            qualifications: qualifications.trim(),
+          }),
+          ...(experience?.trim() && { experience: experience.trim() }),
+          ...(specialization?.trim() && {
+            specialization: specialization.trim(),
+          }),
+        },
+      },
+      {
+        new: true,
+        runValidators: true,
+      },
+    );
     return NextResponse.json({
       message: "Update User Profile Successfully",
+      updatedUser,
     });
   } catch (err) {
     console.log(err);
