@@ -125,6 +125,36 @@ export const PUT = auth(async function PUT(req) {
   }
 
   if (department.trim() && department?.trim()?.length < 5) {
+    return NextResponse.json(
+      {
+        error: "Department can not be less than 5 character",
+      },
+      {
+        status: 400,
+      },
+    );
+  }
+
+  if (school?.trim() && school?.trim().length < 5) {
+    return NextResponse.json(
+      {
+        error: "School name can not be less than 5 character",
+      },
+      {
+        status: 400,
+      },
+    );
+  }
+
+  if (phone.trim() && phone?.trim().length < 5) {
+    return NextResponse.json(
+      {
+        error: "Phone Number can not be less than 5 character",
+      },
+      {
+        status: 400,
+      },
+    );
   }
 
   return NextResponse.json({
