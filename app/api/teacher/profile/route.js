@@ -72,6 +72,16 @@ export const GET = auth(async function GET(req) {
 });
 
 export const PUT = auth(async function PUT(req) {
+  if (!req?.auth || !req?.auth?.user) {
+    return NextResponse.json(
+      {
+        error: "Unauthorized Access",
+      },
+      {
+        status: 401,
+      },
+    );
+  }
   const {
     displayName,
     department,
@@ -80,9 +90,8 @@ export const PUT = auth(async function PUT(req) {
     qualifications,
     experience,
     specialization,
-    userId,
   } = await req.json();
-
+  const userId = req?.auth?.user?.id;
   if (!mongoose.Types.ObjectId.isValid(userId?.trim())) {
     return NextResponse.json(
       {
