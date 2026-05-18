@@ -72,6 +72,61 @@ export const GET = auth(async function GET(req) {
 });
 
 export const PUT = auth(async function PUT(req) {
+  const {
+    displayName,
+    department,
+    school,
+    phone,
+    qualifications,
+    experience,
+    specialization,
+    userId,
+  } = await req.json();
+
+  if (!mongoose.Types.ObjectId.isValid(userId?.trim())) {
+    return NextResponse.json(
+      {
+        error: "Invalid Parameters",
+      },
+      {
+        status: 400,
+      },
+    );
+  }
+
+  if (
+    (displayName.trim() && typeof displayName !== "string") ||
+    (department.trim() && typeof department !== "string") ||
+    (school.trim() && typeof school !== "string") ||
+    (phone.trim() && typeof phone !== "string") ||
+    (qualifications.trim() && typeof qualifications !== "string") ||
+    (experience.trim() && typeof experience !== "string") ||
+    (specialization.trim() && typeof specialization !== "string")
+  ) {
+    return NextResponse.json(
+      {
+        error: "Fields are required to be strings",
+      },
+      {
+        status: 400,
+      },
+    );
+  }
+
+  if (displayName?.trim() && displayName?.trim()?.length < 5) {
+    return NextResponse.json(
+      {
+        error: "Display name must be at least 5 characters long",
+      },
+      {
+        status: 400,
+      },
+    );
+  }
+
+  if (department.trim() && department?.trim()?.length < 5) {
+  }
+
   return NextResponse.json({
     message: "Update User Profile Successfully",
   });

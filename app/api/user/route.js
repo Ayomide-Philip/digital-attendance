@@ -95,6 +95,18 @@ export const PUT = async function PUT(req) {
       },
     );
   }
+
+  if (!school.trim() && matricNo?.trim()) {
+    return NextResponse.json(
+      {
+        error:
+          "You need to input a school before you can input your matric number",
+      },
+      {
+        status: 400,
+      },
+    );
+  }
   // validate department
   if (department && department.trim().length < 5) {
     return NextResponse.json(
