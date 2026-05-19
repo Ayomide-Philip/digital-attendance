@@ -105,7 +105,21 @@ export const PUT = auth(async function PUT(req) {
       );
     }
 
-    const userPasswordCorrect = bc;
+    const userPasswordCorrect = await bcrypt.compare(
+      currentPassword?.trim(),
+      user.password,
+    );
+
+    if (!userPasswordCorrect) {
+      return NextResponse.json(
+        {
+          error: "Incorrect current password. Please check and try again.",
+        },
+        {
+          status: 400,
+        },
+      );
+    }
 
     return NextResponse.json({
       message: "Update User Password Successfully",
