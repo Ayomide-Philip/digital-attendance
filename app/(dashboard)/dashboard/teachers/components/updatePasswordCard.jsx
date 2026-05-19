@@ -54,6 +54,15 @@ export default function UpdatePasswordCard() {
         "New password is too weak. Please choose a stronger password.",
       );
     }
+
+    try {
+      const request = await fetch(`/api/user/update-password`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+    } catch (err) {}
   }
 
   return (
