@@ -104,20 +104,20 @@ export const PUT = auth(async function PUT(req) {
     );
   }
 
-  // if (
-  //   getPasswordStrength(newPassword?.trim()) < 3 ||
-  //   getPasswordStrength(confirmPassword?.trim()) < 3
-  // ) {
-  //   return NextResponse.json(
-  //     {
-  //       error:
-  //         "New password is too weak. Use uppercase, lowercase, numbers, and symbols.",
-  //     },
-  //     {
-  //       status: 400,
-  //     },
-  //   );
-  // }
+  if (
+    getPasswordStrength(newPassword?.trim()) < 3 ||
+    getPasswordStrength(confirmPassword?.trim()) < 3
+  ) {
+    return NextResponse.json(
+      {
+        error:
+          "New password is too weak. Use uppercase, lowercase, numbers, and symbols.",
+      },
+      {
+        status: 400,
+      },
+    );
+  }
 
   try {
     await connectDatabase();
