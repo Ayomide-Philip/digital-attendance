@@ -1,6 +1,8 @@
 import { Button } from "@/components/ui/button";
+import getPasswordStrength from "@/lib/utility/getPasswordStrength";
 import { Lock } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 
 export default function UpdatePasswordCard() {
   const [passwordData, setPasswordData] = useState({
@@ -14,9 +16,46 @@ export default function UpdatePasswordCard() {
     setPasswordData((prev) => ({ ...prev, [name]: value }));
   }
 
-  function handleUpdatePassword() {
-    // Implement password update logic here, such as form validation and API call
+  async function handleUpdatePassword() {
+    const { currentPassword, newPassword, confirmPassword } = passwordData;
+    if (
+      !currentPassword?.trim() ||
+      !newPassword.trim() ||
+      !confirmPassword.trim()
+    ) {
+      return toast.error(
+        "All fields are required, please fill in all fields and try again.",
+      );
+    }
+
+    if (
+      currentPassword?.trim().length < 8 ||
+      newPassword.length < 8 ||
+      confirmPassword.trim().length < 8
+    ) {
+      return toast.error("Password must be at least 8 characters long.");
+    }
+
+    if (currentPassword === newPassword) {
+      return toast.error(
+        "New password cannot be the same as the current password.",
+      );
+    }
+
+    if (newPassword !== confirmPassword) {
+      return toast.error("New password and confirmation do not match.");
+    }
+
+    if (
+      getPasswordStrength(newPassword.trim()) < 3 ||
+      getPasswordStrength(confirmPassword.trim()) < 3
+    ) {
+      return toast.error(
+        "New password is too weak. Please choose a stronger password.",
+      );
+    }
   }
+
   return (
     <div className="space-y-4">
       <div>
