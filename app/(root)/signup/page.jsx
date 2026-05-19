@@ -6,6 +6,7 @@ import OAuthButtons from "@/components/auth/oauth-buttons";
 import PasswordStrengthIndicator from "@/components/auth/password-strength-indicator";
 import { useState } from "react";
 import { toast } from "sonner";
+import getPasswordStrength from "@/lib/utility/getPasswordStrength";
 
 export default function SignupPage() {
   const [name, setName] = useState("");
@@ -17,19 +18,6 @@ export default function SignupPage() {
   const [role, setRole] = useState("");
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-  function getPasswordStrength(value) {
-    if (!value) return 0;
-
-    let strength = 0;
-    if (value.length >= 8) strength += 1;
-    if (value.length >= 12) strength += 1;
-    if (/[a-z]/.test(value)) strength += 1;
-    if (/[A-Z]/.test(value)) strength += 1;
-    if (/[0-9]/.test(value)) strength += 1;
-    if (/[!@#$%^&*]/.test(value)) strength += 1;
-
-    return Math.min(strength, 4);
-  }
 
   async function handleCreateNewAccount(e) {
     e.preventDefault();
@@ -63,7 +51,7 @@ export default function SignupPage() {
       );
     }
 
-    if (password !== confirmPassword) {
+    if (password.trim() !== confirmPassword.trim()) {
       return toast.error("Passwords do not match. Please check and try again.");
     }
 
@@ -78,7 +66,7 @@ export default function SignupPage() {
         body: JSON.stringify({
           email: email.trim().toLowerCase(),
           name: name.trim(),
-          password: password,
+          password: password.trim(),
           role: role.trim(),
         }),
       });

@@ -1,4 +1,7 @@
 import { auth } from "@/auth";
+import { connectDatabase } from "@/lib/database/connectdb";
+import User from "@/lib/models/user.model";
+import getPasswordStrength from "@/lib/utility/getPasswordStrength";
 import mongoose from "mongoose";
 import { NextResponse } from "next/server";
 
@@ -8,10 +11,10 @@ export const PUT = auth(async function PUT(req) {
   if (!mongoose.Types.ObjectId.isValid(userId?.trim())) {
     return NextResponse.json(
       {
-        error: "Invalid Parameters",
+        error: "Unauthorized Access",
       },
       {
-        status: 400,
+        status: 401,
       },
     );
   }
@@ -39,6 +42,17 @@ export const PUT = auth(async function PUT(req) {
     );
   }
 
+  if (currentPassword?.trim().length < 8 || newPassword?.trim().length < 8) {
+    return NextResponse.json(
+      {
+        error: "Passwords must be at least 8 characters long",
+      },
+      {
+        status: 400,
+      },
+    );
+  }
+
   if (currentPassword?.trim() === newPassword?.trim()) {
     return NextResponse.json(
       {
@@ -50,7 +64,58 @@ export const PUT = auth(async function PUT(req) {
     );
   }
 
-  return NextResponse.json({
-    message: "Update User Password Successfully",
-  });
+  // if (getPasswordStrength(newPassword?.trim()) < 3) {
+  //   return NextResponse.json(
+  //     {
+  //       error:
+  //         "New password is too weak. Use uppercase, lowercase, numbers, and symbols.",
+  //     },
+  //     {
+  //       status: 400,
+  //     },
+  //   );
+  // }
+
+  try {
+    await connectDatabase();
+    const user = await User.findById(new mongoose.Types.ObjectId(userId.trim()))
+      .select("+password")
+      .lean();
+
+    if (!user) {
+      return NextResponse.json(
+        {
+          error: "Unauthorized Access",
+        },
+        {
+          status: 401,
+        },
+      );
+    }
+
+    if (!["teacher", "student"].includes(user?.role)) {
+      return NextResponse.json(
+        {
+          error: "Unauthorized Access",
+        },
+        {
+          status: 401,
+        },
+      );
+    }
+
+    return NextResponse.json({
+      message: "Update User Password Successfully",
+    });
+  } catch (err) {
+    console.log(err);
+    return NextResponse.json(
+      {
+        error: "An error occurred while updating the password",
+      },
+      {
+        status: 500,
+      },
+    );
+  }
 });
