@@ -8,8 +8,19 @@ import bcrypt from "bcrypt";
 import { hashPassword } from "@/lib/utility/hashPassword";
 
 export const PUT = auth(async function PUT(req) {
-  const { userId, currentPassword, newPassword, confirmPassword } =
-    await req.json();
+  if (!req?.auth || !req?.auth?.user) {
+    return NextResponse.json(
+      {
+        error: "Unauthorized Access",
+      },
+      {
+        status: 401,
+      },
+    );
+  }
+
+  const userId = req?.auth?.user?.id;
+  const { currentPassword, newPassword, confirmPassword } = await req.json();
 
   if (!mongoose.Types.ObjectId.isValid(userId?.trim())) {
     return NextResponse.json(
