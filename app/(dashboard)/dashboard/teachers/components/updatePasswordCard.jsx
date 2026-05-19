@@ -68,7 +68,24 @@ export default function UpdatePasswordCard() {
           confirmPassword: confirmPassword.trim(),
         }),
       });
-    } catch (err) {}
+      const response = await request.json();
+      if (!request.ok || response?.error) {
+        return toast.error(
+          response?.error || "Failed to update password. Please try again.",
+        );
+      }
+      toast.success(response?.message || "Password updated successfully.");
+      setPasswordData({
+        currentPassword: "",
+        newPassword: "",
+        confirmPassword: "",
+      });
+      window.location.reload();
+    } catch (err) {
+      return toast.error(
+        "An error occurred while updating the password. Please try again.",
+      );
+    }
   }
 
   return (
