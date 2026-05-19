@@ -39,6 +39,17 @@ export const PUT = auth(async function PUT(req) {
     );
   }
 
+  if (currentPassword?.trim() === newPassword?.trim()) {
+    return NextResponse.json(
+      {
+        error: "New password cannot be the same as the current password",
+      },
+      {
+        status: 400,
+      },
+    );
+  }
+
   return NextResponse.json({
     message: "Update User Password Successfully",
   });
