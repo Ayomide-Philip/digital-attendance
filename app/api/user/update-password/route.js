@@ -8,7 +8,8 @@ import bcrypt from "bcrypt";
 import { hashPassword } from "@/lib/utility/hashPassword";
 
 export const PUT = auth(async function PUT(req) {
-  const { userId, currentPassword, newPassword } = await req.json();
+  const { userId, currentPassword, newPassword, confirmPassword } =
+    await req.json();
 
   if (!mongoose.Types.ObjectId.isValid(userId?.trim())) {
     return NextResponse.json(
@@ -21,11 +22,15 @@ export const PUT = auth(async function PUT(req) {
     );
   }
 
-  if (typeof currentPassword !== "string" || typeof newPassword !== "string") {
+  if (
+    typeof currentPassword !== "string" ||
+    typeof newPassword !== "string" ||
+    typeof confirmPassword !== "string"
+  ) {
     return NextResponse.json(
       {
         error:
-          "The fields current password and new password are required and must be strings",
+          "The fields current password, new password, and confirm password are required and must be strings",
       },
       {
         status: 400,
@@ -33,7 +38,11 @@ export const PUT = auth(async function PUT(req) {
     );
   }
 
-  if (!currentPassword?.trim() || !newPassword?.trim()) {
+  if (
+    !currentPassword?.trim() ||
+    !newPassword?.trim() ||
+    !confirmPassword?.trim()
+  ) {
     return NextResponse.json(
       {
         error: "All fields are required",
@@ -44,7 +53,11 @@ export const PUT = auth(async function PUT(req) {
     );
   }
 
-  if (currentPassword?.trim().length < 8 || newPassword?.trim().length < 8) {
+  if (
+    currentPassword?.trim().length < 8 ||
+    newPassword?.trim().length < 8 ||
+    confirmPassword?.trim().length < 8
+  ) {
     return NextResponse.json(
       {
         error: "Passwords must be at least 8 characters long",
@@ -55,7 +68,10 @@ export const PUT = auth(async function PUT(req) {
     );
   }
 
-  if (currentPassword?.trim() === newPassword?.trim()) {
+  if (
+    currentPassword?.trim() === newPassword?.trim() ||
+    currentPassword?.trim() === confirmPassword?.trim()
+  ) {
     return NextResponse.json(
       {
         error: "New password cannot be the same as the current password",
@@ -66,17 +82,31 @@ export const PUT = auth(async function PUT(req) {
     );
   }
 
-  // if (getPasswordStrength(newPassword?.trim()) < 3) {
-  //   return NextResponse.json(
-  //     {
-  //       error:
-  //         "New password is too weak. Use uppercase, lowercase, numbers, and symbols.",
-  //     },
-  //     {
-  //       status: 400,
-  //     },
-  //   );
-  // }
+  if (newPassword?.trim() !== confirmPassword?.trim()) {
+    return NextResponse.json(
+      {
+        error: "New password and confirmation do not match",
+      },
+      {
+        status: 400,
+      },
+    );
+  }
+
+  if (
+    getPasswordStrength(newPassword?.trim()) < 3 ||
+    getPasswordStrength(confirmPassword?.trim()) < 3
+  ) {
+    return NextResponse.json(
+      {
+        error:
+          "New password is too weak. Use uppercase, lowercase, numbers, and symbols.",
+      },
+      {
+        status: 400,
+      },
+    );
+  }
 
   try {
     await connectDatabase();

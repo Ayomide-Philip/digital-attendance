@@ -61,6 +61,12 @@ export default function UpdatePasswordCard() {
         headers: {
           "Content-Type": "application/json",
         },
+        credentials: "include",
+        body: JSON.stringify({
+          currentPassword: currentPassword.trim(),
+          newPassword: newPassword.trim(),
+          confirmPassword: confirmPassword.trim(),
+        }),
       });
     } catch (err) {}
   }
