@@ -4,6 +4,7 @@ import User from "@/lib/models/user.model";
 import getPasswordStrength from "@/lib/utility/getPasswordStrength";
 import mongoose from "mongoose";
 import { NextResponse } from "next/server";
+import bcrypt from "bcrypt";
 
 export const PUT = auth(async function PUT(req) {
   const { userId, currentPassword, newPassword } = await req.json();
@@ -103,6 +104,8 @@ export const PUT = auth(async function PUT(req) {
         },
       );
     }
+
+    const userPasswordCorrect = bc;
 
     return NextResponse.json({
       message: "Update User Password Successfully",
