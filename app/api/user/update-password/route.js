@@ -5,6 +5,7 @@ import getPasswordStrength from "@/lib/utility/getPasswordStrength";
 import mongoose from "mongoose";
 import { NextResponse } from "next/server";
 import bcrypt from "bcrypt";
+import { hashPassword } from "@/lib/utility/hashPassword";
 
 export const PUT = auth(async function PUT(req) {
   const { userId, currentPassword, newPassword } = await req.json();
@@ -121,9 +122,26 @@ export const PUT = auth(async function PUT(req) {
       );
     }
 
-    return NextResponse.json({
-      message: "Update User Password Successfully",
-    });
+    await User.findByIdAndUpdate(
+      new mongoose.Types.ObjectId(userId.trim()),
+      {
+        $set: {
+          password: await hashPassword(newPassword.trim()),
+        },
+      },
+      {
+        returnDocument: "after",
+      },
+    );
+
+    return NextResponse.json(
+      {
+        message: "Update User Password Successfully",
+      },
+      {
+        status: 200,
+      },
+    );
   } catch (err) {
     console.log(err);
     return NextResponse.json(
