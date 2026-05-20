@@ -189,19 +189,7 @@ export default function SettingsPage() {
         </div>
       </Card>
 
-      {/* Security Settings */}
-      <Card className="rounded-2xl border border-slate-200/70 bg-white/85 p-6 shadow-sm dark:border-slate-800 dark:bg-slate-950/70">
-        <div className="mb-6">
-          <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
-            Security & Password
-          </h2>
-          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-            Keep your account secure by updating your password regularly
-          </p>
-        </div>
-
-        <UpdatePasswordCard />
-      </Card>
+      <UpdatePasswordCard />
 
       {/* Notification Preferences */}
       <Card className="rounded-2xl border border-slate-200/70 bg-white/85 p-6 shadow-sm dark:border-slate-800 dark:bg-slate-950/70">
