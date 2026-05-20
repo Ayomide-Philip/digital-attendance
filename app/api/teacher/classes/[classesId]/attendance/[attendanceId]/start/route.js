@@ -79,7 +79,7 @@ export const PUT = auth(async function PUT(req, { params }) {
     );
   }
 
-  if (isNaN(allowedRadius)) {
+  if (isNaN(Number(allowedRadius))) {
     return NextResponse.json(
       {
         error: "Allowed radius must be a number",
@@ -213,6 +213,18 @@ export const PUT = auth(async function PUT(req, { params }) {
       );
     }
 
+    if (new Date() < new Date(attendance?.startTime)) {
+      return NextResponse.json(
+        {
+          error:
+            "This attendance session is not active yet. You can only start an attendance session at or after its scheduled start time.",
+        },
+        {
+          status: 400,
+        },
+      );
+    }
+
     if (new Date() > new Date(attendance?.endTime)) {
       return NextResponse.json(
         {
@@ -255,13 +267,6 @@ export const PUT = auth(async function PUT(req, { params }) {
       );
     }
 
-    function median(values) {
-      const sorted = [...values].sort((a, b) => a - b);
-      const mid = Math.floor(sorted.length / 2);
-      return sorted.length % 2 !== 0
-        ? sorted[mid]
-        : (sorted[mid - 1] + sorted[mid]) / 2;
-    }
     const anchoredLat = median(
       approvedTeacherCords.map((c) => c?.coords?.latitude),
     );
