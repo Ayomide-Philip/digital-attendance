@@ -63,17 +63,6 @@ export const PUT = auth(async function PUT(req, { params }) {
   const { classesId, attendanceId } = await params;
   const { allowedRadius, teacherCords } = await req.json();
 
-  if (!classesId || !attendanceId) {
-    return NextResponse.json(
-      {
-        error: "Invalid Parameters",
-      },
-      {
-        status: 400,
-      },
-    );
-  }
-
   if (
     !teacherId ||
     !allowedRadius ||
@@ -252,7 +241,7 @@ export const PUT = auth(async function PUT(req, { params }) {
     );
 
     approvedTeacherCords = [...approvedTeacherCords].sort(
-      (a, b) => b?.timestamp - a?.timestamp,
+      (a, b) => a?.timestamp - b?.timestamp,
     );
 
     if (approvedTeacherCords?.length < 3) {
@@ -266,12 +255,28 @@ export const PUT = auth(async function PUT(req, { params }) {
       );
     }
 
-    const anchoredTeacherCords = [...approvedTeacherCords][0];
+    function median(values) {
+      const sorted = [...values].sort((a, b) => a - b);
+      const mid = Math.floor(sorted.length / 2);
+      return sorted.length % 2 !== 0
+        ? sorted[mid]
+        : (sorted[mid - 1] + sorted[mid]) / 2;
+    }
+    const anchoredLat = median(
+      approvedTeacherCords.map((c) => c?.coords?.latitude),
+    );
+    const anchoredLng = median(
+      approvedTeacherCords.map((c) => c?.coords?.longitude),
+    );
+
+    const anchoredAccuracies = median(
+      approvedTeacherCords.map((c) => c?.coords?.accuracy),
+    );
 
     const filteredApprovedTeachersCords = approvedTeacherCords.filter((c) => {
       const distance = haversineDistanceCalculation(
-        anchoredTeacherCords?.coords?.latitude,
-        anchoredTeacherCords?.coords?.longitude,
+        anchoredLat,
+        anchoredLng,
         c?.coords?.latitude,
         c?.coords?.longitude,
       );
@@ -289,22 +294,6 @@ export const PUT = auth(async function PUT(req, { params }) {
       );
     }
 
-    const averageLatitude =
-      filteredApprovedTeachersCords.reduce(
-        (sum, c) => sum + c?.coords?.latitude,
-        0,
-      ) / filteredApprovedTeachersCords.length;
-    const averageLongitude =
-      filteredApprovedTeachersCords.reduce(
-        (sum, c) => sum + c?.coords?.longitude,
-        0,
-      ) / filteredApprovedTeachersCords.length;
-    const averageAccuracy =
-      filteredApprovedTeachersCords.reduce(
-        (sum, c) => sum + c?.coords?.accuracy,
-        0,
-      ) / filteredApprovedTeachersCords.length;
-
     const savedAttendance = await Attandance.findOneAndUpdate(
       {
         _id: new mongoose.Types.ObjectId(attendanceId),
@@ -316,8 +305,8 @@ export const PUT = auth(async function PUT(req, { params }) {
         $set: {
           location: {
             type: "Point",
-            coordinates: [averageLongitude, averageLatitude],
-            accuracy: averageAccuracy,
+            coordinates: [anchoredLng, anchoredLat],
+            accuracy: anchoredAccuracies,
           },
           allowedRadius: Number(allowedRadius),
         },
@@ -356,3 +345,11 @@ export const PUT = auth(async function PUT(req, { params }) {
     );
   }
 });
+
+function median(values) {
+  const sorted = [...values].sort((a, b) => a - b);
+  const mid = Math.floor(sorted.length / 2);
+  return sorted.length % 2 !== 0
+    ? sorted[mid]
+    : (sorted[mid - 1] + sorted[mid]) / 2;
+}
