@@ -13,8 +13,7 @@ import {
   Trash2,
 } from "lucide-react";
 import Card from "@/components/ui/card";
-import { Button, buttonVariants } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import UpdatePasswordCard from "../components/updatePasswordCard";
 
 export default function SettingsPage() {
@@ -24,12 +23,6 @@ export default function SettingsPage() {
     phone: "+1 (555) 123-4567",
     department: "Computer Science",
     school: "Central High School",
-  });
-
-  const [passwordData, setPasswordData] = useState({
-    currentPassword: "",
-    newPassword: "",
-    confirmPassword: "",
   });
 
   const [notifications, setNotifications] = useState({
@@ -44,14 +37,6 @@ export default function SettingsPage() {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const handlePasswordChange = (e) => {
-    const { name, value } = e.target;
-    setPasswordData((prev) => ({
       ...prev,
       [name]: value,
     }));
@@ -83,7 +68,6 @@ export default function SettingsPage() {
         </p>
       </div>
 
-      {/* Profile Settings */}
       <Card className="rounded-2xl border border-slate-200/70 bg-white/85 p-6 shadow-sm dark:border-slate-800 dark:bg-slate-950/70">
         <div className="mb-6">
           <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
