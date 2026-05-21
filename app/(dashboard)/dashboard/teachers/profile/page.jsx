@@ -1,5 +1,3 @@
-// "use client";
-
 import { Mail, Phone, MapPin, BookOpen, Edit2 } from "lucide-react";
 import Card from "@/components/ui/card";
 import { buttonVariants } from "@/components/ui/button";
@@ -41,11 +39,13 @@ export default async function TeacherProfilePage() {
                   "Unnamed Teacher"}
               </h1>
               <p className="mt-1 text-sm text-slate-600 dark:text-slate-400 truncate capitalize">
-                {userData?.department}
+                {userData?.department || "No Department"}
               </p>
               <p className="mt-2 flex items-center gap-2 text-xs md:text-sm text-slate-500 dark:text-slate-400 truncate">
                 <MapPin className="size-3 md:size-4 shrink-0" />
-                <span className="truncate capitalize">{userData?.school}</span>
+                <span className="truncate capitalize">
+                  {userData?.school || "No School"}
+                </span>
               </p>
             </div>
           </div>
@@ -75,7 +75,7 @@ export default async function TeacherProfilePage() {
                 Email
               </p>
               <p className="mt-0.5 md:mt-1 truncate text-xs md:text-sm font-medium text-slate-900 dark:text-slate-100">
-                {userData?.email}
+                {userData?.email || "No Email"}
               </p>
             </div>
           </div>
@@ -87,7 +87,7 @@ export default async function TeacherProfilePage() {
                 Phone
               </p>
               <p className="mt-0.5 md:mt-1 truncate text-xs md:text-sm font-medium text-slate-900 dark:text-slate-100">
-                {userData?.phone}
+                {userData?.phone || "No Phone"}
               </p>
             </div>
           </div>
@@ -99,7 +99,7 @@ export default async function TeacherProfilePage() {
                 Department
               </p>
               <p className="mt-0.5 md:mt-1 truncate text-xs md:text-sm font-medium text-slate-900 dark:text-slate-100">
-                {userData?.department}
+                {userData?.department || "No Department"}
               </p>
             </div>
           </div>
@@ -111,7 +111,7 @@ export default async function TeacherProfilePage() {
                 School
               </p>
               <p className="mt-0.5 md:mt-1 truncate text-xs md:text-sm font-medium text-slate-900 dark:text-slate-100">
-                {userData?.school}
+                {userData?.school || "No School"}
               </p>
             </div>
           </div>
@@ -128,7 +128,7 @@ export default async function TeacherProfilePage() {
               Qualifications
             </p>
             <p className="mt-1 md:mt-2 text-xs md:text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
-              {userData?.qualifications}
+              {userData?.qualifications || "No Qualifications"}
             </p>
           </div>
           <div className="border-t border-slate-200/70 dark:border-slate-800 pt-3 md:pt-4">
@@ -136,7 +136,7 @@ export default async function TeacherProfilePage() {
               Experience
             </p>
             <p className="mt-1 md:mt-2 text-xs md:text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
-              {userData?.experience}
+              {userData?.experience || "No Experience"}
             </p>
           </div>
           <div className="border-t border-slate-200/70 dark:border-slate-800 pt-3 md:pt-4">
@@ -144,7 +144,7 @@ export default async function TeacherProfilePage() {
               Specialization
             </p>
             <p className="mt-1 md:mt-2 text-xs md:text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
-              {userData?.specialization}
+              {userData?.specialization || "No Specialization"}
             </p>
           </div>
         </div>
