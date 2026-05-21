@@ -50,16 +50,8 @@ export default function SettingsPage() {
     }));
   };
 
-  const handleSaveProfile = async () => {
-    setIsSaving(true);
-    // Simulate save
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    setIsSaving(false);
-  };
-
   return (
     <div className="space-y-5">
-      {/* Settings Header */}
       <div className="flex flex-col gap-2">
         <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
           Settings
@@ -73,7 +65,6 @@ export default function SettingsPage() {
 
       <UpdatePasswordCard />
 
-      {/* Notification Preferences */}
       <Card className="rounded-2xl border border-slate-200/70 bg-white/85 p-6 shadow-sm dark:border-slate-800 dark:bg-slate-950/70">
         <div className="mb-6">
           <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
@@ -85,7 +76,6 @@ export default function SettingsPage() {
         </div>
 
         <div className="space-y-4">
-          {/* Email Notifications */}
           <div className="flex items-center justify-between rounded-xl border border-slate-200/70 bg-slate-50/50 p-4 dark:border-slate-800 dark:bg-slate-900/40">
             <div className="flex items-center gap-3">
               <Mail className="size-5 text-sky-600 dark:text-sky-400" />
@@ -106,7 +96,6 @@ export default function SettingsPage() {
             />
           </div>
 
-          {/* Attendance Reminders */}
           <div className="flex items-center justify-between rounded-xl border border-slate-200/70 bg-slate-50/50 p-4 dark:border-slate-800 dark:bg-slate-900/40">
             <div className="flex items-center gap-3">
               <Bell className="size-5 text-emerald-600 dark:text-emerald-400" />
@@ -127,7 +116,6 @@ export default function SettingsPage() {
             />
           </div>
 
-          {/* Class Updates */}
           <div className="flex items-center justify-between rounded-xl border border-slate-200/70 bg-slate-50/50 p-4 dark:border-slate-800 dark:bg-slate-900/40">
             <div className="flex items-center gap-3">
               <BookOpen className="size-5 text-amber-600 dark:text-amber-400" />
@@ -148,7 +136,6 @@ export default function SettingsPage() {
             />
           </div>
 
-          {/* Weekly Report */}
           <div className="flex items-center justify-between rounded-xl border border-slate-200/70 bg-slate-50/50 p-4 dark:border-slate-800 dark:bg-slate-900/40">
             <div className="flex items-center gap-3">
               <Eye className="size-5 text-violet-600 dark:text-violet-400" />
@@ -171,7 +158,6 @@ export default function SettingsPage() {
         </div>
       </Card>
 
-      {/* Danger Zone */}
       <Card className="rounded-2xl border border-red-200/30 bg-red-50/20 p-6 shadow-sm dark:border-red-900/30 dark:bg-red-950/10">
         <div className="mb-6">
           <h2 className="text-lg font-semibold text-red-700 dark:text-red-400">
