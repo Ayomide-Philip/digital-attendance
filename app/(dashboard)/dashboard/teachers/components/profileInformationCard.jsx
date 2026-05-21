@@ -35,6 +35,27 @@ export default function ProfileInformationCard() {
   useEffect(() => {
     async function fetchData() {
       try {
+        const request = await fetch(`/api/teacher/profile`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+        });
+        const response = await request.json();
+        if (!request?.ok || response?.error) {
+          return toast.error(response?.error || "Unable to fetch teacher data");
+        }
+        const user = response.user;
+        setFormData({
+          displayName: user?.displayName || "",
+          phone: user?.phone || "",
+          departement: user?.department || "",
+          school: user?.school || "",
+          qualifications: user?.qualifications || "",
+          experience: user?.experience || "",
+          specialization: user?.specialization || "",
+        });
       } catch (err) {
         return toast.error("Unable to fetch user data. Try again later.");
       }
