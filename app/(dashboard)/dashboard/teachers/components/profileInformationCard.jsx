@@ -59,13 +59,13 @@ export default function ProfileInformationCard() {
     }));
   }
 
-  const handleSaveProfile = async () => {
+  async function handleSaveProfile() {
     setIsSaving(true);
     // API call will be handled by user
     console.log("Form data to save:", formData);
     await new Promise((resolve) => setTimeout(resolve, 1500));
     setIsSaving(false);
-  };
+  }
 
   if (isLoading) {
     return (
