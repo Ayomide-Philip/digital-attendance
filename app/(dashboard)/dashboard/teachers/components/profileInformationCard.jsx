@@ -153,10 +153,35 @@ export default function ProfileInformationCard() {
         "Specialization must be between 3 and 100 characters long.",
       );
     }
-    
-    console.log("Form data to save:", formData);
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    setIsSaving(false);
+
+    try {
+      const request = await fetch(`/api/teacher/profile`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          displayName: displayName.trim(),
+          phone: phone.trim(),
+          department: department.trim(),
+          school: school.trim(),
+          qualifications: qualifications.trim(),
+          experience: experience.trim(),
+          specialization: specialization.trim(),
+        }),
+      });
+      const response = await request.json();
+      if (!request?.ok || response?.error) {
+        return toast.error(response?.error || "Unable to update profile");
+      }
+      toast.success(response?.message || "Profile updated successfully");
+      window.location.reload();
+    } catch (err) {
+      return toast.error("Unable to update profile. Try again later.");
+    } finally {
+      setIsSaving(false);
+    }
   }
 
   if (isLoading) {
