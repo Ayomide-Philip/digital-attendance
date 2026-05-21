@@ -61,7 +61,99 @@ export default function ProfileInformationCard() {
 
   async function handleSaveProfile() {
     setIsSaving(true);
-    // API call will be handled by user
+    const {
+      displayName,
+      phone,
+      department,
+      school,
+      qualifications,
+      experience,
+      specialization,
+    } = formData;
+    if (
+      !displayName.trim() &&
+      !phone.trim() &&
+      !department.trim() &&
+      !school.trim() &&
+      !qualifications.trim() &&
+      !experience.trim() &&
+      !specialization.trim()
+    ) {
+      setIsSaving(false);
+      return toast.error(
+        "Please fill in at least one field to update your profile.",
+      );
+    }
+
+    if (
+      displayName?.trim() &&
+      (displayName.trim().length < 5 || displayName.trim().length > 50)
+    ) {
+      setIsSaving(false);
+      return toast.error(
+        "Display name must be between 5 and 50 characters long.",
+      );
+    }
+    if (
+      phone?.trim() &&
+      (!/^\+?[1-9]\d{1,14}$/.test(phone.trim()) ||
+        phone.trim().length < 7 ||
+        phone.trim().length > 15)
+    ) {
+      setIsSaving(false);
+      return toast.error(
+        "Please enter a valid phone number or international format or is not between 7 and 15 characters long.",
+      );
+    }
+
+    if (
+      department?.trim() &&
+      (department.trim().length < 3 || department.trim().length > 100)
+    ) {
+      setIsSaving(false);
+      return toast.error(
+        "Department must be between 3 and 100 characters long.",
+      );
+    }
+
+    if (
+      school?.trim() &&
+      (school.trim().length < 3 || school.trim().length > 100)
+    ) {
+      setIsSaving(false);
+      return toast.error("School must be between 3 and 100 characters long.");
+    }
+
+    if (
+      qualifications?.trim() &&
+      (qualifications.trim().length < 3 || qualifications.trim().length > 200)
+    ) {
+      setIsSaving(false);
+      return toast.error(
+        "Qualifications must be between 3 and 200 characters long.",
+      );
+    }
+
+    if (
+      experience?.trim() &&
+      (experience.trim().length < 3 || experience.trim().length > 200)
+    ) {
+      setIsSaving(false);
+      return toast.error(
+        "Experience must be between 3 and 200 characters long.",
+      );
+    }
+
+    if (
+      specialization?.trim() &&
+      (specialization.trim().length < 3 || specialization.trim().length > 100)
+    ) {
+      setIsSaving(false);
+      return toast.error(
+        "Specialization must be between 3 and 100 characters long.",
+      );
+    }
+    
     console.log("Form data to save:", formData);
     await new Promise((resolve) => setTimeout(resolve, 1500));
     setIsSaving(false);
