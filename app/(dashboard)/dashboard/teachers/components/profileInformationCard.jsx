@@ -75,7 +75,6 @@ export default function ProfileInformationCard() {
       </div>
 
       <div className="space-y-3 md:space-y-4">
-        {/* Display Name */}
         <div>
           <label className="block text-xs md:text-sm font-medium text-slate-900 dark:text-slate-100">
             Display Name
@@ -90,7 +89,6 @@ export default function ProfileInformationCard() {
           />
         </div>
 
-        {/* Phone */}
         <div>
           <label className="block text-xs md:text-sm font-medium text-slate-900 dark:text-slate-100">
             Phone Number
@@ -105,7 +103,6 @@ export default function ProfileInformationCard() {
           />
         </div>
 
-        {/* Department and School */}
         <div className="grid gap-3 md:gap-4 grid-cols-1 md:grid-cols-2">
           <div>
             <label className="block text-xs md:text-sm font-medium text-slate-900 dark:text-slate-100">
@@ -136,7 +133,6 @@ export default function ProfileInformationCard() {
           </div>
         </div>
 
-        {/* Qualifications */}
         <div>
           <label className="block text-xs md:text-sm font-medium text-slate-900 dark:text-slate-100">
             Qualifications
@@ -151,7 +147,6 @@ export default function ProfileInformationCard() {
           />
         </div>
 
-        {/* Experience */}
         <div>
           <label className="block text-xs md:text-sm font-medium text-slate-900 dark:text-slate-100">
             Experience
