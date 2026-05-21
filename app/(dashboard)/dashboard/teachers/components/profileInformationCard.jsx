@@ -1,7 +1,8 @@
 import Card from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Save, Loader2 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 export default function ProfileInformationCard() {
   const [isSaving, setIsSaving] = useState(false);
@@ -30,6 +31,15 @@ export default function ProfileInformationCard() {
     await new Promise((resolve) => setTimeout(resolve, 1500));
     setIsSaving(false);
   };
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+      } catch (err) {
+        return toast.error("Unable to fetch user data. Try again later.");
+      }
+    }
+  }, []);
 
   return (
     <Card className="rounded-2xl border border-slate-200/70 bg-white/85 p-4 md:p-6 shadow-sm dark:border-slate-800 dark:bg-slate-950/70">
