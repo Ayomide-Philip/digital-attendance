@@ -50,7 +50,7 @@ export default function ProfileInformationCard() {
         setFormData({
           displayName: user?.displayName || "",
           phone: user?.phone || "",
-          departement: user?.department || "",
+          department: user?.department || "",
           school: user?.school || "",
           qualifications: user?.qualifications || "",
           experience: user?.experience || "",
@@ -60,6 +60,7 @@ export default function ProfileInformationCard() {
         return toast.error("Unable to fetch user data. Try again later.");
       }
     }
+    fetchData();
   }, []);
 
   return (
@@ -113,7 +114,7 @@ export default function ProfileInformationCard() {
             <input
               type="text"
               name="department"
-              value={formData.department}
+              value={formData?.department}
               onChange={handleInputChange}
               placeholder="Enter department"
               className="mt-1.5 md:mt-2 w-full rounded-xl border border-slate-200/70 bg-slate-50/50 px-3 md:px-4 py-2 text-xs md:text-sm text-slate-900 placeholder-slate-400 transition-colors focus:border-sky-500 focus:bg-white focus:outline-none dark:border-slate-800 dark:bg-slate-900/40 dark:text-slate-100 dark:placeholder-slate-500 dark:focus:bg-slate-900"
