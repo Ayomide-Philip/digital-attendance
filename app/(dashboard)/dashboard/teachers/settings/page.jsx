@@ -15,6 +15,7 @@ import {
 import Card from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import UpdatePasswordCard from "../components/updatePasswordCard";
+import ProfileInformationCard from "../components/profileInformationCard";
 
 export default function SettingsPage() {
   const [formData, setFormData] = useState({
@@ -68,110 +69,7 @@ export default function SettingsPage() {
         </p>
       </div>
 
-      <Card className="rounded-2xl border border-slate-200/70 bg-white/85 p-6 shadow-sm dark:border-slate-800 dark:bg-slate-950/70">
-        <div className="mb-6">
-          <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
-            Profile Information
-          </h2>
-          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-            Update your personal and professional details
-          </p>
-        </div>
-
-        <div className="space-y-4">
-          {/* Name */}
-          <div>
-            <label className="block text-sm font-medium text-slate-900 dark:text-slate-100">
-              Full Name
-            </label>
-            <input
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleInputChange}
-              className="mt-2 w-full rounded-xl border border-slate-200/70 bg-slate-50/50 px-4 py-2 text-slate-900 placeholder-slate-400 transition-colors focus:border-sky-500 focus:bg-white focus:outline-none dark:border-slate-800 dark:bg-slate-900/40 dark:text-slate-100 dark:placeholder-slate-500 dark:focus:bg-slate-900"
-            />
-          </div>
-
-          {/* Email */}
-          <div>
-            <label className="block text-sm font-medium text-slate-900 dark:text-slate-100">
-              Email Address
-            </label>
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleInputChange}
-              className="mt-2 w-full rounded-xl border border-slate-200/70 bg-slate-50/50 px-4 py-2 text-slate-900 placeholder-slate-400 transition-colors focus:border-sky-500 focus:bg-white focus:outline-none dark:border-slate-800 dark:bg-slate-900/40 dark:text-slate-100 dark:placeholder-slate-500 dark:focus:bg-slate-900"
-            />
-          </div>
-
-          {/* Phone */}
-          <div>
-            <label className="block text-sm font-medium text-slate-900 dark:text-slate-100">
-              Phone Number
-            </label>
-            <input
-              type="tel"
-              name="phone"
-              value={formData.phone}
-              onChange={handleInputChange}
-              className="mt-2 w-full rounded-xl border border-slate-200/70 bg-slate-50/50 px-4 py-2 text-slate-900 placeholder-slate-400 transition-colors focus:border-sky-500 focus:bg-white focus:outline-none dark:border-slate-800 dark:bg-slate-900/40 dark:text-slate-100 dark:placeholder-slate-500 dark:focus:bg-slate-900"
-            />
-          </div>
-
-          {/* Department */}
-          <div className="grid gap-4 md:grid-cols-2">
-            <div>
-              <label className="block text-sm font-medium text-slate-900 dark:text-slate-100">
-                Department
-              </label>
-              <input
-                type="text"
-                name="department"
-                value={formData.department}
-                onChange={handleInputChange}
-                className="mt-2 w-full rounded-xl border border-slate-200/70 bg-slate-50/50 px-4 py-2 text-slate-900 placeholder-slate-400 transition-colors focus:border-sky-500 focus:bg-white focus:outline-none dark:border-slate-800 dark:bg-slate-900/40 dark:text-slate-100 dark:placeholder-slate-500 dark:focus:bg-slate-900"
-              />
-            </div>
-
-            {/* School */}
-            <div>
-              <label className="block text-sm font-medium text-slate-900 dark:text-slate-100">
-                School
-              </label>
-              <input
-                type="text"
-                name="school"
-                value={formData.school}
-                onChange={handleInputChange}
-                className="mt-2 w-full rounded-xl border border-slate-200/70 bg-slate-50/50 px-4 py-2 text-slate-900 placeholder-slate-400 transition-colors focus:border-sky-500 focus:bg-white focus:outline-none dark:border-slate-800 dark:bg-slate-900/40 dark:text-slate-100 dark:placeholder-slate-500 dark:focus:bg-slate-900"
-              />
-            </div>
-          </div>
-
-          <div className="pt-4">
-            <Button
-              onClick={handleSaveProfile}
-              disabled={isSaving}
-              className="flex items-center gap-2 rounded-xl bg-sky-600 px-6 py-2 text-white hover:bg-sky-700 disabled:opacity-50 dark:bg-sky-700 dark:hover:bg-sky-600"
-            >
-              {isSaving ? (
-                <>
-                  <div className="size-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                  Saving...
-                </>
-              ) : (
-                <>
-                  <Save className="size-4" />
-                  Save Changes
-                </>
-              )}
-            </Button>
-          </div>
-        </div>
-      </Card>
+      <ProfileInformationCard />
 
       <UpdatePasswordCard />
 
