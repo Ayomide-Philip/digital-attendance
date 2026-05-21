@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 export default function ProfileInformationCard() {
+  const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [formData, setFormData] = useState({
     displayName: "",
@@ -16,24 +17,9 @@ export default function ProfileInformationCard() {
     specialization: "",
   });
 
-  function handleInputChange(e) {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  }
-
-  const handleSaveProfile = async () => {
-    setIsSaving(true);
-    // API call will be handled by user
-    console.log("Form data to save:", formData);
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    setIsSaving(false);
-  };
-
   useEffect(() => {
-    async function fetchData() {
+    async function fetchUserProfile() {
+      setIsLoading(true);
       try {
         const request = await fetch(`/api/teacher/profile`, {
           method: "GET",
@@ -58,10 +44,55 @@ export default function ProfileInformationCard() {
         });
       } catch (err) {
         return toast.error("Unable to fetch user data. Try again later.");
+      } finally {
+        setIsLoading(false);
       }
     }
-    fetchData();
+    fetchUserProfile();
   }, []);
+
+  function handleInputChange(e) {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  }
+
+  const handleSaveProfile = async () => {
+    setIsSaving(true);
+    // API call will be handled by user
+    console.log("Form data to save:", formData);
+    await new Promise((resolve) => setTimeout(resolve, 1500));
+    setIsSaving(false);
+  };
+
+  if (isLoading) {
+    return (
+      <Card className="rounded-2xl border border-slate-200/70 bg-white/85 p-4 md:p-6 shadow-sm dark:border-slate-800 dark:bg-slate-950/70">
+        <div className="mb-4 md:mb-6">
+          <h2 className="text-base md:text-lg font-semibold text-slate-900 dark:text-slate-100">
+            Profile Information
+          </h2>
+          <p className="mt-1 text-xs md:text-sm text-slate-500 dark:text-slate-400">
+            Update your personal and professional details
+          </p>
+        </div>
+
+        <div className="space-y-3 md:space-y-4">
+          {[...Array(6)].map((_, idx) => (
+            <div key={idx} className="space-y-2">
+              <div className="h-4 w-24 animate-pulse rounded-lg bg-slate-200 dark:bg-slate-700" />
+              <div className="h-10 w-full animate-pulse rounded-xl bg-slate-200 dark:bg-slate-700" />
+            </div>
+          ))}
+          <div className="pt-2 md:pt-4">
+            <div className="h-10 w-32 animate-pulse rounded-xl bg-slate-200 dark:bg-slate-700" />
+          </div>
+        </div>
+      </Card>
+    );
+  }
 
   return (
     <Card className="rounded-2xl border border-slate-200/70 bg-white/85 p-4 md:p-6 shadow-sm dark:border-slate-800 dark:bg-slate-950/70">
