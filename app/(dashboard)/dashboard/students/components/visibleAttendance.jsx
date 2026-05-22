@@ -56,10 +56,10 @@ export default function VisibleAttendance({ visibleAttendance }) {
                         {record?.classesId?.code}
                       </span>
                       <span
-                        className={`inline-flex capitalize items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold ${statusStyles.badgeClass}`}
+                        className={`inline-flex capitalize items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold ${statusStyles?.badgeClass}`}
                       >
                         <span
-                          className={`size-2 rounded-full ${statusStyles.dotClass}`}
+                          className={`size-2 rounded-full ${statusStyles?.dotClass}`}
                         />
                         {record.status}
                       </span>

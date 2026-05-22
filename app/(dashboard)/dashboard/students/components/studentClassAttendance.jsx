@@ -240,7 +240,7 @@ export default function StudentClassAttendance({
                   <Link
                     href={
                       session?.classesId?._id && session?._id
-                        ? `/dashboard/students/classes/${session.classesId._id}/attendance/${session._id}`
+                        ? `/dashboard/students/classes/${session?.classesId?._id}/attendance/${session?._id}`
                         : "#"
                     }
                     aria-disabled={!(session?.classesId?._id && session?._id)}
