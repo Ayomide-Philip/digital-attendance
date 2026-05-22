@@ -186,10 +186,10 @@ export default function StudentClassAttendance({
 
                     <div className="min-w-0 space-y-1">
                       <h2 className="truncate capitalize text-lg font-semibold text-slate-900 transition-colors group-hover:text-sky-700 dark:text-slate-100 dark:group-hover:text-sky-300">
-                        {session?.title || "Attendance Session"}
-                      </h2>
-                      <p className="text-sm capitalize text-slate-500 dark:text-slate-400">
                         {className}
+                      </h2>
+                      <p className="text-sm text-slate-500 dark:text-slate-400">
+                        {session?.title || "Attendance Session"}
                       </p>
                     </div>
                   </div>
@@ -211,26 +211,19 @@ export default function StudentClassAttendance({
                     </div>
                     <div className="space-y-1">
                       <p className="text-xs font-medium uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">
-                        Start time
+                        Created
                       </p>
                       <p className="font-medium text-slate-900 dark:text-slate-100">
-                        {formatReadableDateTime(session?.startTime)}
-                      </p>
-                    </div>
-                    <div className="space-y-1">
-                      <p className="text-xs font-medium uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">
-                        End time
-                      </p>
-                      <p className="font-medium text-slate-900 dark:text-slate-100">
-                        {formatReadableDateTime(session?.endTime)}
+                        {formatCreatedAt(session?.createdAt)}
                       </p>
                     </div>
                     <div className="space-y-1 sm:col-span-2">
                       <p className="text-xs font-medium uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">
-                        Status
+                        Session Window
                       </p>
-                      <p className="font-medium text-slate-900 dark:text-slate-100">
-                        {statusMeta.label}
+                      <p className="flex flex-wrap items-center gap-2 font-medium text-slate-900 dark:text-slate-100">
+                        <Clock3 className="size-4 text-slate-400" />
+                        {formatRange(session?.startTime, session?.endTime)}
                       </p>
                     </div>
                   </div>
@@ -272,29 +265,31 @@ export default function StudentClassAttendance({
 }
 
 function getStatusMeta(status) {
-  switch (status) {
-    case "Present":
+  const normalizedStatus = status?.toLowerCase();
+
+  switch (normalizedStatus) {
+    case "present":
       return {
         label: "Present",
         badgeClass:
           "border-emerald-500/20 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300",
         dotClass: "bg-emerald-500",
       };
-    case "Absent":
+    case "absent":
       return {
         label: "Absent",
         badgeClass:
           "border-rose-500/20 bg-rose-500/10 text-rose-700 dark:text-rose-300",
         dotClass: "bg-rose-500",
       };
-    case "Flagged":
+    case "flagged":
       return {
         label: "Flagged",
         badgeClass:
           "border-orange-500/20 bg-orange-500/10 text-orange-700 dark:text-orange-300",
         dotClass: "bg-orange-500",
       };
-    case "Pending":
+    case "pending":
     default:
       return {
         label: "Pending",
@@ -317,4 +312,30 @@ function formatReadableDateTime(value) {
     hour: "numeric",
     minute: "2-digit",
   }).format(date);
+}
+
+function formatCreatedAt(createdAt) {
+  if (!createdAt) return "--";
+
+  return new Date(createdAt).toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+}
+
+function formatRange(startTime, endTime) {
+  if (!startTime || !endTime) return "--";
+
+  const formatOptions = {
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+  };
+
+  const start = new Date(startTime).toLocaleString("en-US", formatOptions);
+  const end = new Date(endTime).toLocaleString("en-US", formatOptions);
+
+  return `${start} → ${end}`;
 }

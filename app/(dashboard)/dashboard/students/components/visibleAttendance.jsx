@@ -56,10 +56,10 @@ export default function VisibleAttendance({ visibleAttendance }) {
                         {record?.classesId?.code}
                       </span>
                       <span
-                        className={`inline-flex capitalize items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold ${statusStyles.badge}`}
+                        className={`inline-flex capitalize items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold ${statusStyles.badgeClass}`}
                       >
                         <span
-                          className={`size-2 rounded-full ${statusStyles.dot}`}
+                          className={`size-2 rounded-full ${statusStyles.dotClass}`}
                         />
                         {record.status}
                       </span>
@@ -183,45 +183,37 @@ function formatCreatedAt(createdAt) {
 }
 
 function getStatusStyles(status) {
-  if (status === "present") {
-    return {
-      badge:
-        "border-emerald-500/20 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300",
-      dot: "bg-emerald-500",
-      button:
-        "border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 dark:border-emerald-900/50 dark:bg-emerald-950/40 dark:text-emerald-300",
-      icon: ShieldCheck,
-    };
-  }
+  const normalizedStatus = status?.toLowerCase();
 
-  if (status === "absent") {
-    return {
-      badge:
-        "border-rose-500/20 bg-rose-500/10 text-rose-700 dark:text-rose-300",
-      dot: "bg-rose-500",
-      button:
-        "border-slate-200 bg-white text-slate-500 dark:border-slate-800 dark:bg-slate-950/60 dark:text-slate-400",
-      icon: UserRoundCheck,
-    };
+  switch (normalizedStatus) {
+    case "present":
+      return {
+        label: "Present",
+        badgeClass:
+          "border-emerald-500/20 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300",
+        dotClass: "bg-emerald-500",
+      };
+    case "absent":
+      return {
+        label: "Absent",
+        badgeClass:
+          "border-rose-500/20 bg-rose-500/10 text-rose-700 dark:text-rose-300",
+        dotClass: "bg-rose-500",
+      };
+    case "flagged":
+      return {
+        label: "Flagged",
+        badgeClass:
+          "border-orange-500/20 bg-orange-500/10 text-orange-700 dark:text-orange-300",
+        dotClass: "bg-orange-500",
+      };
+    case "pending":
+    default:
+      return {
+        label: "Pending",
+        badgeClass:
+          "border-yellow-500/20 bg-yellow-500/10 text-yellow-700 dark:text-yellow-300",
+        dotClass: "bg-yellow-500",
+      };
   }
-
-  if (status === "pending") {
-    return {
-      badge:
-        "border-orange-500/20 bg-orange-500/10 text-orange-700 dark:text-orange-300",
-      dot: "bg-orange-500",
-      button:
-        "border-orange-200 bg-orange-50 text-orange-700 hover:bg-orange-100 dark:border-orange-900/50 dark:bg-orange-950/40 dark:text-orange-300",
-      icon: Clock3,
-    };
-  }
-
-  return {
-    badge:
-      "border-amber-500/20 bg-amber-500/10 text-amber-700 dark:text-amber-300",
-    dot: "bg-amber-500",
-    button:
-      "border-amber-200 bg-amber-50 text-amber-700 hover:bg-amber-100 dark:border-amber-900/50 dark:bg-amber-950/40 dark:text-amber-300",
-    icon: LoaderCircle,
-  };
 }
