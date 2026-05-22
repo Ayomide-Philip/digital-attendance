@@ -152,7 +152,7 @@ export default function StudentClassAttendance({
           </div>
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 2xl:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
           {filteredSessions.map((session) => {
             const statusMeta = getStatusMeta(session?.status);
             const className = session?.classesId?.name || "Class";
@@ -165,81 +165,102 @@ export default function StudentClassAttendance({
             return (
               <article
                 key={session?._id}
-                className="group rounded-2xl border border-slate-200 bg-white/95 p-3.5 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md dark:border-slate-800 dark:bg-slate-950/70 sm:p-4"
+                className="group rounded-3xl border border-slate-200/70 bg-white/85 p-4 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-slate-200/50 dark:border-slate-800 dark:bg-slate-950/70 dark:hover:shadow-black/20 sm:p-5"
               >
-                <div className="flex h-full flex-col gap-3.5">
-                  <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                    <div className="min-w-0 space-y-2">
-                      <h3 className="text-base font-semibold leading-snug text-slate-900 dark:text-slate-50 sm:text-lg capitalize">
-                        {session?.title || "Attendance Session"}
-                      </h3>
-                      <div className="inline-flex max-w-full items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-medium text-slate-700 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300 sm:text-sm">
-                        <GraduationCap className="size-4 shrink-0" />
-                        <span className="truncate">
-                          {className}
-                          {classCode ? ` • ${classCode.toUpperCase()}` : ""}
-                        </span>
-                      </div>
+                <div className="flex items-start justify-between gap-4">
+                  <div className="min-w-0 space-y-3">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="inline-flex uppercase items-center gap-1.5 rounded-full border border-slate-200/70 bg-slate-50 px-3 py-1 text-xs font-semibold text-slate-600 dark:border-slate-800 dark:bg-slate-900/60 dark:text-slate-300">
+                        <GraduationCap className="size-3.5" />
+                        {classCode || className}
+                      </span>
+                      <span
+                        className={`inline-flex capitalize items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold ${statusMeta.badgeClass}`}
+                      >
+                        <span
+                          className={`size-2 rounded-full ${statusMeta.dotClass}`}
+                        />
+                        {session?.status || "Pending"}
+                      </span>
                     </div>
 
-                    <span
-                      className={`inline-flex w-fit shrink-0 items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-semibold sm:text-xs ${statusMeta.badgeClass}`}
-                    >
-                      {statusMeta.icon}
-                      {session?.status || "Pending"}
+                    <div className="min-w-0 space-y-1">
+                      <h2 className="truncate capitalize text-lg font-semibold text-slate-900 transition-colors group-hover:text-sky-700 dark:text-slate-100 dark:group-hover:text-sky-300">
+                        {session?.title || "Attendance Session"}
+                      </h2>
+                      <p className="text-sm capitalize text-slate-500 dark:text-slate-400">
+                        {className}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-4 space-y-3">
+                  <p className="line-clamp-2 min-h-10 text-sm leading-6 text-slate-600 dark:text-slate-300">
+                    {session?.description || "No description provided."}
+                  </p>
+
+                  <div className="grid gap-3 rounded-2xl border border-slate-200/70 bg-slate-50/70 p-3 text-sm dark:border-slate-800 dark:bg-slate-900/50 sm:grid-cols-2 sm:p-4">
+                    <div className="space-y-1">
+                      <p className="text-xs font-medium uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">
+                        Teacher
+                      </p>
+                      <p className="font-medium text-slate-900 dark:text-slate-100">
+                        {teacherName}
+                      </p>
+                    </div>
+                    <div className="space-y-1">
+                      <p className="text-xs font-medium uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">
+                        Start time
+                      </p>
+                      <p className="font-medium text-slate-900 dark:text-slate-100">
+                        {formatReadableDateTime(session?.startTime)}
+                      </p>
+                    </div>
+                    <div className="space-y-1">
+                      <p className="text-xs font-medium uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">
+                        End time
+                      </p>
+                      <p className="font-medium text-slate-900 dark:text-slate-100">
+                        {formatReadableDateTime(session?.endTime)}
+                      </p>
+                    </div>
+                    <div className="space-y-1 sm:col-span-2">
+                      <p className="text-xs font-medium uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">
+                        Status
+                      </p>
+                      <p className="font-medium text-slate-900 dark:text-slate-100">
+                        {statusMeta.label}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                  <div className="flex min-w-0 flex-1 items-center gap-2 text-sm text-slate-500 dark:text-slate-400 truncate">
+                    <Users className="size-4 shrink-0" />
+                    <span className="truncate">
+                      {session?.classesId?.name || className}
                     </span>
                   </div>
 
-                  <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
-                    <MiniInfoCard label="Teacher" value={teacherName} />
-                    <MiniInfoCard label="Status" value={statusMeta.label} />
-                  </div>
-
-                  <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
-                    <TimeField
-                      icon={Clock3}
-                      label="Start time"
-                      value={formatReadableDateTime(session?.startTime)}
-                    />
-                    <TimeField
-                      icon={Clock3}
-                      label="End time"
-                      value={formatReadableDateTime(session?.endTime)}
-                    />
-                  </div>
-
-                  {session?.description ? (
-                    <div className="rounded-2xl border border-slate-200/80 bg-slate-50/70 p-3 text-sm leading-6 text-slate-600 dark:border-slate-800 dark:bg-slate-900/50 dark:text-slate-300">
-                      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">
-                        Description
-                      </p>
-                      <p className="mt-2 whitespace-pre-wrap wrap-break-word">
-                        {session.description}
-                      </p>
-                    </div>
-                  ) : null}
-
-                  <div className="pt-1">
-                    <Link
-                      href={
-                        session?.classesId?._id && session?._id
-                          ? `/dashboard/students/classes/${session.classesId._id}/attendance/${session._id}`
-                          : "#"
-                      }
-                      aria-disabled={!(session?.classesId?._id && session?._id)}
-                      tabIndex={
-                        session?.classesId?._id && session?._id ? 0 : -1
-                      }
-                      className={`inline-flex w-full items-center justify-center gap-2 rounded-xl border px-4 py-2.5 text-sm font-semibold transition-all duration-200 sm:w-auto ${
-                        session?.classesId?._id && session?._id
-                          ? "border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-200 dark:hover:border-slate-700 dark:hover:bg-slate-900"
-                          : "pointer-events-none border-slate-200 bg-slate-100 text-slate-400 dark:border-slate-800 dark:bg-slate-900/60 dark:text-slate-600"
-                      }`}
-                    >
-                      View attendance
-                      <ChevronRight className="size-4" />
-                    </Link>
-                  </div>
+                  <Link
+                    href={
+                      session?.classesId?._id && session?._id
+                        ? `/dashboard/students/classes/${session.classesId._id}/attendance/${session._id}`
+                        : "#"
+                    }
+                    aria-disabled={!(session?.classesId?._id && session?._id)}
+                    tabIndex={session?.classesId?._id && session?._id ? 0 : -1}
+                    className={`inline-flex cursor-pointer gap-2 rounded-xl border px-4 py-2.5 text-sm font-semibold transition-all duration-200 sm:w-auto ${
+                      session?.classesId?._id && session?._id
+                        ? "border-sky-200 bg-sky-50 text-sky-700 hover:bg-sky-100 hover:-translate-y-0.5 hover:shadow-sm dark:border-sky-900/50 dark:bg-sky-950/40 dark:text-sky-300 dark:hover:bg-sky-900/60"
+                        : "pointer-events-none border-slate-200 bg-slate-100 text-slate-400 dark:border-slate-800 dark:bg-slate-900/70 dark:text-slate-500"
+                    }`}
+                  >
+                    View attendance
+                    <ChevronRight className="size-4" />
+                  </Link>
                 </div>
               </article>
             );
@@ -256,30 +277,30 @@ function getStatusMeta(status) {
       return {
         label: "Present",
         badgeClass:
-          "border border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-500/20 dark:bg-emerald-500/10 dark:text-emerald-300",
-        icon: <CheckCircle2 className="size-3.5" />,
+          "border-emerald-500/20 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300",
+        dotClass: "bg-emerald-500",
       };
     case "Absent":
       return {
         label: "Absent",
         badgeClass:
-          "border border-red-200 bg-red-50 text-red-700 dark:border-red-500/20 dark:bg-red-500/10 dark:text-red-300",
-        icon: <XCircle className="size-3.5" />,
+          "border-rose-500/20 bg-rose-500/10 text-rose-700 dark:text-rose-300",
+        dotClass: "bg-rose-500",
       };
     case "Flagged":
       return {
         label: "Flagged",
         badgeClass:
-          "border border-orange-200 bg-orange-50 text-orange-700 dark:border-orange-500/20 dark:bg-orange-500/10 dark:text-orange-300",
-        icon: <BadgeAlert className="size-3.5" />,
+          "border-orange-500/20 bg-orange-500/10 text-orange-700 dark:text-orange-300",
+        dotClass: "bg-orange-500",
       };
     case "Pending":
     default:
       return {
         label: "Pending",
         badgeClass:
-          "border border-yellow-200 bg-yellow-50 text-yellow-800 dark:border-yellow-500/20 dark:bg-yellow-500/10 dark:text-yellow-300",
-        icon: <Clock3 className="size-3.5" />,
+          "border-yellow-500/20 bg-yellow-500/10 text-yellow-700 dark:text-yellow-300",
+        dotClass: "bg-yellow-500",
       };
   }
 }
@@ -291,38 +312,9 @@ function formatReadableDateTime(value) {
   if (Number.isNaN(date.getTime())) return "--";
 
   return new Intl.DateTimeFormat("en-US", {
-    weekday: "short",
     month: "short",
     day: "numeric",
-    year: "numeric",
     hour: "numeric",
     minute: "2-digit",
   }).format(date);
-}
-
-function TimeField({ icon: Icon, label, value }) {
-  return (
-    <div className="rounded-2xl border border-slate-200/80 bg-slate-50/80 p-3 dark:border-slate-800 dark:bg-slate-900/60">
-      <p className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">
-        <Icon className="size-4" />
-        {label}
-      </p>
-      <p className="mt-1.5 text-sm font-medium leading-6 text-slate-900 dark:text-slate-100">
-        {value}
-      </p>
-    </div>
-  );
-}
-
-function MiniInfoCard({ label, value }) {
-  return (
-    <div className="rounded-2xl border border-slate-200/80 bg-slate-50/80 px-3 py-2.5 dark:border-slate-800 dark:bg-slate-900/60">
-      <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">
-        {label}
-      </p>
-      <p className="mt-1 text-sm font-medium text-slate-900 dark:text-slate-100">
-        {value}
-      </p>
-    </div>
-  );
 }
