@@ -37,14 +37,14 @@ export default function VisibleAttendance({ visibleAttendance }) {
         </section>
       ) : (
         <section className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
-          {visibleAttendance.map((record, index) => {
-            const statusStyles = getStatusStyles(record.status);
-            const isMarked = record.status !== "Pending";
-            const isExpired = isSessionExpired(record.endTime);
+          {visibleAttendance?.map((record, index) => {
+            const statusStyles = getStatusStyles(record?.status?.toLowerCase());
+            const isMarked = record?.status?.toLowerCase() !== "pending";
+            const isExpired = isSessionExpired(record?.endTime);
 
             return (
               <article
-                key={record._id}
+                key={record?._id}
                 className="group rounded-3xl border border-slate-200/70 bg-white/85 p-4 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-slate-200/50 dark:border-slate-800 dark:bg-slate-950/70 dark:hover:shadow-black/20 sm:p-5"
                 style={{ animationDelay: `${index * 60}ms` }}
               >
@@ -56,7 +56,7 @@ export default function VisibleAttendance({ visibleAttendance }) {
                         {record?.classesId?.code}
                       </span>
                       <span
-                        className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold ${statusStyles.badge}`}
+                        className={`inline-flex capitalize items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold ${statusStyles.badge}`}
                       >
                         <span
                           className={`size-2 rounded-full ${statusStyles.dot}`}
@@ -66,10 +66,10 @@ export default function VisibleAttendance({ visibleAttendance }) {
                     </div>
 
                     <div className="min-w-0 space-y-1">
-                      <h2 className="truncate text-lg font-semibold text-slate-900 transition-colors group-hover:text-sky-700 dark:text-slate-100 dark:group-hover:text-sky-300">
+                      <h2 className="truncate capitalize text-lg font-semibold text-slate-900 transition-colors group-hover:text-sky-700 dark:text-slate-100 dark:group-hover:text-sky-300">
                         {record?.classesId?.name}
                       </h2>
-                      <p className="text-sm text-slate-500 dark:text-slate-400">
+                      <p className="text-sm capitalize text-slate-500 dark:text-slate-400">
                         {record?.title}
                       </p>
                     </div>
@@ -111,9 +111,12 @@ export default function VisibleAttendance({ visibleAttendance }) {
                 </div>
 
                 <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                  <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
-                    <MapPin className="size-4" />
-                    {record?.teacherId?.displayName || record?.teacherId?.name}
+                  <div className="flex min-w-0 flex-1 items-center gap-2 text-sm text-slate-500 dark:text-slate-400 truncate">
+                    <MapPin className="size-4 shrink-0" />
+                    <span className="truncate">
+                      {record?.teacherId?.displayName ||
+                        record?.teacherId?.name}
+                    </span>
                   </div>
 
                   <button
@@ -180,7 +183,7 @@ function formatCreatedAt(createdAt) {
 }
 
 function getStatusStyles(status) {
-  if (status === "Present") {
+  if (status === "present") {
     return {
       badge:
         "border-emerald-500/20 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300",
@@ -191,7 +194,7 @@ function getStatusStyles(status) {
     };
   }
 
-  if (status === "Absent") {
+  if (status === "absent") {
     return {
       badge:
         "border-rose-500/20 bg-rose-500/10 text-rose-700 dark:text-rose-300",
@@ -202,7 +205,7 @@ function getStatusStyles(status) {
     };
   }
 
-  if (status === "Late") {
+  if (status === "pending") {
     return {
       badge:
         "border-orange-500/20 bg-orange-500/10 text-orange-700 dark:text-orange-300",
