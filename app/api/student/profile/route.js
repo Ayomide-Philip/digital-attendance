@@ -1,4 +1,6 @@
 import { auth } from "@/auth";
+import { connectDatabase } from "@/lib/database/connectdb";
+import User from "@/lib/models/user.model";
 import mongoose from "mongoose";
 import { NextResponse } from "next/server";
 
@@ -28,8 +30,34 @@ export const GET = auth(async function GET(req) {
   }
 
   try {
+    await connectDatabase();
+    const user = await User.findById(new mongoose.Types.ObjectId(userId));
+
+    if (!user) {
+      return NextResponse.json(
+        {
+          error: "Unauthorized Access",
+        },
+        {
+          status: 401,
+        },
+      );
+    }
+
+    if (user?.role !== "student") {
+      return NextResponse.json(
+        {
+          error: "Unauthorized Access",
+        },
+        {
+          status: 401,
+        },
+      );
+    }
+
     return NextResponse.json({
-      message: "Profile data",
+      message: "Successfully fetched profile data",
+      user,
     });
   } catch (err) {
     console.log(err);
