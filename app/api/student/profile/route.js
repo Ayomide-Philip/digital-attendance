@@ -27,7 +27,19 @@ export const GET = auth(async function GET(req) {
     );
   }
 
-  return NextResponse.json({
-    message: "Profile data",
-  });
+  try {
+    return NextResponse.json({
+      message: "Profile data",
+    });
+  } catch (err) {
+    console.log(err);
+    return NextResponse.json(
+      {
+        error: "Unable to fetch profile data",
+      },
+      {
+        status: 500,
+      },
+    );
+  }
 });
