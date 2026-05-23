@@ -22,7 +22,7 @@ export const GET = auth(async function GET(req) {
         error: "Unauthorized Access",
       },
       {
-        status: 400,
+        status: 401,
       },
     );
   }
