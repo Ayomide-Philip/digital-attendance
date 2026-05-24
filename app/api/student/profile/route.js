@@ -76,7 +76,8 @@ export const PUT = auth(async function PUT(req) {
   const { displayName, matricNo, department, level, school, userId } =
     await req.json();
 
-  if (!mongoose.Types.ObjectId.isValid(userId?.trim())) {
+  // Validate userId format
+  if (!userId?.trim() || !mongoose.Types.ObjectId.isValid(userId?.trim())) {
     return NextResponse.json(
       {
         error: "Unauthorized Access",
@@ -87,12 +88,18 @@ export const PUT = auth(async function PUT(req) {
     );
   }
 
+  const hasDisplayName = displayName?.trim();
+  const hasMatricNo = matricNo?.trim();
+  const hasDepartment = department?.trim();
+  const hasLevel = level?.trim();
+  const hasSchool = school?.trim();
+
   if (
-    !displayName.trim() &&
-    !matricNo.trim() &&
-    !department.trim() &&
-    !level.trim() &&
-    !school.trim()
+    !hasDisplayName &&
+    !hasMatricNo &&
+    !hasDepartment &&
+    !hasLevel &&
+    !hasSchool
   ) {
     return NextResponse.json(
       {
@@ -105,8 +112,8 @@ export const PUT = auth(async function PUT(req) {
   }
 
   if (
-    displayName?.trim() &&
-    (displayName.length < 2 || displayName.length > 100)
+    hasDisplayName &&
+    (hasDisplayName.length < 2 || hasDisplayName.length > 100)
   ) {
     return NextResponse.json(
       {
@@ -118,7 +125,7 @@ export const PUT = auth(async function PUT(req) {
     );
   }
 
-  if (matricNo?.trim() && (matricNo.length < 5 || matricNo.length > 20)) {
+  if (hasMatricNo && (hasMatricNo.length < 5 || hasMatricNo.length > 20)) {
     return NextResponse.json(
       {
         error: "Matric number must be between 5 and 20 characters",
@@ -130,8 +137,8 @@ export const PUT = auth(async function PUT(req) {
   }
 
   if (
-    department?.trim() &&
-    (department.length < 5 || department.length > 100)
+    hasDepartment &&
+    (hasDepartment.length < 5 || hasDepartment.length > 100)
   ) {
     return NextResponse.json(
       {
@@ -143,10 +150,7 @@ export const PUT = auth(async function PUT(req) {
     );
   }
 
-  if (
-    level?.trim() &&
-    !["100", "200", "300", "400", "500"].includes(level.trim())
-  ) {
+  if (hasLevel && !["100", "200", "300", "400", "500"].includes(hasLevel)) {
     return NextResponse.json(
       {
         error: "Level must be one of the following: 100, 200, 300, 400, 500",
@@ -157,7 +161,7 @@ export const PUT = auth(async function PUT(req) {
     );
   }
 
-  if (school?.trim() && (school.length < 5 || school.length > 100)) {
+  if (hasSchool && (hasSchool.length < 5 || hasSchool.length > 100)) {
     return NextResponse.json(
       {
         error: "School must be between 5 and 100 characters",
@@ -168,14 +172,10 @@ export const PUT = auth(async function PUT(req) {
     );
   }
 
-  if (
-    (!matricNo?.trim() && school?.trim()) ||
-    (matricNo?.trim() && !school?.trim())
-  ) {
+  if ((hasMatricNo && !hasSchool) || (!hasMatricNo && hasSchool)) {
     return NextResponse.json(
       {
-        error:
-          "Before you can input your school, you need to input your matric number, both fields are required to update profile data",
+        error: "Matric number and school must both be provided together",
       },
       {
         status: 400,
@@ -211,34 +211,30 @@ export const PUT = auth(async function PUT(req) {
       );
     }
 
-    if (
-      displayName?.trim().toLowerCase() === user.displayName.toLowerCase() &&
-      matricNo?.trim().toLowerCase() === user.matricNo.toLowerCase() &&
-      department?.trim().toLowerCase() === user.department.toLowerCase() &&
-      level?.trim() === user.level &&
-      school?.trim().toLowerCase() === user.school.toLowerCase()
-    ) {
-      return NextResponse.json(
-        {
-          error: "No changes detected in profile data",
-        },
-        {
-          status: 400,
-        },
-      );
-    }
-
-    if (!user?.matricNo?.trim()) {
-      const existingMatricNoUser = await User.findOne({
-        matricNo: matricNo?.trim()?.toLowerCase(),
-        school:
-          user?.school?.trim()?.toLowerCase() || school?.trim()?.toLowerCase(),
-      });
-
-      if (existingMatricNoUser) {
+    if (hasMatricNo || hasSchool) {
+      if (user?.matricNo?.trim() || user?.school?.trim()) {
         return NextResponse.json(
           {
-            error: "Matric number and school combination already exists",
+            error:
+              "Matric number and school cannot be changed once set. Please contact support to modify.",
+          },
+          {
+            status: 400,
+          },
+        );
+      }
+
+      const existingUser = await User.findOne({
+        matricNo: hasMatricNo.toLowerCase(),
+        school: hasSchool.toLowerCase(),
+        _id: { $ne: new mongoose.Types.ObjectId(userId.trim()) },
+      });
+
+      if (existingUser) {
+        return NextResponse.json(
+          {
+            error:
+              "This matric number and school combination is already in use",
           },
           {
             status: 400,
@@ -247,17 +243,43 @@ export const PUT = auth(async function PUT(req) {
       }
     }
 
-    if (
-      (user?.matricNo?.trim() &&
-        user?.matricNo?.trim().toLowerCase() !==
-          matricNo?.trim().toLowerCase()) ||
-      (user?.school?.trim() &&
-        user?.school?.trim().toLowerCase() !== school?.trim().toLowerCase())
-    ) {
+    const updateData = {};
+
+    if (hasDisplayName) {
+      updateData.displayName = hasDisplayName;
+    }
+    if (hasMatricNo) {
+      updateData.matricNo = hasMatricNo.toLowerCase();
+    }
+    if (hasDepartment) {
+      updateData.department = hasDepartment.toLowerCase();
+    }
+    if (hasLevel) {
+      updateData.level = hasLevel;
+    }
+    if (hasSchool) {
+      updateData.school = hasSchool.toLowerCase();
+    }
+
+    let hasChanges = false;
+    for (const [key, newValue] of Object.entries(updateData)) {
+      const oldValue = user[key];
+      const oldValueNormalized =
+        typeof oldValue === "string" ? oldValue.toLowerCase() : oldValue;
+      const newValueNormalized =
+        typeof newValue === "string" ? newValue.toLowerCase() : newValue;
+
+      if (oldValueNormalized !== newValueNormalized) {
+        hasChanges = true;
+        break;
+      }
+    }
+
+    if (!hasChanges) {
       return NextResponse.json(
         {
           error:
-            "Matric number and school combination cannot be changed once set, if you want to change it, please contact support",
+            "No changes detected. The values you provided are the same as the current profile data.",
         },
         {
           status: 400,
@@ -266,36 +288,19 @@ export const PUT = auth(async function PUT(req) {
     }
 
     const updatedUser = await User.findByIdAndUpdate(
-      {
-        _id: new mongoose.Types.ObjectId(userId.trim()),
-      },
-      {
-        displayName:
-          displayName?.trim()?.toLowerCase() ||
-          user?.displayName?.trim()?.toLowerCase(),
-        matricNo:
-          user?.matricNo?.trim()?.toLowerCase() ||
-          matricNo?.trim()?.toLowerCase(),
-        department:
-          department?.trim()?.toLowerCase() ||
-          user?.department?.trim()?.toLowerCase(),
-        level: level?.trim() || user.level,
-        school:
-          user?.school?.trim()?.toLowerCase() || school?.trim()?.toLowerCase(),
-      },
+      new mongoose.Types.ObjectId(userId.trim()),
+      updateData,
       {
         new: true,
-        returnDocument: "after",
       },
     );
 
     return NextResponse.json({
-      message: "Update profile route",
-      user,
-      updatedUser,
+      message: "Profile updated successfully",
+      user: updatedUser,
     });
   } catch (err) {
-    console.log(err);
+    console.error(err);
     return NextResponse.json(
       {
         error: "Unable to update profile data",
