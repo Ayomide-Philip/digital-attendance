@@ -71,3 +71,10 @@ export const GET = auth(async function GET(req) {
     );
   }
 });
+
+export const PUT = auth(async function PUT(req) {
+  const { displayName, matricNo, department, level, school } = await req.json();
+  return NextResponse.json({
+    message: "Update profile route",
+  });
+});
