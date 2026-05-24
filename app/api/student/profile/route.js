@@ -168,6 +168,30 @@ export const PUT = auth(async function PUT(req) {
     );
   }
 
+  if (!matricNo?.trim() && school?.trim()) {
+    return NextResponse.json(
+      {
+        error:
+          "Before you can input your school, you need to input your matric number, both fields are required to update profile data",
+      },
+      {
+        status: 400,
+      },
+    );
+  }
+
+  if (matricNo?.trim() && !school?.trim()) {
+    return NextResponse.json(
+      {
+        error:
+          "Both matric number and school fields are required to update profile data, you cannot input one without the other",
+      },
+      {
+        status: 400,
+      },
+    );
+  }
+
   try {
     await connectDatabase();
     const user = await User.findById(
@@ -192,6 +216,23 @@ export const PUT = auth(async function PUT(req) {
         },
         {
           status: 403,
+        },
+      );
+    }
+
+    if (
+      displayName?.trim().toLowerCase() === user.displayName.toLowerCase() &&
+      matricNo?.trim().toLowerCase() === user.matricNo.toLowerCase() &&
+      department?.trim().toLowerCase() === user.department.toLowerCase() &&
+      level?.trim() === user.level &&
+      school?.trim().toLowerCase() === user.school.toLowerCase()
+    ) {
+      return NextResponse.json(
+        {
+          error: "No changes detected in profile data",
+        },
+        {
+          status: 400,
         },
       );
     }
