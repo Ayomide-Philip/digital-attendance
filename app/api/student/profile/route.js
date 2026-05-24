@@ -76,7 +76,7 @@ export const PUT = auth(async function PUT(req) {
   const { displayName, matricNo, department, level, school, userId } =
     await req.json();
 
-  if (!mongoose.Types.ObjectId.isValid(userId.trim())) {
+  if (!mongoose.Types.ObjectId.isValid(userId?.trim())) {
     return NextResponse.json(
       {
         error: "Unauthorized Access",
@@ -88,15 +88,15 @@ export const PUT = auth(async function PUT(req) {
   }
 
   if (
-    !displayName.trim() ||
-    !matricNo.trim() ||
-    !department.trim() ||
-    !level.trim() ||
+    !displayName.trim() &&
+    !matricNo.trim() &&
+    !department.trim() &&
+    !level.trim() &&
     !school.trim()
   ) {
     return NextResponse.json(
       {
-        error: "All fields are required",
+        error: "At least one field is required to update profile data",
       },
       {
         status: 400,
@@ -105,6 +105,33 @@ export const PUT = auth(async function PUT(req) {
   }
 
   try {
+    await connectDatabase();
+    const user = await User.findById(
+      new mongoose.Types.ObjectId(userId.trim()),
+    );
+
+    if (!user) {
+      return NextResponse.json(
+        {
+          error: "Unauthorized Access",
+        },
+        {
+          status: 401,
+        },
+      );
+    }
+
+    if (user?.role !== "student") {
+      return NextResponse.json(
+        {
+          error: "Forbidden Access",
+        },
+        {
+          status: 403,
+        },
+      );
+    }
+
     return NextResponse.json({
       message: "Update profile route",
     });
