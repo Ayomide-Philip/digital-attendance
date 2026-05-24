@@ -76,7 +76,7 @@ export const PUT = auth(async function PUT(req) {
   const { displayName, matricNo, department, level, school, userId } =
     await req.json();
 
-  if (!mongoose.Types.ObjectId.isValid(userId)) {
+  if (!mongoose.Types.ObjectId.isValid(userId.trim())) {
     return NextResponse.json(
       {
         error: "Unauthorized Access",
@@ -104,7 +104,19 @@ export const PUT = auth(async function PUT(req) {
     );
   }
 
-  return NextResponse.json({
-    message: "Update profile route",
-  });
+  try {
+    return NextResponse.json({
+      message: "Update profile route",
+    });
+  } catch (err) {
+    console.log(err);
+    return NextResponse.json(
+      {
+        error: "Unable to update profile data",
+      },
+      {
+        status: 500,
+      },
+    );
+  }
 });
