@@ -73,7 +73,37 @@ export const GET = auth(async function GET(req) {
 });
 
 export const PUT = auth(async function PUT(req) {
-  const { displayName, matricNo, department, level, school } = await req.json();
+  const { displayName, matricNo, department, level, school, userId } =
+    await req.json();
+
+  if (!mongoose.Types.ObjectId.isValid(userId)) {
+    return NextResponse.json(
+      {
+        error: "Unauthorized Access",
+      },
+      {
+        status: 401,
+      },
+    );
+  }
+
+  if (
+    !displayName.trim() ||
+    !matricNo.trim() ||
+    !department.trim() ||
+    !level.trim() ||
+    !school.trim()
+  ) {
+    return NextResponse.json(
+      {
+        error: "All fields are required",
+      },
+      {
+        status: 400,
+      },
+    );
+  }
+
   return NextResponse.json({
     message: "Update profile route",
   });
