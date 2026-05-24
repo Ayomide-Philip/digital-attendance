@@ -168,23 +168,14 @@ export const PUT = auth(async function PUT(req) {
     );
   }
 
-  if (!matricNo?.trim() && school?.trim()) {
+  if (
+    (!matricNo?.trim() && school?.trim()) ||
+    (matricNo?.trim() && !school?.trim())
+  ) {
     return NextResponse.json(
       {
         error:
           "Before you can input your school, you need to input your matric number, both fields are required to update profile data",
-      },
-      {
-        status: 400,
-      },
-    );
-  }
-
-  if (matricNo?.trim() && !school?.trim()) {
-    return NextResponse.json(
-      {
-        error:
-          "Both matric number and school fields are required to update profile data, you cannot input one without the other",
       },
       {
         status: 400,
@@ -230,6 +221,43 @@ export const PUT = auth(async function PUT(req) {
       return NextResponse.json(
         {
           error: "No changes detected in profile data",
+        },
+        {
+          status: 400,
+        },
+      );
+    }
+
+    if (!user?.matricNo?.trim()) {
+      const existingMatricNoUser = await User.findOne({
+        matricNo: matricNo?.trim()?.toLowerCase(),
+        school:
+          user?.school?.trim()?.toLowerCase() || school?.trim()?.toLowerCase(),
+      });
+
+      if (existingMatricNoUser) {
+        return NextResponse.json(
+          {
+            error: "Matric number and school combination already exists",
+          },
+          {
+            status: 400,
+          },
+        );
+      }
+    }
+
+    if (
+      (user?.matricNo?.trim() &&
+        user?.matricNo?.trim().toLowerCase() !==
+          matricNo?.trim().toLowerCase()) ||
+      (user?.school?.trim() &&
+        user?.school?.trim().toLowerCase() !== school?.trim().toLowerCase())
+    ) {
+      return NextResponse.json(
+        {
+          error:
+            "Matric number and school combination cannot be changed once set, if you want to change it, please contact support",
         },
         {
           status: 400,
