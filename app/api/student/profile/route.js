@@ -104,6 +104,70 @@ export const PUT = auth(async function PUT(req) {
     );
   }
 
+  if (
+    displayName?.trim() &&
+    (displayName.length < 2 || displayName.length > 100)
+  ) {
+    return NextResponse.json(
+      {
+        error: "Display name must be between 2 and 100 characters",
+      },
+      {
+        status: 400,
+      },
+    );
+  }
+
+  if (matricNo?.trim() && (matricNo.length < 5 || matricNo.length > 20)) {
+    return NextResponse.json(
+      {
+        error: "Matric number must be between 5 and 20 characters",
+      },
+      {
+        status: 400,
+      },
+    );
+  }
+
+  if (
+    department?.trim() &&
+    (department.length < 5 || department.length > 100)
+  ) {
+    return NextResponse.json(
+      {
+        error: "Department must be between 5 and 100 characters",
+      },
+      {
+        status: 400,
+      },
+    );
+  }
+
+  if (
+    level?.trim() &&
+    !["100", "200", "300", "400", "500"].includes(level.trim())
+  ) {
+    return NextResponse.json(
+      {
+        error: "Level must be one of the following: 100, 200, 300, 400, 500",
+      },
+      {
+        status: 400,
+      },
+    );
+  }
+
+  if (school?.trim() && (school.length < 5 || school.length > 100)) {
+    return NextResponse.json(
+      {
+        error: "School must be between 5 and 100 characters",
+      },
+      {
+        status: 400,
+      },
+    );
+  }
+
   try {
     await connectDatabase();
     const user = await User.findById(
@@ -134,6 +198,7 @@ export const PUT = auth(async function PUT(req) {
 
     return NextResponse.json({
       message: "Update profile route",
+      user,
     });
   } catch (err) {
     console.log(err);
