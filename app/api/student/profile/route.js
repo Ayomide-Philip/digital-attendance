@@ -265,9 +265,34 @@ export const PUT = auth(async function PUT(req) {
       );
     }
 
+    const updatedUser = await User.findByIdAndUpdate(
+      {
+        _id: new mongoose.Types.ObjectId(userId.trim()),
+      },
+      {
+        displayName:
+          displayName?.trim()?.toLowerCase() ||
+          user?.displayName?.trim()?.toLowerCase(),
+        matricNo:
+          user?.matricNo?.trim()?.toLowerCase() ||
+          matricNo?.trim()?.toLowerCase(),
+        department:
+          department?.trim()?.toLowerCase() ||
+          user?.department?.trim()?.toLowerCase(),
+        level: level?.trim() || user.level,
+        school:
+          user?.school?.trim()?.toLowerCase() || school?.trim()?.toLowerCase(),
+      },
+      {
+        new: true,
+        returnDocument: "after",
+      },
+    );
+
     return NextResponse.json({
       message: "Update profile route",
       user,
+      updatedUser,
     });
   } catch (err) {
     console.log(err);
