@@ -1,9 +1,21 @@
 "use client";
 
-import { Bell, Menu, PanelLeft, Search } from "lucide-react";
+import {
+  Bell,
+  Menu,
+  PanelLeft,
+  Search,
+  LogOut,
+  Settings,
+  User,
+} from "lucide-react";
 import { usePathname } from "next/navigation";
+import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import Toggle from "@/components/toggle";
+import Link from "next/link";
+import getInitials from "@/lib/utility/getInitials";
+import { signOut } from "next-auth/react";
 
 function getTitle(pathname) {
   if (pathname === "/dashboard/students") return "Student Dashboard";
@@ -24,6 +36,35 @@ export default function StudentNavbar({
 }) {
   const pathname = usePathname();
   const title = getTitle(pathname);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    if (isDropdownOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+      return () =>
+        document.removeEventListener("mousedown", handleClickOutside);
+    }
+  }, [isDropdownOpen]);
+
+  const handleLogout = async () => {
+    setIsLoggingOut(true);
+    try {
+      await signOut({ redirect: true, callbackUrl: "/login" });
+      setIsDropdownOpen(false);
+    } catch (err) {
+      console.error("Logout error:", err);
+    } finally {
+      setIsLoggingOut(false);
+    }
+  };
 
   return (
     <header className="sticky top-4 z-20 mb-4 flex min-h-16 items-center justify-between rounded-2xl border border-slate-200/70 bg-white/80 px-3 py-2 shadow-sm backdrop-blur-xl dark:border-slate-800 dark:bg-slate-950/65 sm:h-16 sm:px-5 sm:py-0">
@@ -71,8 +112,68 @@ export default function StudentNavbar({
           <Bell className="size-4" />
         </Button>
         <Toggle />
-        <div className="hidden size-9 place-items-center rounded-full border border-slate-200 bg-white text-xs font-semibold text-slate-700 shadow-sm dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 min-[430px]:grid">
-          {`${session?.user?.name?.split(" ")[0]?.[0]} ${session?.user?.name?.split(" ")[1]?.[0]}`}
+        <div className="relative" ref={dropdownRef}>
+          <button
+            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+            className="size-9 place-items-center rounded-full border border-slate-200 bg-white text-xs font-semibold text-slate-700 shadow-sm transition-colors hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800 min-[430px]:grid cursor-pointer"
+            aria-label="User menu"
+            aria-expanded={isDropdownOpen}
+          >
+            {getInitials(session?.user?.name || "Unknown User")}
+          </button>
+
+          {isDropdownOpen && (
+            <div className="absolute right-0 mt-2 w-48 rounded-xl border border-slate-200/70 bg-white shadow-lg dark:border-slate-800 dark:bg-slate-950 z-100">
+              <div className="px-4 py-3 border-b border-slate-200/70 dark:border-slate-800">
+                <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">
+                  Student Account
+                </p>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 truncate">
+                  {session?.user?.email || "No email"}
+                </p>
+              </div>
+
+              <div className="py-1">
+                <Link
+                  href="/dashboard/students/profile"
+                  className="flex items-center gap-3 px-4 py-2 text-sm text-slate-700 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800 transition-colors"
+                  onClick={() => setIsDropdownOpen(false)}
+                >
+                  <User className="size-4" />
+                  Profile
+                </Link>
+
+                <Link
+                  href="/dashboard/students/settings"
+                  className="flex items-center gap-3 px-4 py-2 text-sm text-slate-700 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800 transition-colors"
+                  onClick={() => setIsDropdownOpen(false)}
+                >
+                  <Settings className="size-4" />
+                  Settings
+                </Link>
+
+                <div className="border-t border-slate-200/70 dark:border-slate-800 my-1"></div>
+
+                <button
+                  onClick={handleLogout}
+                  disabled={isLoggingOut}
+                  className="w-full flex cursor-pointer items-center gap-3 px-4 py-2 text-sm text-red-700 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-950/30 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isLoggingOut ? (
+                    <>
+                      <div className="size-4 animate-spin rounded-full border 2 border-red-700 border-t-transparent dark:border-red-400 dark:border-t-transparent" />
+                      Logging out...
+                    </>
+                  ) : (
+                    <>
+                      <LogOut className="size-4" />
+                      Logout
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </header>
