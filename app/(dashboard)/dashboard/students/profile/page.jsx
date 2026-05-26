@@ -5,7 +5,6 @@ import {
   Mail,
   Phone,
   MapPin,
-  BookOpen,
   GraduationCap,
   Building2,
   Edit2,
@@ -24,13 +23,7 @@ export default function StudentProfilePage() {
     async function fetchStudentProfile() {
       setIsLoading(true);
       try {
-        // Mock delay - replace with actual API call
         await new Promise((resolve) => setTimeout(resolve, 1000));
-
-        // Replace with actual API call:
-        // const response = await fetch("/api/student/profile");
-        // const data = await response.json();
-        // setStudent(data.user);
 
         setStudent({
           _id: "69e4afea55516dc69b4ecdf2",
