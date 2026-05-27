@@ -89,7 +89,6 @@ export default function StudentProfilePage() {
 
   return (
     <div className="space-y-5">
-      {/* Profile Header */}
       <Card className="rounded-2xl border border-slate-200/70 bg-white/85 p-4 md:p-6 shadow-sm dark:border-slate-800 dark:bg-slate-950/70">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between sm:gap-6">
           <div className="flex gap-3 sm:gap-6">
@@ -127,7 +126,6 @@ export default function StudentProfilePage() {
         </div>
       </Card>
 
-      {/* Contact Information */}
       <Card className="rounded-2xl border border-slate-200/70 bg-white/85 p-4 md:p-6 shadow-sm dark:border-slate-800 dark:bg-slate-950/70">
         <h2 className="mb-4 text-sm md:text-base font-semibold text-slate-900 dark:text-slate-100">
           Contact Information
@@ -183,7 +181,6 @@ export default function StudentProfilePage() {
         </div>
       </Card>
 
-      {/* Academic Information */}
       <Card className="rounded-2xl border border-slate-200/70 bg-white/85 p-4 md:p-6 shadow-sm dark:border-slate-800 dark:bg-slate-950/70">
         <h2 className="mb-4 text-sm md:text-base font-semibold text-slate-900 dark:text-slate-100">
           Academic Information
