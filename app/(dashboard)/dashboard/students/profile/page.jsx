@@ -25,6 +25,8 @@ export default function StudentProfilePage() {
       try {
         await new Promise((resolve) => setTimeout(resolve, 1000));
 
+        const request = await fetch(`/api/student/profile`, {});
+
         setStudent({
           _id: "69e4afea55516dc69b4ecdf2",
           name: "John Doe",
