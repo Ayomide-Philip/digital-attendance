@@ -14,6 +14,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import getInitials from "@/lib/utility/getInitials";
+import { toast } from "sonner";
 
 export default function StudentProfilePage() {
   const [student, setStudent] = useState(null);
@@ -23,26 +24,22 @@ export default function StudentProfilePage() {
     async function fetchStudentProfile() {
       setIsLoading(true);
       try {
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-
-        const request = await fetch(`/api/student/profile`, {});
-
-        setStudent({
-          _id: "69e4afea55516dc69b4ecdf2",
-          name: "John Doe",
-          displayName: "john doe",
-          email: "b@student.oauife.edu.ng",
-          department: "computing science and engineering",
-          level: "100",
-          role: "student",
-          image: "",
-          createdAt: "2026-04-19T10:35:22.581Z",
-          updatedAt: "2026-05-24T17:01:50.570Z",
-          school: "obafemi awolowo university",
-          matricNo: "csc/2023/001",
+        const request = await fetch(`/api/student/profile`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
         });
+
+        const response = await request.json();
+        if (!request?.ok || response?.error) {
+          return toast.error(response?.error || "Failed to load profile");
+        }
+
+        setStudent(response?.user || null);
       } catch (err) {
-        console.error("Failed to fetch profile:", err);
+        return toast.error("Unable to fetch user profile");
       } finally {
         setIsLoading(false);
       }
