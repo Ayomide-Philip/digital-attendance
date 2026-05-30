@@ -36,7 +36,6 @@ export default function StudentProfilePage() {
         if (!request?.ok || response?.error) {
           return toast.error(response?.error || "Failed to load profile");
         }
-
         setStudent(response?.user || null);
       } catch (err) {
         return toast.error("Unable to fetch user profile");
@@ -91,8 +90,12 @@ export default function StudentProfilePage() {
       <Card className="rounded-2xl border border-slate-200/70 bg-white/85 p-4 md:p-6 shadow-sm dark:border-slate-800 dark:bg-slate-950/70">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between sm:gap-6">
           <div className="flex gap-3 sm:gap-6">
-            <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full border-2 border-slate-200 bg-linear-to-br from-sky-500 to-blue-600 text-lg md:text-2xl font-bold text-white dark:border-slate-700">
-              {getInitials(student?.displayName || student?.name || "Student")}
+            <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full border-2 border-slate-200 bg-linear-to-br from-sky-500 to-blue-600 text-lg md:text-2xl font-bold text-white dark:border-slate-700 capitalize">
+              {getInitials(
+                student?.displayName?.trim() ||
+                  student?.name?.trim() ||
+                  "Student",
+              )}
             </div>
             <div className="flex-1 min-w-0">
               <h1 className="text-lg md:text-2xl font-bold text-slate-900 dark:text-slate-100 truncate capitalize">
@@ -100,13 +103,13 @@ export default function StudentProfilePage() {
                   student?.name?.trim() ||
                   "Unnamed Student"}
               </h1>
-              <p className="mt-1 text-sm text-slate-600 dark:text-slate-400 truncate font-mono">
-                {student?.matricNo || "No Matric Number"}
+              <p className="mt-1 text-sm text-slate-600 dark:text-slate-400 truncate font-mono uppercase">
+                {student?.matricNo?.trim() || "No Matric Number"}
               </p>
-              <p className="mt-2 flex items-center gap-2 text-xs md:text-sm text-slate-500 dark:text-slate-400 truncate capitalize">
+              <p className="mt-2 flex items-center gap-2 capitalize text-xs md:text-sm text-slate-500 dark:text-slate-400 truncate">
                 <GraduationCap className="size-3 md:size-4 shrink-0" />
-                <span className="truncate">
-                  {student?.department || "No Department"}
+                <span className="truncate capitalize">
+                  {student?.department?.trim() || "No Department"}
                 </span>
               </p>
             </div>
@@ -160,7 +163,7 @@ export default function StudentProfilePage() {
               <p className="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
                 School
               </p>
-              <p className="mt-0.5 md:mt-1 truncate text-xs md:text-sm font-medium text-slate-900 dark:text-slate-100">
+              <p className="mt-0.5 md:mt-1 truncate capitalize text-xs md:text-sm font-medium text-slate-900 dark:text-slate-100">
                 {student?.school || "No School"}
               </p>
             </div>
@@ -172,7 +175,7 @@ export default function StudentProfilePage() {
               <p className="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
                 Department
               </p>
-              <p className="mt-0.5 md:mt-1 truncate text-xs md:text-sm font-medium text-slate-900 dark:text-slate-100">
+              <p className="mt-0.5 md:mt-1 truncate capitalize text-xs md:text-sm font-medium text-slate-900 dark:text-slate-100">
                 {student?.department || "No Department"}
               </p>
             </div>
@@ -189,7 +192,7 @@ export default function StudentProfilePage() {
             <p className="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
               Matric Number
             </p>
-            <p className="mt-1 md:mt-2 font-mono text-xs md:text-sm font-semibold text-slate-900 dark:text-slate-100">
+            <p className="mt-1 md:mt-2 font-mono uppercase text-xs md:text-sm font-semibold text-slate-900 dark:text-slate-100">
               {student?.matricNo || "No Matric Number"}
             </p>
           </div>
