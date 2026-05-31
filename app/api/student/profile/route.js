@@ -249,10 +249,10 @@ export const PUT = auth(async function PUT(req) {
 
     if (
       (user?.matricNo?.trim() &&
-        user?.matricNo?.trim().toLowerCase() !==
-          matricNo?.trim().toLowerCase()) ||
+        user?.matricNo?.trim()?.toLowerCase() !==
+          matricNo?.trim()?.toLowerCase()) ||
       (user?.school?.trim() &&
-        user?.school?.trim().toLowerCase() !== school?.trim().toLowerCase())
+        user?.school?.trim()?.toLowerCase() !== school?.trim()?.toLowerCase())
     ) {
       return NextResponse.json(
         {
@@ -267,7 +267,7 @@ export const PUT = auth(async function PUT(req) {
 
     const updatedUser = await User.findByIdAndUpdate(
       {
-        _id: new mongoose.Types.ObjectId(userId.trim()),
+        _id: new mongoose.Types.ObjectId(userId?.trim()),
       },
       {
         displayName:
@@ -291,8 +291,6 @@ export const PUT = auth(async function PUT(req) {
 
     return NextResponse.json({
       message: "Update profile route",
-      user,
-      updatedUser,
     });
   } catch (err) {
     console.log(err);
