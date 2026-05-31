@@ -76,7 +76,7 @@ export const PUT = auth(async function PUT(req) {
   const { displayName, matricNo, department, level, school, userId } =
     await req.json();
 
-  if (!mongoose.Types.ObjectId.isValid(userId?.trim())) {
+  if (!mongoose?.Types?.ObjectId?.isValid(userId?.trim())) {
     return NextResponse.json(
       {
         error: "Unauthorized Access",
@@ -88,11 +88,11 @@ export const PUT = auth(async function PUT(req) {
   }
 
   if (
-    !displayName.trim() &&
-    !matricNo.trim() &&
-    !department.trim() &&
-    !level.trim() &&
-    !school.trim()
+    !displayName?.trim() &&
+    !matricNo?.trim() &&
+    !department?.trim() &&
+    !level?.trim() &&
+    !school?.trim()
   ) {
     return NextResponse.json(
       {
@@ -106,7 +106,7 @@ export const PUT = auth(async function PUT(req) {
 
   if (
     displayName?.trim() &&
-    (displayName.length < 2 || displayName.length > 100)
+    (displayName?.length < 2 || displayName?.length > 100)
   ) {
     return NextResponse.json(
       {
@@ -118,7 +118,7 @@ export const PUT = auth(async function PUT(req) {
     );
   }
 
-  if (matricNo?.trim() && (matricNo.length < 5 || matricNo.length > 20)) {
+  if (matricNo?.trim() && (matricNo?.length < 5 || matricNo?.length > 20)) {
     return NextResponse.json(
       {
         error: "Matric number must be between 5 and 20 characters",
@@ -131,7 +131,7 @@ export const PUT = auth(async function PUT(req) {
 
   if (
     department?.trim() &&
-    (department.length < 5 || department.length > 100)
+    (department?.length < 5 || department?.length > 100)
   ) {
     return NextResponse.json(
       {
@@ -145,7 +145,7 @@ export const PUT = auth(async function PUT(req) {
 
   if (
     level?.trim() &&
-    !["100", "200", "300", "400", "500"].includes(level.trim())
+    !["100", "200", "300", "400", "500"].includes(level?.trim())
   ) {
     return NextResponse.json(
       {
@@ -157,7 +157,7 @@ export const PUT = auth(async function PUT(req) {
     );
   }
 
-  if (school?.trim() && (school.length < 5 || school.length > 100)) {
+  if (school?.trim() && (school?.length < 5 || school?.length > 100)) {
     return NextResponse.json(
       {
         error: "School must be between 5 and 100 characters",
@@ -186,7 +186,7 @@ export const PUT = auth(async function PUT(req) {
   try {
     await connectDatabase();
     const user = await User.findById(
-      new mongoose.Types.ObjectId(userId.trim()),
+      new mongoose.Types.ObjectId(userId?.trim()),
     );
 
     if (!user) {
@@ -212,11 +212,11 @@ export const PUT = auth(async function PUT(req) {
     }
 
     if (
-      displayName?.trim().toLowerCase() === user.displayName.toLowerCase() &&
-      matricNo?.trim().toLowerCase() === user.matricNo.toLowerCase() &&
-      department?.trim().toLowerCase() === user.department.toLowerCase() &&
-      level?.trim() === user.level &&
-      school?.trim().toLowerCase() === user.school.toLowerCase()
+      displayName?.trim().toLowerCase() === user?.displayName?.toLowerCase() &&
+      matricNo?.trim().toLowerCase() === user?.matricNo?.toLowerCase() &&
+      department?.trim().toLowerCase() === user?.department?.toLowerCase() &&
+      level?.trim() === user?.level &&
+      school?.trim().toLowerCase() === user?.school?.toLowerCase()
     ) {
       return NextResponse.json(
         {
