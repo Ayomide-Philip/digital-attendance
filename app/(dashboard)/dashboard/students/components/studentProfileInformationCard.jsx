@@ -51,8 +51,11 @@ export default function StudentProfileInformationCard() {
 
   function handleInputChange(e) {
     const { name, value } = e.target;
-    // Prevent changes to matricNo field if it already has a value
-    if (name === "matricNo" && formData?.matricNo?.trim()) {
+    // Prevent changes to matricNo and school fields if they already have values
+    if (
+      (name === "matricNo" || name === "school") &&
+      formData?.[name]?.trim()
+    ) {
       return;
     }
     setFormData((prev) => ({
@@ -280,9 +283,21 @@ export default function StudentProfileInformationCard() {
             name="school"
             value={formData?.school}
             onChange={handleInputChange}
-            placeholder="Enter school"
-            className="mt-1.5 md:mt-2 w-full rounded-xl border border-slate-200/70 bg-slate-50/50 px-3 md:px-4 py-2 text-xs md:text-sm text-slate-900 placeholder-slate-400 transition-colors focus:border-sky-500 focus:bg-white focus:outline-none dark:border-slate-800 dark:bg-slate-900/40 dark:text-slate-100 dark:placeholder-slate-500 dark:focus:bg-slate-900"
+            disabled={!!formData?.school?.trim()}
+            placeholder={
+              formData?.school?.trim() ? "" : "Enter school or faculty name"
+            }
+            className={`mt-1.5 md:mt-2 w-full rounded-xl border border-slate-200/70 px-3 md:px-4 py-2 text-xs md:text-sm transition-colors focus:outline-none ${
+              formData?.school?.trim()
+                ? "bg-slate-100/50 text-slate-500 cursor-not-allowed dark:border-slate-800 dark:bg-slate-900/60 dark:text-slate-400"
+                : "bg-slate-50/50 text-slate-900 placeholder-slate-400 focus:border-sky-500 focus:bg-white dark:border-slate-800 dark:bg-slate-900/40 dark:text-slate-100 dark:placeholder-slate-500 dark:focus:bg-slate-900"
+            }`}
           />
+          <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+            {formData?.school?.trim()
+              ? "School cannot be changed"
+              : "Once set, school cannot be changed"}
+          </p>
         </div>
 
         <div className="pt-2 md:pt-4">
