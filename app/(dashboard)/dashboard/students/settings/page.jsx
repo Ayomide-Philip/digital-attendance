@@ -1,17 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import {
-  Save,
-  Lock,
-  Bell,
-  Eye,
-  Mail,
-  BookOpen,
-  Trash2,
-  Clock,
-  Users,
-} from "lucide-react";
+import { Eye, Mail, BookOpen, Trash2, Clock } from "lucide-react";
 import Card from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import StudentProfileInformationCard from "../components/studentProfileInformationCard";
@@ -34,7 +24,6 @@ export default function StudentSettingsPage() {
 
   return (
     <div className="space-y-5">
-      {/* Header */}
       <div className="flex flex-col gap-2">
         <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
           Settings
@@ -44,13 +33,10 @@ export default function StudentSettingsPage() {
         </p>
       </div>
 
-      {/* Profile Information Card */}
       <StudentProfileInformationCard />
 
-      {/* Update Password Card */}
       <UpdatePasswordCard />
 
-      {/* Notification Preferences */}
       <Card className="rounded-2xl border border-slate-200/70 bg-white/85 p-6 shadow-sm dark:border-slate-800 dark:bg-slate-950/70">
         <div className="mb-6">
           <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
@@ -144,59 +130,6 @@ export default function StudentSettingsPage() {
         </div>
       </Card>
 
-      {/* Privacy & Safety */}
-      <Card className="rounded-2xl border border-slate-200/70 bg-white/85 p-6 shadow-sm dark:border-slate-800 dark:bg-slate-950/70">
-        <div className="mb-6">
-          <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
-            Privacy & Safety
-          </h2>
-          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-            Control your data and privacy settings
-          </p>
-        </div>
-
-        <div className="space-y-4">
-          <div className="flex items-center justify-between rounded-xl border border-slate-200/70 bg-slate-50/50 p-4 dark:border-slate-800 dark:bg-slate-900/40">
-            <div className="flex items-center gap-3">
-              <Users className="size-5 text-indigo-600 dark:text-indigo-400" />
-              <div>
-                <p className="font-medium text-slate-900 dark:text-slate-100">
-                  Profile Visibility
-                </p>
-                <p className="text-xs text-slate-500 dark:text-slate-400">
-                  Allow teachers to see your profile
-                </p>
-              </div>
-            </div>
-            <input
-              type="checkbox"
-              defaultChecked={true}
-              className="size-5 cursor-pointer accent-sky-600"
-            />
-          </div>
-
-          <div className="flex items-center justify-between rounded-xl border border-slate-200/70 bg-slate-50/50 p-4 dark:border-slate-800 dark:bg-slate-900/40">
-            <div className="flex items-center gap-3">
-              <Eye className="size-5 text-teal-600 dark:text-teal-400" />
-              <div>
-                <p className="font-medium text-slate-900 dark:text-slate-100">
-                  Location Privacy
-                </p>
-                <p className="text-xs text-slate-500 dark:text-slate-400">
-                  Share location during attendance
-                </p>
-              </div>
-            </div>
-            <input
-              type="checkbox"
-              defaultChecked={true}
-              className="size-5 cursor-pointer accent-sky-600"
-            />
-          </div>
-        </div>
-      </Card>
-
-      {/* Danger Zone */}
       <Card className="rounded-2xl border border-red-200/30 bg-red-50/20 p-6 shadow-sm dark:border-red-900/30 dark:bg-red-950/10">
         <div className="mb-6">
           <h2 className="text-lg font-semibold text-red-700 dark:text-red-400">
