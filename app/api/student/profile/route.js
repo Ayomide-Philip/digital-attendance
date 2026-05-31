@@ -73,234 +73,193 @@ export const GET = auth(async function GET(req) {
 });
 
 export const PUT = auth(async function PUT(req) {
+  // if (!req?.auth || !req?.auth?.user) {
+  //   return NextResponse.json({ error: "Unauthorized Access" }, { status: 401 });
+  // }
+
   const { displayName, matricNo, department, level, school, userId } =
     await req.json();
 
   if (!mongoose?.Types?.ObjectId?.isValid(userId?.trim())) {
+    return NextResponse.json({ error: "Unauthorized Access" }, { status: 401 });
+  }
+
+  const trimmedDisplayName = displayName?.trim();
+  const trimmedMatricNo = matricNo?.trim();
+  const trimmedDepartment = department?.trim();
+  const trimmedLevel = level?.trim();
+  const trimmedSchool = school?.trim();
+
+  if (
+    !trimmedDisplayName &&
+    !trimmedMatricNo &&
+    !trimmedDepartment &&
+    !trimmedLevel &&
+    !trimmedSchool
+  ) {
     return NextResponse.json(
-      {
-        error: "Unauthorized Access",
-      },
-      {
-        status: 401,
-      },
+      { error: "At least one field is required to update profile data" },
+      { status: 400 },
     );
   }
 
   if (
-    !displayName?.trim() &&
-    !matricNo?.trim() &&
-    !department?.trim() &&
-    !level?.trim() &&
-    !school?.trim()
+    trimmedDisplayName &&
+    (trimmedDisplayName.length < 2 || trimmedDisplayName.length > 100)
   ) {
     return NextResponse.json(
-      {
-        error: "At least one field is required to update profile data",
-      },
-      {
-        status: 400,
-      },
+      { error: "Display name must be between 2 and 100 characters" },
+      { status: 400 },
     );
   }
 
   if (
-    displayName?.trim() &&
-    (displayName?.length < 2 || displayName?.length > 100)
+    trimmedMatricNo &&
+    (trimmedMatricNo.length < 5 || trimmedMatricNo.length > 20)
   ) {
     return NextResponse.json(
-      {
-        error: "Display name must be between 2 and 100 characters",
-      },
-      {
-        status: 400,
-      },
-    );
-  }
-
-  if (matricNo?.trim() && (matricNo?.length < 5 || matricNo?.length > 20)) {
-    return NextResponse.json(
-      {
-        error: "Matric number must be between 5 and 20 characters",
-      },
-      {
-        status: 400,
-      },
+      { error: "Matric number must be between 5 and 20 characters" },
+      { status: 400 },
     );
   }
 
   if (
-    department?.trim() &&
-    (department?.length < 5 || department?.length > 100)
+    trimmedDepartment &&
+    (trimmedDepartment.length < 5 || trimmedDepartment.length > 100)
   ) {
     return NextResponse.json(
-      {
-        error: "Department must be between 5 and 100 characters",
-      },
-      {
-        status: 400,
-      },
+      { error: "Department must be between 5 and 100 characters" },
+      { status: 400 },
     );
   }
 
   if (
-    level?.trim() &&
-    !["100", "200", "300", "400", "500"].includes(level?.trim())
+    trimmedLevel &&
+    !["100", "200", "300", "400", "500"].includes(trimmedLevel)
   ) {
     return NextResponse.json(
-      {
-        error: "Level must be one of the following: 100, 200, 300, 400, 500",
-      },
-      {
-        status: 400,
-      },
-    );
-  }
-
-  if (school?.trim() && (school?.length < 5 || school?.length > 100)) {
-    return NextResponse.json(
-      {
-        error: "School must be between 5 and 100 characters",
-      },
-      {
-        status: 400,
-      },
+      { error: "Level must be one of the following: 100, 200, 300, 400, 500" },
+      { status: 400 },
     );
   }
 
   if (
-    (!matricNo?.trim() && school?.trim()) ||
-    (matricNo?.trim() && !school?.trim())
+    trimmedSchool &&
+    (trimmedSchool.length < 5 || trimmedSchool.length > 100)
+  ) {
+    return NextResponse.json(
+      { error: "School must be between 5 and 100 characters" },
+      { status: 400 },
+    );
+  }
+
+  if (
+    (!trimmedMatricNo && trimmedSchool) ||
+    (trimmedMatricNo && !trimmedSchool)
   ) {
     return NextResponse.json(
       {
-        error:
-          "Before you can input your school, you need to input your matric number, both fields are required to update profile data",
+        error: "Both matric number and school must be provided together",
       },
-      {
-        status: 400,
-      },
+      { status: 400 },
     );
   }
 
   try {
     await connectDatabase();
     const user = await User.findById(
-      new mongoose.Types.ObjectId(userId?.trim()),
+      new mongoose.Types.ObjectId(userId.trim()),
     );
 
     if (!user) {
       return NextResponse.json(
-        {
-          error: "Unauthorized Access",
-        },
-        {
-          status: 401,
-        },
+        { error: "Unauthorized Access" },
+        { status: 401 },
       );
     }
 
     if (user?.role !== "student") {
-      return NextResponse.json(
-        {
-          error: "Forbidden Access",
-        },
-        {
-          status: 403,
-        },
-      );
+      return NextResponse.json({ error: "Forbidden Access" }, { status: 403 });
     }
 
     if (
-      displayName?.trim().toLowerCase() === user?.displayName?.toLowerCase() &&
-      matricNo?.trim().toLowerCase() === user?.matricNo?.toLowerCase() &&
-      department?.trim().toLowerCase() === user?.department?.toLowerCase() &&
-      level?.trim() === user?.level &&
-      school?.trim().toLowerCase() === user?.school?.toLowerCase()
+      (!trimmedDisplayName ||
+        trimmedDisplayName.toLowerCase() ===
+          user?.displayName?.toLowerCase()) &&
+      (!trimmedMatricNo ||
+        trimmedMatricNo.toLowerCase() === user?.matricNo?.toLowerCase()) &&
+      (!trimmedDepartment ||
+        trimmedDepartment.toLowerCase() === user?.department?.toLowerCase()) &&
+      (!trimmedLevel || trimmedLevel === user?.level) &&
+      (!trimmedSchool ||
+        trimmedSchool.toLowerCase() === user?.school?.toLowerCase())
     ) {
       return NextResponse.json(
-        {
-          error: "No changes detected in profile data",
-        },
-        {
-          status: 400,
-        },
+        { error: "No changes detected in profile data" },
+        { status: 400 },
       );
     }
 
-    if (!user?.matricNo?.trim()) {
+    const hasMatric = !!user?.matricNo?.trim();
+    const hasSchool = !!user?.school?.trim();
+
+    if (hasMatric || hasSchool) {
+      const matricChanged =
+        trimmedMatricNo &&
+        trimmedMatricNo.toLowerCase() !== user.matricNo.toLowerCase();
+      const schoolChanged =
+        trimmedSchool &&
+        trimmedSchool.toLowerCase() !== user.school.toLowerCase();
+
+      if (matricChanged || schoolChanged) {
+        return NextResponse.json(
+          {
+            error:
+              "Matric number and school cannot be changed once set. Contact support if needed.",
+          },
+          { status: 400 },
+        );
+      }
+    }
+
+    if (!hasMatric && trimmedMatricNo && trimmedSchool) {
       const existingMatricNoUser = await User.findOne({
-        matricNo: matricNo?.trim()?.toLowerCase(),
-        school:
-          user?.school?.trim()?.toLowerCase() || school?.trim()?.toLowerCase(),
+        matricNo: trimmedMatricNo.toLowerCase(),
+        school: trimmedSchool.toLowerCase(),
       });
 
       if (existingMatricNoUser) {
         return NextResponse.json(
           {
-            error: "Matric number and school combination already exists",
+            error:
+              "A student with this matric number already exists in this school",
           },
-          {
-            status: 400,
-          },
+          { status: 400 },
         );
       }
     }
 
-    if (
-      (user?.matricNo?.trim() &&
-        user?.matricNo?.trim()?.toLowerCase() !==
-          matricNo?.trim()?.toLowerCase()) ||
-      (user?.school?.trim() &&
-        user?.school?.trim()?.toLowerCase() !== school?.trim()?.toLowerCase())
-    ) {
-      return NextResponse.json(
-        {
-          error:
-            "Matric number and school combination cannot be changed once set, if you want to change it, please contact support",
-        },
-        {
-          status: 400,
-        },
-      );
-    }
-
     const updatedUser = await User.findByIdAndUpdate(
+      { _id: new mongoose.Types.ObjectId(userId.trim()) },
       {
-        _id: new mongoose.Types.ObjectId(userId?.trim()),
+        displayName: trimmedDisplayName?.toLowerCase() || user.displayName,
+        matricNo: user.matricNo || trimmedMatricNo?.toLowerCase(),
+        department: trimmedDepartment?.toLowerCase() || user.department,
+        level: trimmedLevel || user.level,
+        school: user.school || trimmedSchool?.toLowerCase(),
       },
-      {
-        displayName:
-          displayName?.trim()?.toLowerCase() ||
-          user?.displayName?.trim()?.toLowerCase(),
-        matricNo:
-          user?.matricNo?.trim()?.toLowerCase() ||
-          matricNo?.trim()?.toLowerCase(),
-        department:
-          department?.trim()?.toLowerCase() ||
-          user?.department?.trim()?.toLowerCase(),
-        level: level?.trim() || user.level,
-        school:
-          user?.school?.trim()?.toLowerCase() || school?.trim()?.toLowerCase(),
-      },
-      {
-        new: true,
-        returnDocument: "after",
-      },
+      { new: true, returnDocument: "after" },
     );
 
     return NextResponse.json({
-      message: "Update profile route",
+      message: "Successfully updated profile data",
+      user: updatedUser,
     });
   } catch (err) {
     console.log(err);
     return NextResponse.json(
-      {
-        error: "Unable to update profile data",
-      },
-      {
-        status: 500,
-      },
+      { error: "Unable to update profile data" },
+      { status: 500 },
     );
   }
 });
