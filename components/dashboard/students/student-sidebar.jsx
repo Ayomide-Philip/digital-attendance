@@ -15,7 +15,6 @@ const navItems = [
   { label: "Dashboard", slug: "", icon: LayoutDashboard },
   { label: "My Classes", slug: "/classes", icon: BookOpen },
   { label: "Attendance", slug: "/attendance", icon: ClipboardCheck },
-  { label: "Profile", slug: "/profile", icon: UserCircle2 },
 ];
 
 export default function StudentSidebar({ collapsed = false, onNavigate }) {
