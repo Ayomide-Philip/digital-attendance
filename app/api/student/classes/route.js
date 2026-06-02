@@ -26,9 +26,20 @@ export const GET = auth(async function GET(req) {
       },
     );
   }
+
+  if (!mongoose?.Types?.ObjectId?.isValid(userId)) {
+    return NextResponse.json(
+      {
+        error: "Unauthorized Access",
+      },
+      {
+        status: 401,
+      },
+    );
+  }
   try {
     await connectDatabase();
-    const user = await User.findById(userId);
+    const user = await User.findById(mongoose.Types.ObjectId(userId));
     if (!user) {
       return NextResponse.json(
         {
