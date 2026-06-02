@@ -20,7 +20,7 @@ export default function StudentClassAttendance({
   attendance = [],
   attendanceHeading,
 }) {
-  const [statusFilter, setStatusFilter] = useState("All");
+  const [statusFilter, setStatusFilter] = useState("all");
 
   const sessions = Array.isArray(attendance)
     ? attendance.filter(Boolean)
@@ -29,7 +29,7 @@ export default function StudentClassAttendance({
   const counts = useMemo(() => {
     return sessions.reduce(
       (accumulator, session) => {
-        const status = session?.status;
+        const status = session?.status?.toLowerCase();
         if (
           status &&
           Object.prototype.hasOwnProperty.call(accumulator, status)
@@ -37,15 +37,15 @@ export default function StudentClassAttendance({
           accumulator[status] += 1;
         }
 
-        accumulator.All += 1;
+        accumulator.all += 1;
         return accumulator;
       },
       {
-        All: 0,
-        Pending: 0,
-        Present: 0,
-        Absent: 0,
-        Flagged: 0,
+        all: 0,
+        pending: 0,
+        present: 0,
+        absent: 0,
+        flagged: 0,
       },
     );
   }, [sessions]);
@@ -53,8 +53,8 @@ export default function StudentClassAttendance({
   const filteredSessions = useMemo(
     () =>
       sessions.filter((session) => {
-        if (statusFilter === "All") return true;
-        return session?.status === statusFilter;
+        if (statusFilter === "all") return true;
+        return session?.status?.toLowerCase() === statusFilter.toLowerCase();
       }),
     [sessions, statusFilter],
   );
@@ -96,7 +96,7 @@ export default function StudentClassAttendance({
                   •
                 </span>
                 <span>
-                  {counts.All} record{counts.All === 1 ? "" : "s"}
+                  {counts.all} record{counts.all === 1 ? "" : "s"}
                 </span>
               </p>
             </div>
@@ -104,12 +104,13 @@ export default function StudentClassAttendance({
 
           <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
             {FILTERS.map((filter) => {
-              const active = statusFilter === filter;
+              const active =
+                statusFilter.toLowerCase() === filter?.toLowerCase();
               return (
                 <button
                   key={filter}
                   type="button"
-                  onClick={() => setStatusFilter(filter)}
+                  onClick={() => setStatusFilter(filter.toLowerCase())}
                   aria-pressed={active}
                   className={`inline-flex cursor-pointer min-w-0 items-center justify-center gap-2 rounded-full border px-3 py-2 text-xs font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-slate-400/40 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-slate-950 sm:px-4 sm:text-sm ${
                     active
@@ -125,7 +126,7 @@ export default function StudentClassAttendance({
                         : "bg-slate-200 text-slate-600 dark:bg-slate-800 dark:text-slate-300"
                     }`}
                   >
-                    {counts[filter] ?? 0}
+                    {counts[filter?.toLowerCase()] ?? 0}
                   </span>
                 </button>
               );
@@ -153,7 +154,7 @@ export default function StudentClassAttendance({
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
-          {filteredSessions.map((session) => {
+          {filteredSessions?.map((session) => {
             const statusMeta = getStatusMeta(session?.status);
             const className = session?.classesId?.name || "Class";
             const classCode = session?.classesId?.code;
