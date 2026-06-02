@@ -40,6 +40,7 @@ export const GET = auth(async function GET(req) {
   try {
     await connectDatabase();
     const user = await User.findById(mongoose.Types.ObjectId(userId));
+
     if (!user) {
       return NextResponse.json(
         {
@@ -50,6 +51,7 @@ export const GET = auth(async function GET(req) {
         },
       );
     }
+
     // check if user is a student
     if (user?.role !== "student") {
       return NextResponse.json(
@@ -61,7 +63,7 @@ export const GET = auth(async function GET(req) {
         },
       );
     }
-    // get all classes the user belongs to
+
     const classes = await Classes.find({
       students: { $in: [new mongoose.Types.ObjectId(userId)] },
     })
@@ -69,6 +71,7 @@ export const GET = auth(async function GET(req) {
       .select(
         "name teacher school attendance status code createdAt description",
       );
+
     return NextResponse.json({ classes }, { status: 200 });
   } catch (err) {
     console.log(err);
