@@ -301,21 +301,7 @@ function getStatusMeta(status) {
   }
 }
 
-function formatReadableDateTime(value) {
-  if (!value) return "--";
-
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return "--";
-
-  return new Intl.DateTimeFormat("en-US", {
-    month: "short",
-    day: "numeric",
-    hour: "numeric",
-    minute: "2-digit",
-  }).format(date);
-}
-
-function formatCreatedAt(createdAt) {
+export function formatCreatedAt(createdAt) {
   if (!createdAt) return "--";
 
   return new Date(createdAt).toLocaleDateString("en-US", {
@@ -325,7 +311,7 @@ function formatCreatedAt(createdAt) {
   });
 }
 
-function formatRange(startTime, endTime) {
+export function formatRange(startTime, endTime) {
   if (!startTime || !endTime) return "--";
 
   const formatOptions = {
