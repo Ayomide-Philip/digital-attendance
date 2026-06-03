@@ -3,13 +3,11 @@
 import {
   BadgeAlert,
   CalendarDays,
-  CheckCircle2,
   Clock3,
   ChevronRight,
   Filter,
   GraduationCap,
   Users,
-  XCircle,
 } from "lucide-react";
 import Link from "next/link";
 import { useMemo, useState } from "react";
