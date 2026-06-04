@@ -39,7 +39,7 @@ export const GET = auth(async function GET(req) {
   }
   try {
     await connectDatabase();
-    const user = await User.findById(mongoose.Types.ObjectId(userId));
+    const user = await User.findById(new mongoose.Types.ObjectId(userId));
 
     if (!user) {
       return NextResponse.json(
