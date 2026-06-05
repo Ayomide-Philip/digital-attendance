@@ -87,13 +87,26 @@ export const DELETE = auth(async function DELETE(req) {
       },
     );
   }
-  return NextResponse.json(
-    {
-      message: "DELETE Account successfully",
-      userId,
-    },
-    {
-      status: 200,
-    },
-  );
+
+  try {
+    return NextResponse.json(
+      {
+        message: "DELETE Account successfully",
+        userId,
+      },
+      {
+        status: 200,
+      },
+    );
+  } catch (err) {
+    console.log(err);
+    return NextResponse.json(
+      {
+        error: "An error occurred while deleting the account",
+      },
+      {
+        status: 500,
+      },
+    );
+  }
 });
