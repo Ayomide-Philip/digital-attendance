@@ -89,6 +89,22 @@ export const DELETE = auth(async function DELETE(req) {
   }
 
   try {
+    await connectDatabase();
+    const user = await User.findById(
+      new mongoose.Types.ObjectId(userId.trim()),
+    );
+
+    if (!user) {
+      return NextResponse.json(
+        {
+          error: "Unauthorized Access",
+        },
+        {
+          status: 401,
+        },
+      );
+    }
+
     return NextResponse.json(
       {
         message: "DELETE Account successfully",
