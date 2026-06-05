@@ -1,6 +1,7 @@
 import { auth } from "@/auth";
 import { connectDatabase } from "@/lib/database/connectdb";
 import User from "@/lib/models/user.model";
+import mongoose from "mongoose";
 import { NextResponse } from "next/server";
 
 export const GET = auth(async function GET(req) {
@@ -59,4 +60,26 @@ export const GET = auth(async function GET(req) {
   }
 });
 
-export const DELETE = auth();
+export const DELETE = auth(async function DELETE(req) {
+  const { userId } = await req.json();
+
+  if (!mongoose?.isValidObjectId(userId.trim())) {
+    return NextResponse.json(
+      {
+        error: "Unauthorized Access",
+      },
+      {
+        status: 401,
+      },
+    );
+  }
+  return NextResponse.json(
+    {
+      message: "DELETE Account successfully",
+      userId,
+    },
+    {
+      status: 200,
+    },
+  );
+});
