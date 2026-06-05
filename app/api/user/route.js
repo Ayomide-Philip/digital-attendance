@@ -75,6 +75,7 @@ export const GET = auth(async function GET(req) {
 });
 
 export const DELETE = auth(async function DELETE(req) {
+  const session = await mongoose.startSession();
   const { userId } = await req.json();
 
   if (!mongoose?.isValidObjectId(userId.trim())) {
@@ -90,9 +91,10 @@ export const DELETE = auth(async function DELETE(req) {
 
   try {
     await connectDatabase();
+    session.startTransaction();
     const user = await User.findById(
       new mongoose.Types.ObjectId(userId.trim()),
-    );
+    ).session(session);
 
     if (!user) {
       return NextResponse.json(
