@@ -15,7 +15,9 @@ export const GET = auth(async function GET(req) {
       },
     );
   }
+
   const userId = req?.auth?.user?.id;
+
   if (!userId || !userId.trim()) {
     return NextResponse.json(
       {
@@ -26,11 +28,23 @@ export const GET = auth(async function GET(req) {
       },
     );
   }
+
+  if (!mongoose?.isValidObjectId(userId?.trim())) {
+    return NextResponse.json(
+      {
+        error: "Unauthorized Access",
+      },
+      {
+        status: 401,
+      },
+    );
+  }
+
   try {
     await connectDatabase();
-    const user = await User.findById(userId.trim()).select(
-      "-password -googleId -__v",
-    );
+    const user = await User.findById(
+      new mongoose.Types.ObjectId(userId?.trim()),
+    ).select("-password -googleId -__v");
     if (!user) {
       return NextResponse.json(
         {
