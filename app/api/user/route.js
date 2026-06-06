@@ -1,5 +1,6 @@
 import { auth } from "@/auth";
 import { connectDatabase } from "@/lib/database/connectdb";
+import Classes from "@/lib/models/classes.model";
 import User from "@/lib/models/user.model";
 import mongoose from "mongoose";
 import { NextResponse } from "next/server";
@@ -75,7 +76,6 @@ export const GET = auth(async function GET(req) {
 });
 
 export const DELETE = auth(async function DELETE(req) {
-  const session = await mongoose.startSession();
   const { userId } = await req.json();
 
   if (!mongoose?.isValidObjectId(userId.trim())) {
@@ -89,6 +89,7 @@ export const DELETE = auth(async function DELETE(req) {
     );
   }
 
+  const session = await mongoose.startSession();
   try {
     await connectDatabase();
     session.startTransaction();
@@ -107,10 +108,15 @@ export const DELETE = auth(async function DELETE(req) {
       );
     }
 
+    const userClasses = await Classes.find({
+      students: new mongoose.Types.ObjectId(userId),
+    }).session(session);
+
     return NextResponse.json(
       {
         message: "DELETE Account successfully",
         userId,
+        userClasses,
       },
       {
         status: 200,
