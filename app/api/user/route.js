@@ -110,7 +110,9 @@ export const DELETE = auth(async function DELETE(req) {
 
     const userClasses = await Classes.find({
       students: new mongoose.Types.ObjectId(userId),
-    }).session(session);
+    })
+      .session(session)
+      .select("_id");
 
     return NextResponse.json(
       {
