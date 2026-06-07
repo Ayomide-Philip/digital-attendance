@@ -141,8 +141,11 @@ export const DELETE = auth(async function DELETE(req) {
 
     if (
       updatedClass?.matchedCount !== updatedAttendance?.modifiedCount ||
-      updatedAttendance?.matchedCount !== updatedClass?.modifiedCount
+      updatedAttendance?.matchedCount !== updatedClass?.modifiedCount ||
+      !updatedClass?.acknowledged ||
+      !updatedAttendance?.acknowledged
     ) {
+      await session.abortTransaction();
       return NextResponse.json(
         {
           error: "An error occurred while deleting the account",
@@ -166,6 +169,7 @@ export const DELETE = auth(async function DELETE(req) {
     );
   } catch (err) {
     console.log(err);
+    await session.abortTransaction();
     return NextResponse.json(
       {
         error: "An error occurred while deleting the account",
@@ -174,5 +178,7 @@ export const DELETE = auth(async function DELETE(req) {
         status: 500,
       },
     );
+  } finally {
+    session.endSession();
   }
 });
