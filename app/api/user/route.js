@@ -1,5 +1,6 @@
 import { auth } from "@/auth";
 import { connectDatabase } from "@/lib/database/connectdb";
+import Attandance from "@/lib/models/attendance.model";
 import Classes from "@/lib/models/classes.model";
 import User from "@/lib/models/user.model";
 import mongoose from "mongoose";
@@ -108,17 +109,42 @@ export const DELETE = auth(async function DELETE(req) {
       );
     }
 
-    const userClasses = await Classes.find({
-      students: new mongoose.Types.ObjectId(userId),
-    })
-      .session(session)
-      .select("_id");
+    const updatedClass = await Classes.updateMany(
+      {
+        students: new mongoose.Types.ObjectId(userId),
+      },
+      {
+        $pull: {
+          students: new mongoose.Types.ObjectId(userId),
+        },
+      },
+      {
+        session,
+      },
+    );
+
+    const updatedAttendance = await Attandance.updateMany(
+      {
+        "students.studentId": new mongoose.Types.ObjectId(userId),
+      },
+      {
+        $pull: {
+          students: {
+            studentId: new mongoose.Types.ObjectId(userId),
+          },
+        },
+      },
+      {
+        session,
+      },
+    );
 
     return NextResponse.json(
       {
         message: "DELETE Account successfully",
         userId,
-        userClasses,
+        updatedAttendance,
+        updatedClass,
       },
       {
         status: 200,
