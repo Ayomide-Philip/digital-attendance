@@ -51,13 +51,6 @@ export default function StudentProfileInformationCard() {
 
   function handleInputChange(e) {
     const { name, value } = e.target;
-    // Prevent changes to matricNo and school fields if they already have values
-    if (
-      (name === "matricNo" || name === "school") &&
-      formData?.[name]?.trim()
-    ) {
-      return;
-    }
     setFormData((prev) => ({
       ...prev,
       [name]: value,
@@ -222,7 +215,6 @@ export default function StudentProfileInformationCard() {
             name="matricNo"
             value={formData?.matricNo}
             onChange={handleInputChange}
-            disabled={!!formData?.matricNo?.trim()}
             placeholder={
               formData?.matricNo?.trim() ? "" : "Enter matric number"
             }
@@ -283,7 +275,6 @@ export default function StudentProfileInformationCard() {
             name="school"
             value={formData?.school}
             onChange={handleInputChange}
-            disabled={!!formData?.school?.trim()}
             placeholder={
               formData?.school?.trim() ? "" : "Enter school or faculty name"
             }
