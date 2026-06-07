@@ -139,6 +139,20 @@ export const DELETE = auth(async function DELETE(req) {
       },
     );
 
+    if (
+      updatedClass?.matchedCount !== updatedAttendance?.modifiedCount ||
+      updatedAttendance?.matchedCount !== updatedClass?.modifiedCount
+    ) {
+      return NextResponse.json(
+        {
+          error: "An error occurred while deleting the account",
+        },
+        {
+          status: 500,
+        },
+      );
+    }
+
     return NextResponse.json(
       {
         message: "DELETE Account successfully",
