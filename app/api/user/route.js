@@ -164,10 +164,23 @@ export const DELETE = auth(async function DELETE(req) {
       _id: new mongoose.Types.ObjectId(userId.trim()),
     }).session(session);
 
+    if (!deletedUser) {
+      await session.abortTransaction();
+      return NextResponse.json(
+        {
+          error: "Failed to delete user",
+        },
+        {
+          status: 500,
+        },
+      );
+    }
+
+    await session.commitTransaction();
+
     return NextResponse.json(
       {
         message: "DELETE Account successfully",
-        userId,
         deletedUser,
       },
       {
