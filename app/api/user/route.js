@@ -90,9 +90,9 @@ export const DELETE = auth(async function DELETE(req) {
     );
   }
 
+  await connectDatabase();
   const session = await mongoose.startSession();
   try {
-    await connectDatabase();
     session.startTransaction();
     const user = await User.findById(
       new mongoose.Types.ObjectId(userId.trim()),
@@ -139,16 +139,20 @@ export const DELETE = auth(async function DELETE(req) {
       },
     );
 
-    if (
-      updatedClass?.matchedCount !== updatedAttendance?.modifiedCount ||
-      updatedAttendance?.matchedCount !== updatedClass?.modifiedCount ||
-      !updatedClass?.acknowledged ||
-      !updatedAttendance?.acknowledged
-    ) {
+    const remainingClasses = await Classes.find({
+      students: new mongoose.Types.ObjectId(userId),
+    }).session(session);
+
+    const remainingAttendance = await Attandance.find({
+      "students.studentId": new mongoose.Types.ObjectId(userId),
+    }).session(session);
+
+    if (remainingClasses.length > 0 || remainingAttendance.length > 0) {
       await session.abortTransaction();
+
       return NextResponse.json(
         {
-          error: "An error occurred while deleting the account",
+          error: "User references still exist",
         },
         {
           status: 500,
