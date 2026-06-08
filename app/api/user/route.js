@@ -160,12 +160,15 @@ export const DELETE = auth(async function DELETE(req) {
       );
     }
 
+    const deletedUser = await User.findByIdAndDelete({
+      _id: new mongoose.Types.ObjectId(userId.trim()),
+    }).session(session);
+
     return NextResponse.json(
       {
         message: "DELETE Account successfully",
         userId,
-        updatedAttendance,
-        updatedClass,
+        deletedUser,
       },
       {
         status: 200,
