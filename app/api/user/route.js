@@ -109,7 +109,7 @@ export const DELETE = auth(async function DELETE(req) {
       );
     }
 
-    const updatedClass = await Classes.updateMany(
+    await Classes.updateMany(
       {
         students: new mongoose.Types.ObjectId(userId),
       },
@@ -123,7 +123,7 @@ export const DELETE = auth(async function DELETE(req) {
       },
     );
 
-    const updatedAttendance = await Attandance.updateMany(
+    await Attandance.updateMany(
       {
         "students.studentId": new mongoose.Types.ObjectId(userId),
       },
