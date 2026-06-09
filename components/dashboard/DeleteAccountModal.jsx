@@ -150,7 +150,7 @@ export default function DeleteAccountModal({
                 type="button"
                 onClick={() => onShowPasswordChange(!showPassword)}
                 disabled={isLoading || !password}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 transition-colors hover:text-slate-700 disabled:text-slate-300 dark:text-slate-400 dark:hover:text-slate-200 dark:disabled:text-slate-600"
+                className="absolute right-3 cursor-pointer top-1/2 -translate-y-1/2 text-slate-500 transition-colors hover:text-slate-700 disabled:text-slate-300 dark:text-slate-400 dark:hover:text-slate-200 dark:disabled:text-slate-600"
                 aria-label={showPassword ? "Hide password" : "Show password"}
               >
                 {showPassword ? (
@@ -177,14 +177,14 @@ export default function DeleteAccountModal({
             <button
               onClick={handleCancel}
               disabled={isLoading}
-              className="flex-1 rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50 disabled:bg-slate-50 disabled:text-slate-400 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 dark:disabled:bg-slate-800 dark:disabled:text-slate-600"
+              className="flex-1 rounded-lg border cursor-pointer border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50 disabled:bg-slate-50 disabled:text-slate-400 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 dark:disabled:bg-slate-800 dark:disabled:text-slate-600"
             >
               Cancel
             </button>
             <button
               onClick={onSubmit}
               disabled={isLoading || !password.trim()}
-              className="flex-1 flex items-center justify-center gap-2 rounded-lg bg-red-600 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-red-700 disabled:bg-red-600/50 disabled:cursor-not-allowed dark:bg-red-700 dark:hover:bg-red-800 dark:disabled:bg-red-900/40"
+              className="flex-1 flex items-center justify-center cursor-pointer gap-2 rounded-lg bg-red-600 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-red-700 disabled:bg-red-600/50 disabled:cursor-not-allowed dark:bg-red-700 dark:hover:bg-red-800 dark:disabled:bg-red-900/40"
             >
               {isLoading && <Loader2 className="h-4 w-4 animate-spin" />}
               <span>{isLoading ? "Deleting..." : "Delete Account"}</span>

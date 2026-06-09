@@ -98,7 +98,7 @@ export default function DeleteCard() {
             </div>
             <button
               onClick={handleOpenModal}
-              className="mt-3 flex items-center gap-2 rounded-xl border border-red-500/50 bg-red-50/50 px-4 py-2 text-sm font-medium text-red-700 transition-colors hover:bg-red-100 dark:border-red-900/50 dark:bg-red-950/30 dark:text-red-400 dark:hover:bg-red-950/50 sm:mt-0"
+              className="mt-3 cursor-pointer flex items-center gap-2 rounded-xl border border-red-500/50 bg-red-50/50 px-4 py-2 text-sm font-medium text-red-700 transition-colors hover:bg-red-100 dark:border-red-900/50 dark:bg-red-950/30 dark:text-red-400 dark:hover:bg-red-950/50 sm:mt-0"
             >
               <Trash2 className="size-4" />
               Delete Account
