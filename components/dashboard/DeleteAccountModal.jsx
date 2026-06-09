@@ -1,14 +1,20 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { AlertTriangle, Eye, EyeOff, Loader2 } from "lucide-react";
 
-export default function DeleteAccountModal({ isOpen, onClose, onConfirm }) {
-  const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+export default function DeleteAccountModal({
+  isOpen,
+  onClose,
+  password,
+  onPasswordChange,
+  showPassword,
+  onShowPasswordChange,
+  error,
+  isLoading,
+  onSubmit,
+}) {
   const passwordInputRef = useRef(null);
   const modalRef = useRef(null);
 
@@ -64,36 +70,12 @@ export default function DeleteAccountModal({ isOpen, onClose, onConfirm }) {
     }
   };
 
-  const handlePasswordChange = (e) => {
+  const handlePasswordInputChange = (e) => {
     const value = e.target.value;
-    setPassword(value);
-    if (error) {
-      setError("");
-    }
-  };
-
-  const handleSubmit = async () => {
-    if (!password.trim()) {
-      setError("Password is required to confirm account deletion.");
-      return;
-    }
-
-    setIsLoading(true);
-    setError("");
-
-    try {
-      await onConfirm(password);
-    } catch (err) {
-      setError(err.message || "Invalid password. Please try again.");
-      setIsLoading(false);
-    }
+    onPasswordChange(value);
   };
 
   const handleCancel = () => {
-    setPassword("");
-    setShowPassword(false);
-    setError("");
-    setIsLoading(false);
     onClose();
   };
 
@@ -154,7 +136,7 @@ export default function DeleteAccountModal({ isOpen, onClose, onConfirm }) {
                 id="delete-password"
                 type={showPassword ? "text" : "password"}
                 value={password}
-                onChange={handlePasswordChange}
+                onChange={handlePasswordInputChange}
                 placeholder="Enter your password"
                 disabled={isLoading}
                 className={`w-full rounded-lg border px-4 py-3 pr-12 text-sm transition-colors focus:outline-none focus:ring-2 disabled:bg-slate-50 dark:disabled:bg-slate-800 ${
@@ -166,7 +148,7 @@ export default function DeleteAccountModal({ isOpen, onClose, onConfirm }) {
 
               <button
                 type="button"
-                onClick={() => setShowPassword(!showPassword)}
+                onClick={() => onShowPasswordChange(!showPassword)}
                 disabled={isLoading || !password}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 transition-colors hover:text-slate-700 disabled:text-slate-300 dark:text-slate-400 dark:hover:text-slate-200 dark:disabled:text-slate-600"
                 aria-label={showPassword ? "Hide password" : "Show password"}
@@ -200,7 +182,7 @@ export default function DeleteAccountModal({ isOpen, onClose, onConfirm }) {
               Cancel
             </button>
             <button
-              onClick={handleSubmit}
+              onClick={onSubmit}
               disabled={isLoading || !password.trim()}
               className="flex-1 flex items-center justify-center gap-2 rounded-lg bg-red-600 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-red-700 disabled:bg-red-600/50 disabled:cursor-not-allowed dark:bg-red-700 dark:hover:bg-red-800 dark:disabled:bg-red-900/40"
             >

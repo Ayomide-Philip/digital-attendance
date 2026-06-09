@@ -7,40 +7,73 @@ import DeleteAccountModal from "./DeleteAccountModal";
 
 export default function DeleteCard() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
-  // Handle account deletion (frontend only - backend integration needed)
-  const handleDeleteAccount = async (password) => {
-    // This is where you'd call your backend API to delete the account
-    // Example:
-    // const response = await fetch('/api/user/delete', {
-    //   method: 'DELETE',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify({ password }),
-    // });
-    //
-    // if (!response.ok) {
-    //   const error = await response.json();
-    //   throw new Error(error.message || 'Failed to delete account');
-    // }
-    //
-    // On success, redirect or update UI
+  const handleOpenModal = () => {
+    // Reset state when opening modal
+    setPassword("");
+    setError("");
+    setShowPassword(false);
+    setIsLoading(false);
+    setIsModalOpen(true);
+  };
 
-    // For now, we'll just close the modal after a simulated delay
-    console.log("Delete account with password:", password);
+  const handleCloseModal = () => {
+    // Reset state when closing modal
+    setPassword("");
+    setError("");
+    setShowPassword(false);
+    setIsLoading(false);
+    setIsModalOpen(false);
+  };
 
-    // Simulate API call
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        // Uncomment below to test error handling
-        // reject(new Error('Incorrect password. Please try again.'));
+  const handlePasswordChange = (value) => {
+    setPassword(value);
+    if (error) {
+      setError("");
+    }
+  };
 
-        // On success
-        resolve();
-        // Then you'd typically redirect: window.location.href = '/login';
-        console.log("Account deletion successful");
-        setIsModalOpen(false);
-      }, 2000);
-    });
+  const handleDeleteAccount = async () => {
+    // Validate password
+    if (!password.trim()) {
+      setError("Password is required to confirm account deletion.");
+      return;
+    }
+
+    setIsLoading(true);
+    setError("");
+
+    try {
+      // Backend API call example:
+      // const response = await fetch('/api/user/delete', {
+      //   method: 'DELETE',
+      //   headers: { 'Content-Type': 'application/json' },
+      //   body: JSON.stringify({ password }),
+      // });
+      //
+      // if (!response.ok) {
+      //   const error = await response.json();
+      //   throw new Error(error.message || 'Failed to delete account');
+      // }
+      //
+      // On success, redirect: window.location.href = '/login';
+
+      // Simulate API call for demo
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+
+      // On success, close modal and redirect
+      handleCloseModal();
+      console.log("Account deleted successfully");
+      // Uncomment to redirect: window.location.href = '/login';
+    } catch (err) {
+      setError(err.message || "Invalid password. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -66,7 +99,7 @@ export default function DeleteCard() {
               </p>
             </div>
             <button
-              onClick={() => setIsModalOpen(true)}
+              onClick={handleOpenModal}
               className="mt-3 flex items-center gap-2 rounded-xl border border-red-500/50 bg-red-50/50 px-4 py-2 text-sm font-medium text-red-700 transition-colors hover:bg-red-100 dark:border-red-900/50 dark:bg-red-950/30 dark:text-red-400 dark:hover:bg-red-950/50 sm:mt-0"
             >
               <Trash2 className="size-4" />
@@ -76,11 +109,16 @@ export default function DeleteCard() {
         </div>
       </Card>
 
-      {/* Delete Account Modal */}
       <DeleteAccountModal
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onConfirm={handleDeleteAccount}
+        onClose={handleCloseModal}
+        password={password}
+        onPasswordChange={handlePasswordChange}
+        showPassword={showPassword}
+        onShowPasswordChange={setShowPassword}
+        error={error}
+        isLoading={isLoading}
+        onSubmit={handleDeleteAccount}
       />
     </>
   );
