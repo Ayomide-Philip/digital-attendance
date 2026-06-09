@@ -5,6 +5,7 @@ import Classes from "@/lib/models/classes.model";
 import User from "@/lib/models/user.model";
 import mongoose from "mongoose";
 import { NextResponse } from "next/server";
+import bcrypt from "bcrypt";
 
 export const GET = auth(async function GET(req) {
   if (!req?.auth || !req?.auth?.user) {
@@ -77,7 +78,19 @@ export const GET = auth(async function GET(req) {
 });
 
 export const DELETE = auth(async function DELETE(req) {
-  const { userId } = await req.json();
+  if (!req?.auth || !req?.auth?.user) {
+    return NextResponse.json(
+      {
+        error: "Unauthorized Access",
+      },
+      {
+        status: 401,
+      },
+    );
+  }
+
+  const userId = req?.auth?.user?.id;
+  const { password } = await req.json();
 
   if (!mongoose?.isValidObjectId(userId.trim())) {
     return NextResponse.json(
@@ -94,14 +107,26 @@ export const DELETE = auth(async function DELETE(req) {
   const session = await mongoose.startSession();
   try {
     session.startTransaction();
-    const user = await User.findById(
-      new mongoose.Types.ObjectId(userId.trim()),
-    ).session(session);
+    const user = await User.findById(new mongoose.Types.ObjectId(userId.trim()))
+      .session(session)
+      .select("+password");
 
     if (!user) {
       return NextResponse.json(
         {
-          error: "Unauthorized Access",
+          error: "Account not found",
+        },
+        {
+          status: 401,
+        },
+      );
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user?.password);
+    if (!isPasswordValid) {
+      return NextResponse.json(
+        {
+          error: "Invalid password",
         },
         {
           status: 401,
