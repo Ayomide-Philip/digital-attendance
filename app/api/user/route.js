@@ -188,14 +188,11 @@ export const DELETE = auth(async function DELETE(req) {
       );
     }
 
-    // await session.commitTransaction();
+    await session.commitTransaction();
 
     return NextResponse.json(
       {
         message: "DELETE Account successfully",
-        deletedUser,
-        updatedClasses,
-        updatedAttendance,
       },
       {
         status: 200,
