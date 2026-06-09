@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { Eye, Mail, BookOpen, Trash2, Clock } from "lucide-react";
 import Card from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import StudentProfileInformationCard from "../components/studentProfileInformationCard";
 import UpdatePasswordCard from "../../teachers/components/updatePasswordCard";
 import DeleteCard from "@/components/dashboard/deleteCard";
