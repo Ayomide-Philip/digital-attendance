@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Trash2 } from "lucide-react";
 import Card from "../ui/card";
 import DeleteAccountModal from "./DeleteAccountModal";
+import { signOut } from "next-auth/react";
 
 export default function DeleteCard() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -62,27 +63,8 @@ export default function DeleteCard() {
         );
         return;
       }
-      // Backend API call example:
-      // const response = await fetch('/api/user/delete', {
-      //   method: 'DELETE',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({ password }),
-      // });
-      //
-      // if (!response.ok) {
-      //   const error = await response.json();
-      //   throw new Error(error.message || 'Failed to delete account');
-      // }
-      //
-      // On success, redirect: window.location.href = '/login';
-
-      // Simulate API call for demo
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-
-      // On success, close modal and redirect
       handleCloseModal();
-      console.log("Account deleted successfully");
-      // Uncomment to redirect: window.location.href = '/login';
+      await signOut({ callbackUrl: "/login" });
     } catch (err) {
       setError(
         "An error occurred while deleting the account. Please try again.",
