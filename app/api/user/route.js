@@ -103,6 +103,17 @@ export const DELETE = auth(async function DELETE(req) {
     );
   }
 
+  if (!password?.trim() || password.trim().length < 8) {
+    return NextResponse.json(
+      {
+        error: "Invalid password. Password must be at least 8 characters long.",
+      },
+      {
+        status: 400,
+      },
+    );
+  }
+
   await connectDatabase();
   const session = await mongoose.startSession();
   try {
