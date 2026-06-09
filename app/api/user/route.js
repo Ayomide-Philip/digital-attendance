@@ -109,7 +109,7 @@ export const DELETE = auth(async function DELETE(req) {
       );
     }
 
-    await Classes.updateMany(
+    const updatedClasses = await Classes.updateMany(
       {
         students: new mongoose.Types.ObjectId(userId),
       },
@@ -123,7 +123,7 @@ export const DELETE = auth(async function DELETE(req) {
       },
     );
 
-    await Attandance.updateMany(
+    const updatedAttendance = await Attandance.updateMany(
       {
         "students.studentId": new mongoose.Types.ObjectId(userId),
       },
@@ -138,6 +138,18 @@ export const DELETE = auth(async function DELETE(req) {
         session,
       },
     );
+
+    if (!updatedClasses.acknowledged || !updatedAttendance.acknowledged) {
+      await session.abortTransaction();
+      return NextResponse.json(
+        {
+          error: "Failed to update related documents",
+        },
+        {
+          status: 500,
+        },
+      );
+    }
 
     const remainingClasses = await Classes.find({
       students: new mongoose.Types.ObjectId(userId),
@@ -160,9 +172,9 @@ export const DELETE = auth(async function DELETE(req) {
       );
     }
 
-    const deletedUser = await User.findByIdAndDelete({
-      _id: new mongoose.Types.ObjectId(userId.trim()),
-    }).session(session);
+    const deletedUser = await User.findByIdAndDelete(
+      new mongoose.Types.ObjectId(userId.trim()),
+    ).session(session);
 
     if (!deletedUser) {
       await session.abortTransaction();
@@ -176,12 +188,14 @@ export const DELETE = auth(async function DELETE(req) {
       );
     }
 
-    await session.commitTransaction();
+    // await session.commitTransaction();
 
     return NextResponse.json(
       {
         message: "DELETE Account successfully",
         deletedUser,
+        updatedClasses,
+        updatedAttendance,
       },
       {
         status: 200,
