@@ -13,7 +13,6 @@ export default function DeleteCard() {
   const [showPassword, setShowPassword] = useState(false);
 
   const handleOpenModal = () => {
-    // Reset state when opening modal
     setPassword("");
     setError("");
     setShowPassword(false);
@@ -22,7 +21,6 @@ export default function DeleteCard() {
   };
 
   const handleCloseModal = () => {
-    // Reset state when closing modal
     setPassword("");
     setError("");
     setShowPassword(false);
@@ -38,7 +36,6 @@ export default function DeleteCard() {
   };
 
   const handleDeleteAccount = async () => {
-    // Validate password
     if (!password.trim()) {
       setError("Password is required to confirm account deletion.");
       return;
@@ -48,6 +45,23 @@ export default function DeleteCard() {
     setError("");
 
     try {
+      const request = await fetch(`/api/user`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ password }),
+        credentials: "include",
+      });
+
+      const response = await request.json();
+
+      if (!request?.ok || response?.error) {
+        setError(
+          response?.error || "Failed to delete account. Please try again.",
+        );
+        return;
+      }
       // Backend API call example:
       // const response = await fetch('/api/user/delete', {
       //   method: 'DELETE',
@@ -70,7 +84,9 @@ export default function DeleteCard() {
       console.log("Account deleted successfully");
       // Uncomment to redirect: window.location.href = '/login';
     } catch (err) {
-      setError(err.message || "Invalid password. Please try again.");
+      setError(
+        "An error occurred while deleting the account. Please try again.",
+      );
     } finally {
       setIsLoading(false);
     }
