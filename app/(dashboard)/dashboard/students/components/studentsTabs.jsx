@@ -1,5 +1,3 @@
-const tabs = ["Overview", "Attendance", "Students", "Settings"];
-
 export default function StudentTabs({ selectedTab, onTabClick, tabs = tabs }) {
   return (
     <div className="flex flex-wrap gap-2 rounded-2xl border border-slate-200/70 bg-white/80 p-2 dark:border-slate-800 dark:bg-slate-950/70">
