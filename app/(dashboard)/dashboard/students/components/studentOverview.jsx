@@ -115,6 +115,34 @@ export default function StudentOverview({ classDetails, classId }) {
     fetchStudentStats();
   }, [classId]);
 
+  useEffect(() => {
+    if (!classId) {
+      return (window.location.href = "/dashboard/students/classes/");
+    }
+    async function fetchRecentActivity() {
+      try {
+        setLoadingRecentActivity(true);
+        const request = await fetch(
+          `/api/student/classes/${classId}/attendance?query=all&limit=5`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          },
+        );
+        const response = await request.json();
+        if (!request?.ok || response.error) {
+          toast.error(response?.error || "Unable to fetch recent activity");
+        }
+      } catch (err) {
+        toast.error("Failed to fetch recent activity. Please try again later.");
+      } finally {
+        setLoadingRecentActivity(false);
+      }
+    }
+  }, [classId]);
+
   const infoItems = [
     { label: "Class Code", value: classDetails?.code?.toUpperCase() || "" },
     {
