@@ -157,15 +157,23 @@ export const GET = auth(async function GET(req, { params }) {
 
     if (!user) {
       return NextResponse.json(
-        { error: "Unauthorized Access" },
-        { status: 401 },
+        {
+          error: "Unauthorized Access",
+        },
+        {
+          status: 401,
+        },
       );
     }
 
     if (user?.role !== "teacher") {
       return NextResponse.json(
-        { error: "Unable to perform this action" },
-        { status: 403 },
+        {
+          error: "Unable to perform this action",
+        },
+        {
+          status: 403,
+        },
       );
     }
 
@@ -176,8 +184,12 @@ export const GET = auth(async function GET(req, { params }) {
 
     if (!classExists) {
       return NextResponse.json(
-        { error: "Class not found or unauthorized access" },
-        { status: 404 },
+        {
+          error: "Class not found or unauthorized access",
+        },
+        {
+          status: 404,
+        },
       );
     }
 
