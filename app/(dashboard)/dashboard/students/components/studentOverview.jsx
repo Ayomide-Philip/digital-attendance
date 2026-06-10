@@ -1,10 +1,84 @@
 import Card from "@/components/ui/card";
-import { Calendar, CheckCircle, TrendingUp, User, Users } from "lucide-react";
+import {
+  Calendar,
+  CheckCircle,
+  TrendingUp,
+  User,
+  Users,
+  School,
+  Clock3,
+  BookOpen,
+  AlertCircle,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+
+// Mock data for recent activities
+const MOCK_RECENT_ACTIVITIES = [
+  {
+    id: 1,
+    title: "Marked attendance successfully",
+    time: "2h ago",
+    icon: CheckCircle,
+  },
+  {
+    id: 2,
+    title: "Attendance flagged for review",
+    time: "1d ago",
+    icon: AlertCircle,
+  },
+  { id: 3, title: "Joined the class", time: "5d ago", icon: User },
+];
+
+// Mock data for upcoming sessions
+const MOCK_UPCOMING_SESSIONS = [
+  {
+    id: 1,
+    title: "Regular Class Session",
+    date: "Tomorrow, 9:00 AM",
+    time: "2h ago",
+  },
+  {
+    id: 2,
+    title: "Practical Workshop",
+    date: "Jun 15, 2:00 PM",
+    time: "4d ago",
+  },
+  {
+    id: 3,
+    title: "Final Assessment",
+    date: "Jun 20, 10:00 AM",
+    time: "1w ago",
+  },
+];
+
+function CapitalizeAllFirstLetter(str) {
+  if (!str) return "";
+  return str
+    .split(" ")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+}
+
+function formatDate(dateString) {
+  if (!dateString) return "";
+  const date = new Date(dateString);
+  return date.toLocaleDateString(undefined, {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+}
+
 export default function StudentOverview({ classDetails, classId }) {
   const [studentStats, setStudentStats] = useState(null);
   const [loadingStats, setLoadingStats] = useState(true);
+  const [recentActivity, setRecentActivity] = useState(MOCK_RECENT_ACTIVITIES);
+  const [loadingRecentActivity, setLoadingRecentActivity] = useState(false);
+  const [upcomingSession, setUpcomingSession] = useState(
+    MOCK_UPCOMING_SESSIONS,
+  );
+  const [loadingUpcoming, setLoadingUpcoming] = useState(false);
 
   useEffect(() => {
     if (!classId) {
@@ -40,8 +114,25 @@ export default function StudentOverview({ classDetails, classId }) {
     }
     fetchStudentStats();
   }, [classId]);
+
+  const infoItems = [
+    { label: "Class Code", value: classDetails?.code?.toUpperCase() || "" },
+    {
+      label: "Instructor",
+      value: CapitalizeAllFirstLetter(classDetails?.teacher?.name) || "",
+    },
+    {
+      label: "Email",
+      value: classDetails?.teacher?.email || "Not available",
+    },
+    {
+      label: "School",
+      value: CapitalizeAllFirstLetter(classDetails?.school) || "Not available",
+    },
+  ];
+
   return (
-    <>
+    <div className="space-y-5">
       <Card className="rounded-2xl border border-slate-200/70 bg-white/85 p-6 shadow-sm dark:border-slate-800 dark:bg-slate-950/70">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
@@ -89,8 +180,11 @@ export default function StudentOverview({ classDetails, classId }) {
             key={item.label}
             className="rounded-2xl border border-slate-200/70 bg-white/85 p-5 shadow-sm transition-transform duration-300 hover:-translate-y-0.5 dark:border-slate-800 dark:bg-slate-950/70"
           >
-            <div className="flex items-start justify-between gap-3">
-              <div>
+            <div
+              className="flex items-start justify-between gap-3 transition-opacity duration-300"
+              style={{ opacity: loadingStats ? 0.5 : 1 }}
+            >
+              <div className="flex-1">
                 <p className="text-sm text-slate-500 dark:text-slate-400">
                   {item.label}
                 </p>
@@ -102,43 +196,145 @@ export default function StudentOverview({ classDetails, classId }) {
                   </p>
                 )}
               </div>
-              <div className={`rounded-xl p-2.5 ${item.tone}`}>
+              <div
+                className={`rounded-xl p-2.5 transition-all ${loadingStats ? "opacity-50" : ""} ${item.tone}`}
+              >
                 <item.icon className="size-5" />
               </div>
             </div>
           </Card>
         ))}
       </div>
-      <div className="space-y-5">
-        <Card className="rounded-2xl border border-slate-200/70 bg-white/85 p-6 shadow-sm dark:border-slate-800 dark:bg-slate-950/70">
-          <div className="flex items-start justify-between gap-4">
-            <div className="min-w-0 flex-1">
-              <div className="flex items-center gap-2">
-                <User className="size-5 text-sky-600 dark:text-sky-400" />
-                <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">
-                  Instructor
-                </h3>
-              </div>
-              <div className="mt-4 space-y-2">
-                <div>
-                  <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">
-                    {classDetails?.teacher?.displayName ||
-                      classDetails?.teacher?.name ||
-                      "Unknown Instructor"}
-                  </p>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">
-                    {classDetails?.teacher?.email || "No email available"}
-                  </p>
-                </div>
-                <p className="text-sm text-slate-600 dark:text-slate-300">
-                  {classDetails?.teacher?.bio ||
-                    "No bio available for this instructor."}
+
+      <div className="grid gap-3 md:gap-5 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-[1.1fr_.9fr]">
+        <Card className="rounded-2xl border border-slate-200/70 bg-white/85 p-4 md:p-6 shadow-sm dark:border-slate-800 dark:bg-slate-950/70">
+          <div className="mb-4 flex items-center gap-2">
+            <School className="size-4 text-sky-600 dark:text-sky-300" />
+            <h3 className="text-sm md:text-base font-semibold text-slate-900 dark:text-slate-100">
+              Class Information
+            </h3>
+          </div>
+          <div className="grid gap-2 md:gap-3 sm:grid-cols-2">
+            {infoItems.map((item) => (
+              <div
+                key={item.label}
+                className="rounded-xl border border-slate-200/70 bg-slate-50/70 p-3 md:p-4 dark:border-slate-800 dark:bg-slate-900/40"
+              >
+                <p className="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
+                  {item.label}
+                </p>
+                <p className="mt-2 text-xs md:text-sm font-semibold text-slate-900 dark:text-slate-100 truncate">
+                  {item.value}
                 </p>
               </div>
-            </div>
+            ))}
           </div>
         </Card>
+
+        <Card
+          className={`rounded-2xl border border-slate-200/70 bg-white/85 p-4 md:p-6 shadow-sm dark:border-slate-800 dark:bg-slate-950/70 ${recentActivity?.length === 0 && !loadingRecentActivity ? "flex flex-col" : ""}`}
+        >
+          <div className="mb-4 flex items-center gap-2">
+            <Clock3 className="size-4 text-sky-600 dark:text-sky-300" />
+            <h3 className="text-sm md:text-base font-semibold text-slate-900 dark:text-slate-100">
+              Recent Activity
+            </h3>
+          </div>
+
+          {loadingRecentActivity ? (
+            <div className="space-y-2 md:space-y-3">
+              {[...Array(3)].map((_, idx) => (
+                <div
+                  key={idx}
+                  className="h-14 md:h-16 animate-pulse rounded-xl border border-slate-200/70 bg-slate-100 dark:border-slate-800 dark:bg-slate-800"
+                />
+              ))}
+            </div>
+          ) : recentActivity?.length > 0 ? (
+            <div className="space-y-2 md:space-y-3">
+              {recentActivity.map((item, idx) => (
+                <div
+                  key={idx}
+                  className="flex items-start gap-2 md:gap-3 rounded-xl border border-slate-200/70 p-2 md:p-3 dark:border-slate-800"
+                >
+                  <div className="rounded-lg bg-sky-500/10 p-2 text-sky-700 dark:text-sky-300 shrink-0">
+                    <item.icon className="size-4" />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-xs md:text-sm font-medium text-slate-900 dark:text-slate-100 line-clamp-2">
+                      {item?.title}
+                    </p>
+                    <p className="mt-0.5 md:mt-1 text-xs text-slate-500 dark:text-slate-400">
+                      {item?.time}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="flex-1 flex flex-col items-center justify-center gap-2 md:gap-3 py-4 md:py-6 rounded-xl border border-dashed border-slate-200/60 text-center dark:border-slate-800">
+              <Clock3 className="size-5 md:size-6 text-slate-400 dark:text-slate-500" />
+              <p className="text-xs md:text-sm font-semibold text-slate-900 dark:text-slate-100">
+                No recent activity
+              </p>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                No activities recorded yet.
+              </p>
+            </div>
+          )}
+        </Card>
       </div>
-    </>
+
+      <Card className="rounded-2xl border border-slate-200/70 bg-white/85 p-6 shadow-sm dark:border-slate-800 dark:bg-slate-950/70">
+        <div className="mb-4 flex items-center gap-2">
+          <BookOpen className="size-4 text-sky-600 dark:text-sky-300" />
+          <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">
+            Upcoming Sessions
+          </h3>
+        </div>
+
+        {loadingUpcoming ? (
+          <div className="space-y-3">
+            {[...Array(3)].map((_, idx) => (
+              <div
+                key={idx}
+                className="h-20 animate-pulse rounded-xl border border-slate-200/70 bg-slate-100 dark:border-slate-800 dark:bg-slate-800"
+              />
+            ))}
+          </div>
+        ) : upcomingSession?.length > 0 ? (
+          <div className="space-y-3">
+            {upcomingSession.map((session, idx) => (
+              <div
+                key={idx}
+                className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-200/70 p-4 dark:border-slate-800"
+              >
+                <div>
+                  <p className="text-sm font-semibold capitalize text-slate-900 dark:text-slate-100">
+                    {session?.title}
+                  </p>
+                  <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                    Scheduled: {session?.time}
+                  </p>
+                </div>
+                <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700 dark:bg-slate-800 dark:text-slate-300">
+                  {session?.date}
+                </span>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="flex flex-col items-center justify-center gap-3 py-8 rounded-xl border border-dashed border-slate-200/60 text-center dark:border-slate-800">
+            <BookOpen className="size-6 text-slate-400 dark:text-slate-500" />
+            <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">
+              No upcoming sessions
+            </p>
+            <p className="text-xs text-slate-500 dark:text-slate-400">
+              No sessions are scheduled for this class at the moment.
+            </p>
+          </div>
+        )}
+      </Card>
+    </div>
   );
 }
