@@ -30,6 +30,20 @@ export const GET = auth(async function GET(req, { params }) {
     );
   }
 
+  if (
+    !new mongoose.Types.ObjectId.isValid(classesId) ||
+    !new mongoose.Types.ObjectId.isValid(userId)
+  ) {
+    return NextResponse.json(
+      {
+        error: "Invalid Parameters",
+      },
+      {
+        status: 400,
+      },
+    );
+  }
+
   try {
     await connectDatabase();
     const user = await User.findById(new mongoose.Types.ObjectId(userId));
