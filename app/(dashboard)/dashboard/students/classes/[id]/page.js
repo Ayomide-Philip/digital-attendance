@@ -101,9 +101,7 @@ export default function ClassDetailsPage() {
         const attendanceResponse = await attendanceRequest.json();
 
         if (!classRequest.ok || classResponse?.error) {
-          toast.error(
-            classResponse?.error || "Failed to fetch class details",
-          );
+          toast.error(classResponse?.error || "Failed to fetch class details");
           window.location.href = "/dashboard/students/classes";
           return;
         }
