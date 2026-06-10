@@ -123,7 +123,7 @@ export default function StudentOverview({ classDetails, classId }) {
       try {
         setLoadingRecentActivity(true);
         const request = await fetch(
-          `/api/student/classes/${classId}/attendance?query=all&limit=5`,
+          `/api/student/classes/${classId}/attendance?query=all&limit=4`,
           {
             method: "GET",
             headers: {
