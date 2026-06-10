@@ -44,6 +44,19 @@ export const GET = auth(async function GET(req, { params }) {
     );
   }
 
+  const reqParams = req.nextUrl.searchParams;
+  const query = reqParams.get("query") || "all";
+  const limit = parseInt(reqParams.get("limit")) || 0;
+  if (!["all", "upcoming"].includes(query)) {
+    return NextResponse.json(
+      {
+        error: "Invalid query parameter",
+      },
+      {
+        status: 400,
+      },
+    );
+  }
   try {
     await connectDatabase();
     const user = await User.findById(new mongoose.Types.ObjectId(userId));
