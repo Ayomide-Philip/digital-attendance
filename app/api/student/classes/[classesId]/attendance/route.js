@@ -31,8 +31,8 @@ export const GET = auth(async function GET(req, { params }) {
   }
 
   if (
-    !new mongoose.Types.ObjectId.isValid(classesId) ||
-    !new mongoose.Types.ObjectId.isValid(userId)
+    !mongoose.Types.ObjectId.isValid(classesId) ||
+    !mongoose.Types.ObjectId.isValid(userId)
   ) {
     return NextResponse.json(
       {
@@ -99,11 +99,61 @@ export const GET = auth(async function GET(req, { params }) {
       );
     }
 
+    if (query === "upcoming") {
+      const attendance = await Attandance.find({
+        classesId: new mongoose.Types.ObjectId(classesId),
+        startTime: { $gt: new Date() },
+      })
+        .populate("teacherId", "name displayName")
+        .populate("classesId", "name code")
+        .sort({ startTime: -1 })
+        .limit(limit)
+        .lean();
+
+      return NextResponse.json(
+        {
+          message: "Successfully fetched attendance",
+          attendance: attendance.map((c) => {
+            const studentRecord = c?.students?.find(
+              (s) => s?.studentId?.toString() === userId,
+            );
+
+            let status;
+
+            if (studentRecord) {
+              status = studentRecord.status;
+            } else {
+              status =
+                Date.now() > new Date(c.endTime).getTime()
+                  ? "Absent"
+                  : "Pending";
+            }
+            return {
+              _id: c?._id,
+              title: c?.title,
+              description: c?.description,
+              createdAt: c?.createdAt,
+              startTime: c?.startTime,
+              endTime: c?.endTime,
+              classesId: c?.classesId,
+              teacherId: c?.teacherId,
+              status: status || "Pending",
+            };
+          }),
+        },
+        {
+          status: 200,
+        },
+      );
+    }
+
     const attendance = await Attandance.find({
       classesId: new mongoose.Types.ObjectId(classesId),
     })
       .populate("teacherId", "name displayName")
       .populate("classesId", "name code")
+      .sort({ startTime: -1 })
+      .limit(limit)
       .lean();
 
     return NextResponse.json(
